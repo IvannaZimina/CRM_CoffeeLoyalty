@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CoffeeLoyalty.Core/CoffeeLoyalty.Core.csproj" />
+  <Project Path="CoffeeLoyalty.WPF/CoffeeLoyalty.WPF.csproj" />
+</Solution>
