@@ -12,7 +12,7 @@ public static class PasswordHasher
     private const int KeySize = 32;
 
     // PBKDF2 iteration count for key stretching.
-    private const int Iterations = 100_000;
+    private const int Iterations = 600_000;
 
     // Delimiter separating iterations, salt, and hash segments in the stored string.
     private const char Delimiter = '.';
