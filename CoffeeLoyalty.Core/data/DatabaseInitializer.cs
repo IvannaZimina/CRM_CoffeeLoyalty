@@ -17,7 +17,8 @@ public sealed class DatabaseInitializer
         "CardsSchema.sql",
         "EmployeesSchema.sql",
         "PurchasesSchema.sql",
-        "DrinksSchema.sql"
+        "DrinksSchema.sql",
+        "PurchaseItemSchema.sql"
     ];
 
     // Stores the connection factory and seed data helper used during database setup.
