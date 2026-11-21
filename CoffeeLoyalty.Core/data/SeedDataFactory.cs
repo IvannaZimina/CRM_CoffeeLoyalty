@@ -28,7 +28,25 @@ public sealed class SeedDataFactory
         SqliteConnection connection,
         SqliteTransaction transaction)
     {
-        // Placeholder until category seeding is added.
+        // Add default tiers only if they do not already exist.
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+
+        // Rates and thresholds remain zero until the loyalty rules are agreed.
+        command.CommandText = """
+        INSERT INTO CATEGORIES (
+            categoryName,
+            bonusAccrualRate,
+            upgradeThreshold
+        )
+        VALUES
+            ('Basic', 0, 0),
+            ('Silver', 0, 0),
+            ('Gold', 0, 0)
+        ON CONFLICT(categoryName) DO NOTHING;
+        """;
+
+        command.ExecuteNonQuery();
     }
 
     // Seeds initial menu items into DRINKS without creating duplicates across repeated runs.
