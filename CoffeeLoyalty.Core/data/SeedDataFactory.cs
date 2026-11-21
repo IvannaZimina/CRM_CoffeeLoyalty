@@ -258,12 +258,81 @@ public sealed class SeedDataFactory
         }
     }
 
-    // Seeds loyalty cards once card tasks are implemented.
+    // Seeds sample loyalty cards linked to CUSTOMERS without creating duplicates across repeated runs.
     private static void SeedCards(
         SqliteConnection connection,
         SqliteTransaction transaction)
     {
-        // Placeholder until loyalty card seeding is added.
+        long? annaCustomerId = TryGetCustomerId(connection, transaction, "Anna Tamm");
+        long? markCustomerId = TryGetCustomerId(connection, transaction, "Mark Kask");
+
+        if (!annaCustomerId.HasValue && !markCustomerId.HasValue)
+        {
+            return;
+        }
+
+        List<CardSeedItem> cards = [];
+        if (annaCustomerId.HasValue)
+        {
+            // Support multiple cards per customer (1:N), including an inactive/blocked card (isActive = 0).
+            cards.Add(new(CustomerId: annaCustomerId.Value, IsActive: 1));
+            cards.Add(new(CustomerId: annaCustomerId.Value, IsActive: 0));
+        }
+
+        if (markCustomerId.HasValue)
+        {
+            cards.Add(new(CustomerId: markCustomerId.Value, IsActive: 1));
+        }
+
+        using var existsCommand = connection.CreateCommand();
+        existsCommand.Transaction = transaction;
+        existsCommand.CommandText = """
+            SELECT COUNT(*) FROM CARDS
+            WHERE customerID = $customerID AND isActive = $isActive;
+            """;
+
+        var existsCustomerIdParam = existsCommand.CreateParameter();
+        existsCustomerIdParam.ParameterName = "$customerID";
+        existsCommand.Parameters.Add(existsCustomerIdParam);
+
+        var existsIsActiveParam = existsCommand.CreateParameter();
+        existsIsActiveParam.ParameterName = "$isActive";
+        existsCommand.Parameters.Add(existsIsActiveParam);
+
+        using var insertCommand = connection.CreateCommand();
+        insertCommand.Transaction = transaction;
+        insertCommand.CommandText = """
+            INSERT INTO CARDS (customerID, isActive)
+            VALUES ($customerID, $isActive);
+            """;
+
+        var insertCustomerIdParam = insertCommand.CreateParameter();
+        insertCustomerIdParam.ParameterName = "$customerID";
+        insertCommand.Parameters.Add(insertCustomerIdParam);
+
+        var insertIsActiveParam = insertCommand.CreateParameter();
+        insertIsActiveParam.ParameterName = "$isActive";
+        insertCommand.Parameters.Add(insertIsActiveParam);
+
+        foreach (CardSeedItem card in cards)
+        {
+            existsCustomerIdParam.Value = card.CustomerId;
+            existsIsActiveParam.Value = card.IsActive;
+
+            long existingCount = Convert.ToInt64(
+                existsCommand.ExecuteScalar(),
+                CultureInfo.InvariantCulture);
+
+            if (existingCount > 0)
+            {
+                continue;
+            }
+
+            insertCustomerIdParam.Value = card.CustomerId;
+            insertIsActiveParam.Value = card.IsActive;
+
+            insertCommand.ExecuteNonQuery();
+        }
     }
 
     // Resolves a categoryID by categoryName inside the current transaction.
@@ -288,6 +357,28 @@ public sealed class SeedDataFactory
             : Convert.ToInt64(result, CultureInfo.InvariantCulture);
     }
 
+    // Resolves a customerID by customerName inside the current transaction.
+    private static long? TryGetCustomerId(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        string customerName)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT customerID FROM CUSTOMERS WHERE customerName = $customerName ORDER BY customerID ASC LIMIT 1;";
+
+        var customerNameParam = command.CreateParameter();
+        customerNameParam.ParameterName = "$customerName";
+        customerNameParam.Value = customerName;
+        command.Parameters.Add(customerNameParam);
+
+        object? result = command.ExecuteScalar();
+        return result is null or DBNull
+            ? null
+            : Convert.ToInt64(result, CultureInfo.InvariantCulture);
+    }
+
     // Holds seed values for a single menu item in DRINKS.
     private sealed record DrinkSeedItem(
         string DrinkName,
@@ -304,4 +395,9 @@ public sealed class SeedDataFactory
         string? BirthDate,
         int IsActive,
         string TimeStamp);
+
+    // Holds seed values for a single loyalty card row in CARDS.
+    private sealed record CardSeedItem(
+        long CustomerId,
+        int IsActive);
 }

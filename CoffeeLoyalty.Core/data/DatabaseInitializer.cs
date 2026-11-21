@@ -10,11 +10,11 @@ public sealed class DatabaseInitializer
     private readonly SeedDataFactory _seedDataFactory;
 
     // Register SQL schema files in dependency order (parent tables before child tables).
-    // Remove TestSchema.sql before the final commit once smoke testing is done.
     private static readonly string[] SchemaFiles =
     [
         "CategoriesSchema.sql",
         "CustomersSchema.sql",
+        "CardsSchema.sql",
         "DrinksSchema.sql"
     ];
 
