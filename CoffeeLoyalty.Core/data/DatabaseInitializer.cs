@@ -18,9 +18,9 @@ public sealed class DatabaseInitializer
         "EmployeesSchema.sql",
         "PurchasesSchema.sql",
         "DrinksSchema.sql",
-        "PurchaseItemSchema.sql"
+        "PurchaseItemSchema.sql",
+        "UserDrinkSchema.sql"
     ];
-
     // Stores the connection factory and seed data helper used during database setup.
     public DatabaseInitializer(
         SqliteConnectionFactory connectionFactory,

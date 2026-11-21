@@ -26,6 +26,7 @@ public sealed class SeedDataFactory
         SeedCards(connection, transaction);
         SeedPurchases(connection, transaction);
         SeedPurchaseItems(connection, transaction);
+        SeedUserDrinks(connection, transaction);
     }
 
     // Seeds loyalty or menu categories once future category tasks are implemented.
@@ -657,6 +658,101 @@ public sealed class SeedDataFactory
         }
     }
 
+    // Seeds sample per-card drink counters into USER_DRINK linked to CARDS and DRINKS idempotently.
+    private static void SeedUserDrinks(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        long? activeCardId = TryGetActiveCardId(connection, transaction);
+        long? cappuccinoId = TryGetDrinkId(connection, transaction, "Cappuccino");
+        long? latteId = TryGetDrinkId(connection, transaction, "Latte");
+
+        if (!activeCardId.HasValue || (!cappuccinoId.HasValue && !latteId.HasValue))
+        {
+            return;
+        }
+
+        List<UserDrinkSeedItem> userDrinks = [];
+        if (cappuccinoId.HasValue)
+        {
+            userDrinks.Add(new(
+                CardId: activeCardId.Value,
+                DrinkId: cappuccinoId.Value,
+                Quantity: 1));
+        }
+
+        if (latteId.HasValue)
+        {
+            userDrinks.Add(new(
+                CardId: activeCardId.Value,
+                DrinkId: latteId.Value,
+                Quantity: 1));
+        }
+
+        using var existsCommand = connection.CreateCommand();
+        existsCommand.Transaction = transaction;
+        existsCommand.CommandText = """
+            SELECT COUNT(*) FROM USER_DRINK
+            WHERE cardID = $cardID AND drinkID = $drinkID;
+            """;
+
+        var existsCardIdParam = existsCommand.CreateParameter();
+        existsCardIdParam.ParameterName = "$cardID";
+        existsCommand.Parameters.Add(existsCardIdParam);
+
+        var existsDrinkIdParam = existsCommand.CreateParameter();
+        existsDrinkIdParam.ParameterName = "$drinkID";
+        existsCommand.Parameters.Add(existsDrinkIdParam);
+
+        using var insertCommand = connection.CreateCommand();
+        insertCommand.Transaction = transaction;
+        insertCommand.CommandText = """
+            INSERT INTO USER_DRINK (
+                cardID,
+                drinkID,
+                quantity
+            )
+            VALUES (
+                $cardID,
+                $drinkID,
+                $quantity
+            );
+            """;
+
+        var insertCardIdParam = insertCommand.CreateParameter();
+        insertCardIdParam.ParameterName = "$cardID";
+        insertCommand.Parameters.Add(insertCardIdParam);
+
+        var insertDrinkIdParam = insertCommand.CreateParameter();
+        insertDrinkIdParam.ParameterName = "$drinkID";
+        insertCommand.Parameters.Add(insertDrinkIdParam);
+
+        var insertQuantityParam = insertCommand.CreateParameter();
+        insertQuantityParam.ParameterName = "$quantity";
+        insertCommand.Parameters.Add(insertQuantityParam);
+
+        foreach (UserDrinkSeedItem userDrink in userDrinks)
+        {
+            existsCardIdParam.Value = userDrink.CardId;
+            existsDrinkIdParam.Value = userDrink.DrinkId;
+
+            long existingCount = Convert.ToInt64(
+                existsCommand.ExecuteScalar(),
+                CultureInfo.InvariantCulture);
+
+            if (existingCount > 0)
+            {
+                continue;
+            }
+
+            insertCardIdParam.Value = userDrink.CardId;
+            insertDrinkIdParam.Value = userDrink.DrinkId;
+            insertQuantityParam.Value = userDrink.Quantity;
+
+            insertCommand.ExecuteNonQuery();
+        }
+    }
+
     // Hashes a plain-text password with a per-account salt so raw passwords are never stored.
     private static string HashPassword(string salt, string plainPassword)
     {
@@ -835,4 +931,10 @@ public sealed class SeedDataFactory
         long DrinkId,
         int Quantity,
         decimal UnitPrice);
+
+    // Holds seed values for a single per-card drink counter in USER_DRINK.
+    private sealed record UserDrinkSeedItem(
+        long CardId,
+        long DrinkId,
+        int Quantity);
 }
