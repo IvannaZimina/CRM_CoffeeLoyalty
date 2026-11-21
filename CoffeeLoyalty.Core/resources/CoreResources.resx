@@ -1,0 +1,374 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute name="space" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute xml:space="preserve" name="space" type="xsd:string" msdata:Ordinal="5" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Navigation (Nav) -->
+  <data name="NavPos" xml:space="preserve">
+    <value>POS</value>
+  </data>
+  <data name="NavCustomers" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="NavDrinks" xml:space="preserve">
+    <value>Drinks</value>
+  </data>
+  <data name="NavLogs" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="NavImportExport" xml:space="preserve">
+    <value>Import / Export</value>
+  </data>
+  <data name="NavSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="NavLogout" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+
+  <!-- Titles (Title) -->
+  <data name="TitleWelcome" xml:space="preserve">
+    <value>Welcome to CoffeeLoyalty</value>
+  </data>
+  <data name="TitleLogin" xml:space="preserve">
+    <value>CoffeeLoyalty - Sign In</value>
+  </data>
+  <data name="TitleSelectRole" xml:space="preserve">
+    <value>Select role</value>
+  </data>
+  <data name="TitleCashierPos" xml:space="preserve">
+    <value>New purchase</value>
+  </data>
+  <data name="TitleCustomers" xml:space="preserve">
+    <value>Customers and loyalty</value>
+  </data>
+  <data name="TitleDrinks" xml:space="preserve">
+    <value>Drinks</value>
+  </data>
+  <data name="TitleLogs" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="TitleImportExport" xml:space="preserve">
+    <value>Import / Export</value>
+  </data>
+  <data name="TitleSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="TitlePurchaseSuccess" xml:space="preserve">
+    <value>Purchase completed!</value>
+  </data>
+
+  <!-- Buttons (Btn) -->
+  <data name="BtnLogin" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="BtnLogout" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+  <data name="BtnAdd" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="BtnAddCustomer" xml:space="preserve">
+    <value>+ New customer</value>
+  </data>
+  <data name="BtnEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="BtnDeactivate" xml:space="preserve">
+    <value>Deactivate</value>
+  </data>
+  <data name="BtnShow" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="BtnCheckout" xml:space="preserve">
+    <value>Checkout</value>
+  </data>
+  <data name="BtnOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="BtnCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="BtnSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- Labels (Lbl) -->
+  <data name="LblCustomer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="LblCardNumber" xml:space="preserve">
+    <value>Card number</value>
+  </data>
+  <data name="LblCardShort" xml:space="preserve">
+    <value>Card no</value>
+  </data>
+  <data name="LblName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="LblTier" xml:space="preserve">
+    <value>Tier</value>
+  </data>
+  <data name="LblBonuses" xml:space="preserve">
+    <value>Bonuses</value>
+  </data>
+  <data name="LblBonusBalance" xml:space="preserve">
+    <value>Bonus balance</value>
+  </data>
+  <data name="LblTotalEarned" xml:space="preserve">
+    <value>Total earned</value>
+  </data>
+  <data name="LblStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="LblDrinks" xml:space="preserve">
+    <value>Drinks</value>
+  </data>
+  <data name="LblCart" xml:space="preserve">
+    <value>Cart</value>
+  </data>
+  <data name="LblQuantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="LblSubtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="LblBonusesUsed" xml:space="preserve">
+    <value>Bonuses used</value>
+  </data>
+  <data name="LblBonusesEarned" xml:space="preserve">
+    <value>Bonuses earned</value>
+  </data>
+  <data name="LblTotalToPay" xml:space="preserve">
+    <value>Total (to pay)</value>
+  </data>
+  <data name="LblTotal" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="LblNewBonuses" xml:space="preserve">
+    <value>Your new bonuses</value>
+  </data>
+  <data name="LblPassword" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LblRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="LblDateFrom" xml:space="preserve">
+    <value>Date from</value>
+  </data>
+  <data name="LblDateTo" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="LblType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="LblDateTime" xml:space="preserve">
+    <value>Date &amp; time</value>
+  </data>
+  <data name="LblUser" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="LblDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="LblImportJson" xml:space="preserve">
+    <value>Import data (JSON file)</value>
+  </data>
+  <data name="LblExportJson" xml:space="preserve">
+    <value>Export data (JSON file)</value>
+  </data>
+
+  <!-- Hints (Hint) -->
+  <data name="HintEnterCardNumber" xml:space="preserve">
+    <value>Enter card number...</value>
+  </data>
+  <data name="HintSearchCustomer" xml:space="preserve">
+    <value>Search customer...</value>
+  </data>
+  <data name="HintAllActivities" xml:space="preserve">
+    <value>All activities</value>
+  </data>
+
+  <!-- Statuses (Status) -->
+  <data name="StatusActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="StatusInactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="StatusBlocked" xml:space="preserve">
+    <value>Blocked</value>
+  </data>
+  <data name="StatusAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+
+  <!-- Messages (Msg) -->
+  <data name="MsgSavedSuccessfully" xml:space="preserve">
+    <value>Saved successfully.</value>
+  </data>
+  <data name="MsgPurchaseCompleted" xml:space="preserve">
+    <value>Purchase completed successfully.</value>
+  </data>
+  <data name="MsgDataImported" xml:space="preserve">
+    <value>Data imported successfully.</value>
+  </data>
+  <data name="MsgDataExported" xml:space="preserve">
+    <value>Data exported successfully.</value>
+  </data>
+
+  <!-- Dialogs (Dlg) -->
+  <data name="DlgConfirmDeactivate" xml:space="preserve">
+    <value>Are you sure you want to deactivate this item?</value>
+  </data>
+  <data name="DlgUnsavedChanges" xml:space="preserve">
+    <value>You have unsaved changes. Discard them?</value>
+  </data>
+
+  <!-- Validation (Val) -->
+  <data name="ValRequiredField" xml:space="preserve">
+    <value>This field is required.</value>
+  </data>
+  <data name="ValPositivePrice" xml:space="preserve">
+    <value>Price must be greater than zero.</value>
+  </data>
+  <data name="ValInvalidPassword" xml:space="preserve">
+    <value>Invalid password.</value>
+  </data>
+
+  <!-- Drinks (Drink) -->
+  <data name="DrinkCategoryAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="DrinkCategoryCoffee" xml:space="preserve">
+    <value>Coffee</value>
+  </data>
+  <data name="DrinkCategoryTea" xml:space="preserve">
+    <value>Tea</value>
+  </data>
+  <data name="DrinkCategoryOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="DrinkUnavailable" xml:space="preserve">
+    <value>Drink is unavailable.</value>
+  </data>
+
+  <!-- Customers (Customer) -->
+  <data name="CustomerNotFound" xml:space="preserve">
+    <value>Customer not found.</value>
+  </data>
+  <data name="CustomerDeactivated" xml:space="preserve">
+    <value>Customer is deactivated.</value>
+  </data>
+
+  <!-- Cards (Card) -->
+  <data name="CardBlocked" xml:space="preserve">
+    <value>Card is blocked.</value>
+  </data>
+  <data name="CardAlreadyAssigned" xml:space="preserve">
+    <value>Card is already assigned to another customer.</value>
+  </data>
+
+  <!-- Bonuses (Bonus) -->
+  <data name="BonusEarned" xml:space="preserve">
+    <value>Bonuses earned</value>
+  </data>
+  <data name="BonusRedeemed" xml:space="preserve">
+    <value>Bonuses redeemed</value>
+  </data>
+
+  <!-- Purchases (Purchase) -->
+  <data name="PurchaseEmptyCart" xml:space="preserve">
+    <value>Cart is empty.</value>
+  </data>
+  <data name="PurchaseTotal" xml:space="preserve">
+    <value>Total</value>
+  </data>
+
+  <!-- Employees (Employee) -->
+  <data name="EmployeeRoleCashier" xml:space="preserve">
+    <value>Cashier</value>
+  </data>
+  <data name="EmployeeRoleManager" xml:space="preserve">
+    <value>Manager</value>
+  </data>
+
+  <!-- Errors (Error) -->
+  <data name="ErrorDatabaseConnection" xml:space="preserve">
+    <value>Database connection failed.</value>
+  </data>
+  <data name="ErrorInsufficientBonuses" xml:space="preserve">
+    <value>Insufficient bonus balance.</value>
+  </data>
+  <data name="ErrorTransactionRollback" xml:space="preserve">
+    <value>Purchase failed and transaction was rolled back.</value>
+  </data>
+
+  <!-- Logs (Log) -->
+  <data name="LogPurchaseCompleted" xml:space="preserve">
+    <value>Purchase completed</value>
+  </data>
+  <data name="LogCustomerCreated" xml:space="preserve">
+    <value>Customer created</value>
+  </data>
+  <data name="LogCustomerStatusChanged" xml:space="preserve">
+    <value>Customer status changed</value>
+  </data>
+  <data name="LogCardNotFound" xml:space="preserve">
+    <value>Card not found</value>
+  </data>
+</root>
