@@ -1,4 +1,7 @@
 ﻿using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
+using CoffeeLoyalty.Core.Enums;
 using Microsoft.Data.Sqlite;
 
 namespace CoffeeLoyalty.Core.Data;
@@ -127,12 +130,86 @@ public sealed class SeedDataFactory
         }
     }
 
-    // Seeds staff accounts once employee tasks are implemented.
+    // Seeds default Cashier and Manager accounts with hashed passwords without creating duplicates.
     private static void SeedEmployees(
         SqliteConnection connection,
         SqliteTransaction transaction)
     {
-        // Placeholder until employee seeding is added.
+        EmployeeSeedItem[] employees =
+        [
+            new(
+                EmployeeName: "manager",
+                Role: EmployeeRole.Manager,
+                PasswordHash: HashPassword("manager", "ChangeMe!Manager123"),
+                IsActive: 1),
+            new(
+                EmployeeName: "cashier",
+                Role: EmployeeRole.Cashier,
+                PasswordHash: HashPassword("cashier", "ChangeMe!Cashier123"),
+                IsActive: 1)
+        ];
+
+        using var existsCommand = connection.CreateCommand();
+        existsCommand.Transaction = transaction;
+        existsCommand.CommandText =
+            "SELECT COUNT(*) FROM EMPLOYEES WHERE employeeName = $employeeName;";
+
+        var existsNameParam = existsCommand.CreateParameter();
+        existsNameParam.ParameterName = "$employeeName";
+        existsCommand.Parameters.Add(existsNameParam);
+
+        using var insertCommand = connection.CreateCommand();
+        insertCommand.Transaction = transaction;
+        insertCommand.CommandText = """
+            INSERT INTO EMPLOYEES (
+                employeeName,
+                employeeRole,
+                employeePassword,
+                isActive
+            )
+            VALUES (
+                $employeeName,
+                $employeeRole,
+                $employeePassword,
+                $isActive
+            );
+            """;
+
+        var insertNameParam = insertCommand.CreateParameter();
+        insertNameParam.ParameterName = "$employeeName";
+        insertCommand.Parameters.Add(insertNameParam);
+
+        var insertRoleParam = insertCommand.CreateParameter();
+        insertRoleParam.ParameterName = "$employeeRole";
+        insertCommand.Parameters.Add(insertRoleParam);
+
+        var insertPasswordParam = insertCommand.CreateParameter();
+        insertPasswordParam.ParameterName = "$employeePassword";
+        insertCommand.Parameters.Add(insertPasswordParam);
+
+        var insertIsActiveParam = insertCommand.CreateParameter();
+        insertIsActiveParam.ParameterName = "$isActive";
+        insertCommand.Parameters.Add(insertIsActiveParam);
+
+        foreach (EmployeeSeedItem employee in employees)
+        {
+            existsNameParam.Value = employee.EmployeeName;
+            long existingCount = Convert.ToInt64(
+                existsCommand.ExecuteScalar(),
+                CultureInfo.InvariantCulture);
+
+            if (existingCount > 0)
+            {
+                continue;
+            }
+
+            insertNameParam.Value = employee.EmployeeName;
+            insertRoleParam.Value = employee.Role.ToString();
+            insertPasswordParam.Value = employee.PasswordHash;
+            insertIsActiveParam.Value = employee.IsActive;
+
+            insertCommand.ExecuteNonQuery();
+        }
     }
 
     // Seeds sample active and inactive/blocked customers linked to CATEGORIES without duplicates.
@@ -335,6 +412,14 @@ public sealed class SeedDataFactory
         }
     }
 
+    // Hashes a plain-text password with a per-account salt so raw passwords are never stored.
+    private static string HashPassword(string salt, string plainPassword)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes($"{salt}:{plainPassword}");
+        byte[] hash = SHA256.HashData(bytes);
+        return Convert.ToHexString(hash);
+    }
+
     // Resolves a categoryID by categoryName inside the current transaction.
     private static long? TryGetCategoryId(
         SqliteConnection connection,
@@ -348,7 +433,7 @@ public sealed class SeedDataFactory
 
         var categoryNameParam = command.CreateParameter();
         categoryNameParam.ParameterName = "$categoryName";
-        categoryNameParam.Value = categoryName;
+        categoryNameParam.Value = categoryName; // FIX: SQLite requires every parameter to have a value.
         command.Parameters.Add(categoryNameParam);
 
         object? result = command.ExecuteScalar();
@@ -370,7 +455,7 @@ public sealed class SeedDataFactory
 
         var customerNameParam = command.CreateParameter();
         customerNameParam.ParameterName = "$customerName";
-        customerNameParam.Value = customerName;
+        customerNameParam.Value = customerName; // FIX: SQLite requires every parameter to have a value.
         command.Parameters.Add(customerNameParam);
 
         object? result = command.ExecuteScalar();
@@ -386,6 +471,13 @@ public sealed class SeedDataFactory
         decimal DrinkPrice,
         int IsActive,
         string? DrinkImageLink);
+
+    // Holds seed values for a single staff account in EMPLOYEES.
+    private sealed record EmployeeSeedItem(
+        string EmployeeName,
+        EmployeeRole Role,
+        string PasswordHash,
+        int IsActive);
 
     // Holds seed values for a single customer row in CUSTOMERS.
     private sealed record CustomerSeedItem(
