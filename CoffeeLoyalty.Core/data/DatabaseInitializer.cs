@@ -16,6 +16,7 @@ public sealed class DatabaseInitializer
         "CustomersSchema.sql",
         "CardsSchema.sql",
         "EmployeesSchema.sql",
+        "PurchasesSchema.sql",
         "DrinksSchema.sql"
     ];
 
