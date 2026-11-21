@@ -1,25 +1,22 @@
-﻿
-using System.IO;
+﻿using System.IO;
 
 namespace CoffeeLoyalty.Core.Data;
 
-/// <summary>
-/// Creates the database tables by running SQL files in the chosen order.
-/// The same method can be called again without deleting existing data.
-/// </summary>
+// Runs registered SQL schema scripts and seeds initial data in order.
+// Safe to call repeatedly without wiping existing records.
 public sealed class DatabaseInitializer
 {
     private readonly SqliteConnectionFactory _connectionFactory;
     private readonly SeedDataFactory _seedDataFactory;
 
-    // Add real SQL files here later, putting parent tables before child tables.
-    // TEST ONLY: remove TestSchema.sql from the list before the final commit.
-    private static readonly string[] SchemaFiles = ["TestSchema.sql"];
+    // Register SQL schema files in dependency order (parent tables before child tables).
+    // Remove TestSchema.sql before the final commit once smoke testing is done.
+    private static readonly string[] SchemaFiles =
+    [
+        "DrinksSchema.sql"
+    ];
 
-    /// <summary>
-    /// Receives the factory for database connections and a helper for sample data.
-    /// This keeps database setup in one place.
-    /// </summary>
+    // Stores the connection factory and seed data helper used during database setup.
     public DatabaseInitializer(
         SqliteConnectionFactory connectionFactory,
         SeedDataFactory seedDataFactory)
@@ -31,46 +28,41 @@ public sealed class DatabaseInitializer
             ?? throw new ArgumentNullException(nameof(seedDataFactory));
     }
 
-    /// <summary>
-    /// Opens the database, runs registered SQL scripts, and saves the changes.
-    /// If any script fails, the transaction will be rolled back.
-    /// </summary>
+    // Opens the database, executes all registered schemas and seed logic inside one transaction,
+    // and rolls back automatically if anything fails.
     public void Initialize()
     {
-        // Creates coffeeloyalty.db automatically on the first run.
+        // Opens an existing SQLite database or creates coffeeloyalty.db on first run.
         using var connection = _connectionFactory.OpenConnection();
 
-        // Keep the SQL scripts and initial data together in one transaction.
+        // Group schema creation and seeding into one atomic transaction.
         using var transaction = connection.BeginTransaction();
 
         foreach (string schemaFile in SchemaFiles)
         {
-            // Read a SQL script stored inside the compiled Core library.
+            // Load the embedded SQL script for the current schema (including DrinksSchema.sql).
             string sql = LoadSchema(schemaFile);
 
-            // Execute the script using our active database transaction.
+            // Run the SQL statements within the active transaction.
             using var command = connection.CreateCommand();
             command.Transaction = transaction;
             command.CommandText = sql;
             command.ExecuteNonQuery();
         }
 
-        // Nothing is inserted yet; this helper is for future table tasks.
+        // Seed initial data (such as menu items for DRINKS) after schemas are created.
         _seedDataFactory.Seed(connection, transaction);
 
-        // Save changes only when every step succeeded.
+        // Commit all changes only when every schema and seed step succeeds.
         transaction.Commit();
     }
 
-    /// <summary>
-    /// Finds a named SQL script in the Core assembly and reads its content.
-    /// Gives a clear error when the requested file is missing.
-    /// </summary>
+    // Reads an embedded SQL script from CoffeeLoyalty.Core/data/schemas by file name.
     private static string LoadSchema(string fileName)
     {
         var assembly = typeof(DatabaseInitializer).Assembly;
 
-        // This path matches the existing lowercase folders: data/schemas.
+        // Matches the lowercase data/schemas folder structure in CoffeeLoyalty.Core.
         string resourceName =
             $"{assembly.GetName().Name}.data.schemas.{fileName}";
 

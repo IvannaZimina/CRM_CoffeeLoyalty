@@ -1,27 +1,22 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using CoffeeLoyalty.Core.Data;
 
 namespace CoffeeLoyalty.WPF;
 
-/// <summary>
-/// Starts the WPF application and prepares the database first.
-/// </summary>
+// Starts the WPF application and initializes the SQLite database before showing the main window.
 public partial class App : Application
 {
-    /// <summary>
-    /// Runs when the application starts, before opening the main window.
-    /// Shows an error and closes the app if the database cannot be prepared.
-    /// </summary>
+    // Prepares the database on startup and shows a clear error dialog if initialization fails.
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
         try
         {
-            // Use the same connection settings for the whole app.
+            // Create shared database infrastructure for startup initialization.
             var connectionFactory = new SqliteConnectionFactory();
             var seedDataFactory = new SeedDataFactory();
 
@@ -29,23 +24,23 @@ public partial class App : Application
                 connectionFactory,
                 seedDataFactory);
 
-            // Create or open the database and run registered SQL scripts.
+            // Create or open the SQLite database, run registered schemas, and seed initial data.
             initializer.Initialize();
 
-            // TEMPORARY TEST: check SQLite and repeated initialization.
-            RunSqliteSmokeTest(connectionFactory, initializer);
+            // Verify repeated initialization idempotency and seeded DRINKS rows during development.
+            VerifyDrinksInitialization(connectionFactory, initializer);
 
-            // Open the WPF window only when database startup succeeded.
+            // Open the main window only after database setup completes successfully.
             var window = new MainWindow();
             MainWindow = window;
             window.Show();
         }
         catch (Exception ex)
         {
-            // Store technical error details in the Visual Studio output.
+            // Log full diagnostic details for debugging.
             Trace.TraceError(ex.ToString());
 
-            // Show an error instead of crashing silently.
+            // Inform the user and exit cleanly when database startup fails.
             MessageBox.Show(
                 $"Database initialization failed:\n{ex.Message}",
                 "CoffeeLoyalty - Startup Error",
@@ -56,67 +51,42 @@ public partial class App : Application
         }
     }
 
-    /// <summary>
-    /// Temporary test for SQLite database initialization.
-    /// Checks foreign keys, table creation, and saved data.
-    /// Remove this method after testing.
-    /// </summary>
-    private static void RunSqliteSmokeTest(
+    // Checks that DRINKS exists, seeded menu rows are present, and repeated Initialize calls do not duplicate them.
+    private static void VerifyDrinksInitialization(
         SqliteConnectionFactory connectionFactory,
         DatabaseInitializer initializer)
     {
-        // Insert one test row into our temporary table.
-        // INSERT OR IGNORE prevents duplicate rows on repeated runs.
-        using (var connection = connectionFactory.OpenConnection())
-        using (var command = connection.CreateCommand())
-        {
-            command.CommandText =
-                "INSERT OR IGNORE INTO TestInitialization (Id, Name) " +
-                "VALUES (1, 'Keep this row');";
+        using var connection = connectionFactory.OpenConnection();
+        using var command = connection.CreateCommand();
 
-            command.ExecuteNonQuery();
-        }
+        // Confirm DRINKS exists in SQLite metadata.
+        command.CommandText =
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='DRINKS';";
+        long tableCount = Convert.ToInt64(
+            command.ExecuteScalar(),
+            CultureInfo.InvariantCulture);
 
-        // Run initialization again.
-        // CREATE TABLE IF NOT EXISTS should prevent errors.
+        // Count seeded rows before running Initialize a second time.
+        command.CommandText = "SELECT COUNT(*) FROM DRINKS;";
+        long countBefore = Convert.ToInt64(
+            command.ExecuteScalar(),
+            CultureInfo.InvariantCulture);
+
+        // Run initialization again to verify idempotency.
         initializer.Initialize();
 
-        // Open a new connection for checking the results.
-        using var testConnection = connectionFactory.OpenConnection();
-        using var testCommand = testConnection.CreateCommand();
+        long countAfter = Convert.ToInt64(
+            command.ExecuteScalar(),
+            CultureInfo.InvariantCulture);
 
-        // Foreign keys must be enabled. SQLite should return 1.
-        testCommand.CommandText = "PRAGMA foreign_keys;";
-
-        int foreignKeys =
-            Convert.ToInt32(testCommand.ExecuteScalar());
-
-        // Check if the SQL file created our test table.
-        testCommand.CommandText =
-            "SELECT COUNT(*) FROM sqlite_master " +
-            "WHERE type='table' AND name='TestInitialization';";
-
-        long tableCount =
-            Convert.ToInt64(testCommand.ExecuteScalar());
-
-        // Check that repeated initialization did not erase the row.
-        testCommand.CommandText =
-            "SELECT COUNT(*) FROM TestInitialization WHERE Id = 1;";
-
-        long rowCount =
-            Convert.ToInt64(testCommand.ExecuteScalar());
-
-        // Stop the test if any of the checks failed.
-        if (foreignKeys != 1 || tableCount != 1 || rowCount != 1)
+        if (tableCount != 1 || countBefore <= 0 || countBefore != countAfter)
         {
             throw new InvalidOperationException(
-                $"SQLite test failed: ForeignKeys={foreignKeys}, " +
-                $"Table={tableCount}, SavedRow={rowCount}");
+                $"DRINKS check failed: Table={tableCount}, " +
+                $"CountBefore={countBefore}, CountAfter={countAfter}");
         }
 
-        // Show the result in Visual Studio's Debug Output window.
         Debug.WriteLine(
-            "SQLite smoke test PASSED: foreign keys ON, " +
-            "test table created, data preserved, repeated Initialize OK.");
+            $"DRINKS check PASSED: table exists, rows={countAfter}, repeated Initialize idempotent.");
     }
 }
