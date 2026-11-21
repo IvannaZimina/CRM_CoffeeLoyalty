@@ -27,6 +27,7 @@ public sealed class SeedDataFactory
         SeedPurchases(connection, transaction);
         SeedPurchaseItems(connection, transaction);
         SeedUserDrinks(connection, transaction);
+        SeedLogs(connection, transaction);
     }
 
     // Seeds loyalty or menu categories once future category tasks are implemented.
@@ -753,6 +754,119 @@ public sealed class SeedDataFactory
         }
     }
 
+    // Seeds sample audit and system log entries into LOGS without creating duplicates across repeated runs.
+    private static void SeedLogs(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        long? firstPurchaseId = TryGetPurchaseIdByTimeStamp(
+            connection,
+            transaction,
+            "2026-01-02T10:00:00Z");
+
+        LogSeedItem[] logs =
+        [
+            new(
+                ObjectId: null,
+                ObjectType: "System",
+                ActionType: "LogStartup",
+                Description: "Database initialization and seed completed.",
+                TimeStamp: "2026-01-02T09:55:00Z"),
+            new(
+                ObjectId: firstPurchaseId,
+                ObjectType: "PURCHASES",
+                ActionType: "LogPurchase",
+                Description: "Seeded sample purchase receipt.",
+                TimeStamp: "2026-01-02T10:00:00Z")
+        ];
+
+        using var existsCommand = connection.CreateCommand();
+        existsCommand.Transaction = transaction;
+        existsCommand.CommandText = """
+            SELECT COUNT(*) FROM LOGS
+            WHERE objectType = $objectType
+              AND actionType = $actionType
+              AND timeStamp = $timeStamp;
+            """;
+
+        var existsObjectTypeParam = existsCommand.CreateParameter();
+        existsObjectTypeParam.ParameterName = "$objectType";
+        existsCommand.Parameters.Add(existsObjectTypeParam);
+
+        var existsActionTypeParam = existsCommand.CreateParameter();
+        existsActionTypeParam.ParameterName = "$actionType";
+        existsCommand.Parameters.Add(existsActionTypeParam);
+
+        var existsTimeStampParam = existsCommand.CreateParameter();
+        existsTimeStampParam.ParameterName = "$timeStamp";
+        existsCommand.Parameters.Add(existsTimeStampParam);
+
+        using var insertCommand = connection.CreateCommand();
+        insertCommand.Transaction = transaction;
+        insertCommand.CommandText = """
+            INSERT INTO LOGS (
+                objectID,
+                objectType,
+                actionType,
+                description,
+                timeStamp
+            )
+            VALUES (
+                $objectID,
+                $objectType,
+                $actionType,
+                $description,
+                $timeStamp
+            );
+            """;
+
+        var insertObjectIdParam = insertCommand.CreateParameter();
+        insertObjectIdParam.ParameterName = "$objectID";
+        insertCommand.Parameters.Add(insertObjectIdParam);
+
+        var insertObjectTypeParam = insertCommand.CreateParameter();
+        insertObjectTypeParam.ParameterName = "$objectType";
+        insertCommand.Parameters.Add(insertObjectTypeParam);
+
+        var insertActionTypeParam = insertCommand.CreateParameter();
+        insertActionTypeParam.ParameterName = "$actionType";
+        insertCommand.Parameters.Add(insertActionTypeParam);
+
+        var insertDescriptionParam = insertCommand.CreateParameter();
+        insertDescriptionParam.ParameterName = "$description";
+        insertCommand.Parameters.Add(insertDescriptionParam);
+
+        var insertTimeStampParam = insertCommand.CreateParameter();
+        insertTimeStampParam.ParameterName = "$timeStamp";
+        insertCommand.Parameters.Add(insertTimeStampParam);
+
+        foreach (LogSeedItem log in logs)
+        {
+            existsObjectTypeParam.Value = log.ObjectType;
+            existsActionTypeParam.Value = log.ActionType;
+            existsTimeStampParam.Value = log.TimeStamp;
+
+            long existingCount = Convert.ToInt64(
+                existsCommand.ExecuteScalar(),
+                CultureInfo.InvariantCulture);
+
+            if (existingCount > 0)
+            {
+                continue;
+            }
+
+            insertObjectIdParam.Value = log.ObjectId.HasValue
+                ? log.ObjectId.Value
+                : DBNull.Value;
+            insertObjectTypeParam.Value = log.ObjectType;
+            insertActionTypeParam.Value = log.ActionType;
+            insertDescriptionParam.Value = log.Description;
+            insertTimeStampParam.Value = log.TimeStamp;
+
+            insertCommand.ExecuteNonQuery();
+        }
+    }
+
     // Hashes a plain-text password with a per-account salt so raw passwords are never stored.
     private static string HashPassword(string salt, string plainPassword)
     {
@@ -937,4 +1051,12 @@ public sealed class SeedDataFactory
         long CardId,
         long DrinkId,
         int Quantity);
+
+    // Holds seed values for a single log entry in LOGS.
+    private sealed record LogSeedItem(
+        long? ObjectId,
+        string ObjectType,
+        string ActionType,
+        string Description,
+        string TimeStamp);
 }
