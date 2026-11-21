@@ -24,6 +24,7 @@ public sealed class SeedDataFactory
         SeedEmployees(connection, transaction);
         SeedCustomers(connection, transaction);
         SeedCards(connection, transaction);
+        SeedPurchases(connection, transaction);
     }
 
     // Seeds loyalty or menu categories once future category tasks are implemented.
@@ -412,6 +413,128 @@ public sealed class SeedDataFactory
         }
     }
 
+    // Seeds sample receipt headers into PURCHASES (with cardID and walk-in cardID = NULL) idempotently.
+    private static void SeedPurchases(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        long? employeeId = TryGetEmployeeId(connection, transaction, "cashier")
+            ?? TryGetEmployeeId(connection, transaction, "manager");
+
+        if (!employeeId.HasValue)
+        {
+            return;
+        }
+
+        long? activeCardId = TryGetActiveCardId(connection, transaction);
+
+        PurchaseSeedItem[] purchases =
+        [
+            new(
+                CardId: activeCardId,
+                EmployeeId: employeeId.Value,
+                TotalAmount: 8.00m,
+                BonusesSpent: 0,
+                BonusesEarned: 8,
+                TimeStamp: "2026-01-02T10:00:00Z"),
+            new(
+                CardId: null,
+                EmployeeId: employeeId.Value,
+                TotalAmount: 3.00m,
+                BonusesSpent: 0,
+                BonusesEarned: 0,
+                TimeStamp: "2026-01-02T10:15:00Z")
+        ];
+
+        using var existsCommand = connection.CreateCommand();
+        existsCommand.Transaction = transaction;
+        existsCommand.CommandText = """
+            SELECT COUNT(*) FROM PURCHASES
+            WHERE employeeID = $employeeID AND timeStamp = $timeStamp;
+            """;
+
+        var existsEmployeeIdParam = existsCommand.CreateParameter();
+        existsEmployeeIdParam.ParameterName = "$employeeID";
+        existsCommand.Parameters.Add(existsEmployeeIdParam);
+
+        var existsTimeStampParam = existsCommand.CreateParameter();
+        existsTimeStampParam.ParameterName = "$timeStamp";
+        existsCommand.Parameters.Add(existsTimeStampParam);
+
+        using var insertCommand = connection.CreateCommand();
+        insertCommand.Transaction = transaction;
+        insertCommand.CommandText = """
+            INSERT INTO PURCHASES (
+                cardID,
+                employeeID,
+                totalAmount,
+                bonusesSpent,
+                bonusesEarned,
+                timeStamp
+            )
+            VALUES (
+                $cardID,
+                $employeeID,
+                $totalAmount,
+                $bonusesSpent,
+                $bonusesEarned,
+                $timeStamp
+            );
+            """;
+
+        var insertCardIdParam = insertCommand.CreateParameter();
+        insertCardIdParam.ParameterName = "$cardID";
+        insertCommand.Parameters.Add(insertCardIdParam);
+
+        var insertEmployeeIdParam = insertCommand.CreateParameter();
+        insertEmployeeIdParam.ParameterName = "$employeeID";
+        insertCommand.Parameters.Add(insertEmployeeIdParam);
+
+        var insertTotalAmountParam = insertCommand.CreateParameter();
+        insertTotalAmountParam.ParameterName = "$totalAmount";
+        insertCommand.Parameters.Add(insertTotalAmountParam);
+
+        var insertBonusesSpentParam = insertCommand.CreateParameter();
+        insertBonusesSpentParam.ParameterName = "$bonusesSpent";
+        insertCommand.Parameters.Add(insertBonusesSpentParam);
+
+        var insertBonusesEarnedParam = insertCommand.CreateParameter();
+        insertBonusesEarnedParam.ParameterName = "$bonusesEarned";
+        insertCommand.Parameters.Add(insertBonusesEarnedParam);
+
+        var insertTimeStampParam = insertCommand.CreateParameter();
+        insertTimeStampParam.ParameterName = "$timeStamp";
+        insertCommand.Parameters.Add(insertTimeStampParam);
+
+        foreach (PurchaseSeedItem purchase in purchases)
+        {
+            existsEmployeeIdParam.Value = purchase.EmployeeId;
+            existsTimeStampParam.Value = purchase.TimeStamp;
+
+            long existingCount = Convert.ToInt64(
+                existsCommand.ExecuteScalar(),
+                CultureInfo.InvariantCulture);
+
+            if (existingCount > 0)
+            {
+                continue;
+            }
+
+            insertCardIdParam.Value = purchase.CardId.HasValue
+                ? purchase.CardId.Value
+                : DBNull.Value;
+            insertEmployeeIdParam.Value = purchase.EmployeeId;
+            insertTotalAmountParam.Value = Convert.ToDouble(
+                purchase.TotalAmount,
+                CultureInfo.InvariantCulture);
+            insertBonusesSpentParam.Value = purchase.BonusesSpent;
+            insertBonusesEarnedParam.Value = purchase.BonusesEarned;
+            insertTimeStampParam.Value = purchase.TimeStamp;
+
+            insertCommand.ExecuteNonQuery();
+        }
+    }
+
     // Hashes a plain-text password with a per-account salt so raw passwords are never stored.
     private static string HashPassword(string salt, string plainPassword)
     {
@@ -464,6 +587,44 @@ public sealed class SeedDataFactory
             : Convert.ToInt64(result, CultureInfo.InvariantCulture);
     }
 
+    // Resolves an employeeID by employeeName inside the current transaction.
+    private static long? TryGetEmployeeId(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        string employeeName)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT employeeID FROM EMPLOYEES WHERE employeeName = $employeeName ORDER BY employeeID ASC LIMIT 1;";
+
+        var employeeNameParam = command.CreateParameter();
+        employeeNameParam.ParameterName = "$employeeName";
+        employeeNameParam.Value = employeeName;
+        command.Parameters.Add(employeeNameParam);
+
+        object? result = command.ExecuteScalar();
+        return result is null or DBNull
+            ? null
+            : Convert.ToInt64(result, CultureInfo.InvariantCulture);
+    }
+
+    // Resolves an active cardID inside the current transaction.
+    private static long? TryGetActiveCardId(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT cardID FROM CARDS WHERE isActive = 1 ORDER BY cardID ASC LIMIT 1;";
+
+        object? result = command.ExecuteScalar();
+        return result is null or DBNull
+            ? null
+            : Convert.ToInt64(result, CultureInfo.InvariantCulture);
+    }
+
     // Holds seed values for a single menu item in DRINKS.
     private sealed record DrinkSeedItem(
         string DrinkName,
@@ -492,4 +653,13 @@ public sealed class SeedDataFactory
     private sealed record CardSeedItem(
         long CustomerId,
         int IsActive);
+
+    // Holds seed values for a single receipt header in PURCHASES.
+    private sealed record PurchaseSeedItem(
+        long? CardId,
+        long EmployeeId,
+        decimal TotalAmount,
+        int BonusesSpent,
+        int BonusesEarned,
+        string TimeStamp);
 }
