@@ -59,5 +59,860 @@ namespace CoffeeLoyalty.Core.resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonuses earned.
+        /// </summary>
+        public static string BonusEarned {
+            get {
+                return ResourceManager.GetString("BonusEarned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonuses redeemed.
+        /// </summary>
+        public static string BonusRedeemed {
+            get {
+                return ResourceManager.GetString("BonusRedeemed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string BtnAdd {
+            get {
+                return ResourceManager.GetString("BtnAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to + New customer.
+        /// </summary>
+        public static string BtnAddCustomer {
+            get {
+                return ResourceManager.GetString("BtnAddCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string BtnCancel {
+            get {
+                return ResourceManager.GetString("BtnCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checkout.
+        /// </summary>
+        public static string BtnCheckout {
+            get {
+                return ResourceManager.GetString("BtnCheckout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deactivate.
+        /// </summary>
+        public static string BtnDeactivate {
+            get {
+                return ResourceManager.GetString("BtnDeactivate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string BtnEdit {
+            get {
+                return ResourceManager.GetString("BtnEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log in.
+        /// </summary>
+        public static string BtnLogin {
+            get {
+                return ResourceManager.GetString("BtnLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string BtnLogout {
+            get {
+                return ResourceManager.GetString("BtnLogout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string BtnOk {
+            get {
+                return ResourceManager.GetString("BtnOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string BtnSave {
+            get {
+                return ResourceManager.GetString("BtnSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string BtnShow {
+            get {
+                return ResourceManager.GetString("BtnShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card is already assigned to another customer..
+        /// </summary>
+        public static string CardAlreadyAssigned {
+            get {
+                return ResourceManager.GetString("CardAlreadyAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card is blocked..
+        /// </summary>
+        public static string CardBlocked {
+            get {
+                return ResourceManager.GetString("CardBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer is deactivated..
+        /// </summary>
+        public static string CustomerDeactivated {
+            get {
+                return ResourceManager.GetString("CustomerDeactivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer not found..
+        /// </summary>
+        public static string CustomerNotFound {
+            get {
+                return ResourceManager.GetString("CustomerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to deactivate this item?.
+        /// </summary>
+        public static string DlgConfirmDeactivate {
+            get {
+                return ResourceManager.GetString("DlgConfirmDeactivate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have unsaved changes. Discard them?.
+        /// </summary>
+        public static string DlgUnsavedChanges {
+            get {
+                return ResourceManager.GetString("DlgUnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string DrinkCategoryAll {
+            get {
+                return ResourceManager.GetString("DrinkCategoryAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coffee.
+        /// </summary>
+        public static string DrinkCategoryCoffee {
+            get {
+                return ResourceManager.GetString("DrinkCategoryCoffee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        public static string DrinkCategoryOther {
+            get {
+                return ResourceManager.GetString("DrinkCategoryOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tea.
+        /// </summary>
+        public static string DrinkCategoryTea {
+            get {
+                return ResourceManager.GetString("DrinkCategoryTea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drink is unavailable..
+        /// </summary>
+        public static string DrinkUnavailable {
+            get {
+                return ResourceManager.GetString("DrinkUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cashier.
+        /// </summary>
+        public static string EmployeeRoleCashier {
+            get {
+                return ResourceManager.GetString("EmployeeRoleCashier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manager.
+        /// </summary>
+        public static string EmployeeRoleManager {
+            get {
+                return ResourceManager.GetString("EmployeeRoleManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database connection failed..
+        /// </summary>
+        public static string ErrorDatabaseConnection {
+            get {
+                return ResourceManager.GetString("ErrorDatabaseConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insufficient bonus balance..
+        /// </summary>
+        public static string ErrorInsufficientBonuses {
+            get {
+                return ResourceManager.GetString("ErrorInsufficientBonuses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase failed and transaction was rolled back..
+        /// </summary>
+        public static string ErrorTransactionRollback {
+            get {
+                return ResourceManager.GetString("ErrorTransactionRollback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All activities.
+        /// </summary>
+        public static string HintAllActivities {
+            get {
+                return ResourceManager.GetString("HintAllActivities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter card number....
+        /// </summary>
+        public static string HintEnterCardNumber {
+            get {
+                return ResourceManager.GetString("HintEnterCardNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search customer....
+        /// </summary>
+        public static string HintSearchCustomer {
+            get {
+                return ResourceManager.GetString("HintSearchCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonus balance.
+        /// </summary>
+        public static string LblBonusBalance {
+            get {
+                return ResourceManager.GetString("LblBonusBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonuses.
+        /// </summary>
+        public static string LblBonuses {
+            get {
+                return ResourceManager.GetString("LblBonuses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonuses earned.
+        /// </summary>
+        public static string LblBonusesEarned {
+            get {
+                return ResourceManager.GetString("LblBonusesEarned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonuses used.
+        /// </summary>
+        public static string LblBonusesUsed {
+            get {
+                return ResourceManager.GetString("LblBonusesUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card number.
+        /// </summary>
+        public static string LblCardNumber {
+            get {
+                return ResourceManager.GetString("LblCardNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card no.
+        /// </summary>
+        public static string LblCardShort {
+            get {
+                return ResourceManager.GetString("LblCardShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cart.
+        /// </summary>
+        public static string LblCart {
+            get {
+                return ResourceManager.GetString("LblCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer.
+        /// </summary>
+        public static string LblCustomer {
+            get {
+                return ResourceManager.GetString("LblCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date from.
+        /// </summary>
+        public static string LblDateFrom {
+            get {
+                return ResourceManager.GetString("LblDateFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date &amp; time.
+        /// </summary>
+        public static string LblDateTime {
+            get {
+                return ResourceManager.GetString("LblDateTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string LblDateTo {
+            get {
+                return ResourceManager.GetString("LblDateTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string LblDescription {
+            get {
+                return ResourceManager.GetString("LblDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drinks.
+        /// </summary>
+        public static string LblDrinks {
+            get {
+                return ResourceManager.GetString("LblDrinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export data (JSON file).
+        /// </summary>
+        public static string LblExportJson {
+            get {
+                return ResourceManager.GetString("LblExportJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import data (JSON file).
+        /// </summary>
+        public static string LblImportJson {
+            get {
+                return ResourceManager.GetString("LblImportJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string LblName {
+            get {
+                return ResourceManager.GetString("LblName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your new bonuses.
+        /// </summary>
+        public static string LblNewBonuses {
+            get {
+                return ResourceManager.GetString("LblNewBonuses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string LblPassword {
+            get {
+                return ResourceManager.GetString("LblPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quantity.
+        /// </summary>
+        public static string LblQuantity {
+            get {
+                return ResourceManager.GetString("LblQuantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string LblRole {
+            get {
+                return ResourceManager.GetString("LblRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string LblStatus {
+            get {
+                return ResourceManager.GetString("LblStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subtotal.
+        /// </summary>
+        public static string LblSubtotal {
+            get {
+                return ResourceManager.GetString("LblSubtotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tier.
+        /// </summary>
+        public static string LblTier {
+            get {
+                return ResourceManager.GetString("LblTier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string LblTotal {
+            get {
+                return ResourceManager.GetString("LblTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total earned.
+        /// </summary>
+        public static string LblTotalEarned {
+            get {
+                return ResourceManager.GetString("LblTotalEarned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total (to pay).
+        /// </summary>
+        public static string LblTotalToPay {
+            get {
+                return ResourceManager.GetString("LblTotalToPay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string LblType {
+            get {
+                return ResourceManager.GetString("LblType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string LblUser {
+            get {
+                return ResourceManager.GetString("LblUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card not found.
+        /// </summary>
+        public static string LogCardNotFound {
+            get {
+                return ResourceManager.GetString("LogCardNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer created.
+        /// </summary>
+        public static string LogCustomerCreated {
+            get {
+                return ResourceManager.GetString("LogCustomerCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer status changed.
+        /// </summary>
+        public static string LogCustomerStatusChanged {
+            get {
+                return ResourceManager.GetString("LogCustomerStatusChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase completed.
+        /// </summary>
+        public static string LogPurchaseCompleted {
+            get {
+                return ResourceManager.GetString("LogPurchaseCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data exported successfully..
+        /// </summary>
+        public static string MsgDataExported {
+            get {
+                return ResourceManager.GetString("MsgDataExported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data imported successfully..
+        /// </summary>
+        public static string MsgDataImported {
+            get {
+                return ResourceManager.GetString("MsgDataImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase completed successfully..
+        /// </summary>
+        public static string MsgPurchaseCompleted {
+            get {
+                return ResourceManager.GetString("MsgPurchaseCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved successfully..
+        /// </summary>
+        public static string MsgSavedSuccessfully {
+            get {
+                return ResourceManager.GetString("MsgSavedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customers.
+        /// </summary>
+        public static string NavCustomers {
+            get {
+                return ResourceManager.GetString("NavCustomers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drinks.
+        /// </summary>
+        public static string NavDrinks {
+            get {
+                return ResourceManager.GetString("NavDrinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import / Export.
+        /// </summary>
+        public static string NavImportExport {
+            get {
+                return ResourceManager.GetString("NavImportExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string NavLogout {
+            get {
+                return ResourceManager.GetString("NavLogout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string NavLogs {
+            get {
+                return ResourceManager.GetString("NavLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to POS.
+        /// </summary>
+        public static string NavPos {
+            get {
+                return ResourceManager.GetString("NavPos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string NavSettings {
+            get {
+                return ResourceManager.GetString("NavSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cart is empty..
+        /// </summary>
+        public static string PurchaseEmptyCart {
+            get {
+                return ResourceManager.GetString("PurchaseEmptyCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string PurchaseTotal {
+            get {
+                return ResourceManager.GetString("PurchaseTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        public static string StatusAction {
+            get {
+                return ResourceManager.GetString("StatusAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string StatusActive {
+            get {
+                return ResourceManager.GetString("StatusActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked.
+        /// </summary>
+        public static string StatusBlocked {
+            get {
+                return ResourceManager.GetString("StatusBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string StatusError {
+            get {
+                return ResourceManager.GetString("StatusError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive.
+        /// </summary>
+        public static string StatusInactive {
+            get {
+                return ResourceManager.GetString("StatusInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New purchase.
+        /// </summary>
+        public static string TitleCashierPos {
+            get {
+                return ResourceManager.GetString("TitleCashierPos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customers and loyalty.
+        /// </summary>
+        public static string TitleCustomers {
+            get {
+                return ResourceManager.GetString("TitleCustomers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drinks.
+        /// </summary>
+        public static string TitleDrinks {
+            get {
+                return ResourceManager.GetString("TitleDrinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import / Export.
+        /// </summary>
+        public static string TitleImportExport {
+            get {
+                return ResourceManager.GetString("TitleImportExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoffeeLoyalty - Sign In.
+        /// </summary>
+        public static string TitleLogin {
+            get {
+                return ResourceManager.GetString("TitleLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string TitleLogs {
+            get {
+                return ResourceManager.GetString("TitleLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase completed!.
+        /// </summary>
+        public static string TitlePurchaseSuccess {
+            get {
+                return ResourceManager.GetString("TitlePurchaseSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select role.
+        /// </summary>
+        public static string TitleSelectRole {
+            get {
+                return ResourceManager.GetString("TitleSelectRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string TitleSettings {
+            get {
+                return ResourceManager.GetString("TitleSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to CoffeeLoyalty.
+        /// </summary>
+        public static string TitleWelcome {
+            get {
+                return ResourceManager.GetString("TitleWelcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid password..
+        /// </summary>
+        public static string ValInvalidPassword {
+            get {
+                return ResourceManager.GetString("ValInvalidPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price must be greater than zero..
+        /// </summary>
+        public static string ValPositivePrice {
+            get {
+                return ResourceManager.GetString("ValPositivePrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This field is required..
+        /// </summary>
+        public static string ValRequiredField {
+            get {
+                return ResourceManager.GetString("ValRequiredField", resourceCulture);
+            }
+        }
     }
 }
