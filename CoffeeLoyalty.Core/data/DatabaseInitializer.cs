@@ -13,6 +13,7 @@ public sealed class DatabaseInitializer
     // Remove TestSchema.sql before the final commit once smoke testing is done.
     private static readonly string[] SchemaFiles =
     [
+        "CategorySchema.sql",
         "DrinksSchema.sql"
     ];
 
