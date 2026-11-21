@@ -1,0 +1,7 @@
+﻿CREATE TABLE IF NOT EXISTS PURCHASE_ITEM (
+    purchaseItemID INTEGER PRIMARY KEY AUTOINCREMENT,
+    purchaseID     INTEGER NOT NULL REFERENCES PURCHASES(purchaseID),
+    drinkID        INTEGER NOT NULL REFERENCES DRINKS(drinkID),
+    quantity       INTEGER NOT NULL CHECK (quantity > 0),
+    unitPrice      REAL NOT NULL CHECK (unitPrice >= 0)
+);

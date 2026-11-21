@@ -25,6 +25,7 @@ public sealed class SeedDataFactory
         SeedCustomers(connection, transaction);
         SeedCards(connection, transaction);
         SeedPurchases(connection, transaction);
+        SeedPurchaseItems(connection, transaction);
     }
 
     // Seeds loyalty or menu categories once future category tasks are implemented.
@@ -535,6 +536,127 @@ public sealed class SeedDataFactory
         }
     }
 
+    // Seeds sample receipt line items into PURCHASE_ITEM linked to PURCHASES and DRINKS idempotently.
+    private static void SeedPurchaseItems(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        long? firstPurchaseId = TryGetPurchaseIdByTimeStamp(
+            connection,
+            transaction,
+            "2026-01-02T10:00:00Z");
+        long? secondPurchaseId = TryGetPurchaseIdByTimeStamp(
+            connection,
+            transaction,
+            "2026-01-02T10:15:00Z");
+
+        long? cappuccinoId = TryGetDrinkId(connection, transaction, "Cappuccino");
+        long? latteId = TryGetDrinkId(connection, transaction, "Latte");
+        long? americanoId = TryGetDrinkId(connection, transaction, "Americano");
+
+        if ((!firstPurchaseId.HasValue || !cappuccinoId.HasValue || !latteId.HasValue) &&
+            (!secondPurchaseId.HasValue || !americanoId.HasValue))
+        {
+            return;
+        }
+
+        List<PurchaseItemSeedItem> items = [];
+        if (firstPurchaseId.HasValue && cappuccinoId.HasValue && latteId.HasValue)
+        {
+            items.Add(new(
+                PurchaseId: firstPurchaseId.Value,
+                DrinkId: cappuccinoId.Value,
+                Quantity: 1,
+                UnitPrice: 3.80m));
+            items.Add(new(
+                PurchaseId: firstPurchaseId.Value,
+                DrinkId: latteId.Value,
+                Quantity: 1,
+                UnitPrice: 4.20m));
+        }
+
+        if (secondPurchaseId.HasValue && americanoId.HasValue)
+        {
+            items.Add(new(
+                PurchaseId: secondPurchaseId.Value,
+                DrinkId: americanoId.Value,
+                Quantity: 1,
+                UnitPrice: 3.00m));
+        }
+
+        using var existsCommand = connection.CreateCommand();
+        existsCommand.Transaction = transaction;
+        existsCommand.CommandText = """
+            SELECT COUNT(*) FROM PURCHASE_ITEM
+            WHERE purchaseID = $purchaseID AND drinkID = $drinkID;
+            """;
+
+        var existsPurchaseIdParam = existsCommand.CreateParameter();
+        existsPurchaseIdParam.ParameterName = "$purchaseID";
+        existsCommand.Parameters.Add(existsPurchaseIdParam);
+
+        var existsDrinkIdParam = existsCommand.CreateParameter();
+        existsDrinkIdParam.ParameterName = "$drinkID";
+        existsCommand.Parameters.Add(existsDrinkIdParam);
+
+        using var insertCommand = connection.CreateCommand();
+        insertCommand.Transaction = transaction;
+        insertCommand.CommandText = """
+            INSERT INTO PURCHASE_ITEM (
+                purchaseID,
+                drinkID,
+                quantity,
+                unitPrice
+            )
+            VALUES (
+                $purchaseID,
+                $drinkID,
+                $quantity,
+                $unitPrice
+            );
+            """;
+
+        var insertPurchaseIdParam = insertCommand.CreateParameter();
+        insertPurchaseIdParam.ParameterName = "$purchaseID";
+        insertCommand.Parameters.Add(insertPurchaseIdParam);
+
+        var insertDrinkIdParam = insertCommand.CreateParameter();
+        insertDrinkIdParam.ParameterName = "$drinkID";
+        insertCommand.Parameters.Add(insertDrinkIdParam);
+
+        var insertQuantityParam = insertCommand.CreateParameter();
+        insertQuantityParam.ParameterName = "$quantity";
+        insertCommand.Parameters.Add(insertQuantityParam);
+
+        var insertUnitPriceParam = insertCommand.CreateParameter();
+        insertUnitPriceParam.ParameterName = "$unitPrice";
+        insertCommand.Parameters.Add(insertUnitPriceParam);
+
+        foreach (PurchaseItemSeedItem item in items)
+        {
+            existsPurchaseIdParam.Value = item.PurchaseId;
+            existsDrinkIdParam.Value = item.DrinkId;
+
+            long existingCount = Convert.ToInt64(
+                existsCommand.ExecuteScalar(),
+                CultureInfo.InvariantCulture);
+
+            if (existingCount > 0)
+            {
+                continue;
+            }
+
+            insertPurchaseIdParam.Value = item.PurchaseId;
+            insertDrinkIdParam.Value = item.DrinkId;
+            insertQuantityParam.Value = item.Quantity;
+            insertUnitPriceParam.Value = Convert.ToDouble(
+                item.UnitPrice,
+                CultureInfo.InvariantCulture);
+
+            insertCommand.ExecuteNonQuery();
+        }
+    }
+
     // Hashes a plain-text password with a per-account salt so raw passwords are never stored.
     private static string HashPassword(string salt, string plainPassword)
     {
@@ -625,6 +747,50 @@ public sealed class SeedDataFactory
             : Convert.ToInt64(result, CultureInfo.InvariantCulture);
     }
 
+    // Resolves a purchaseID by timeStamp inside the current transaction.
+    private static long? TryGetPurchaseIdByTimeStamp(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        string timeStamp)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT purchaseID FROM PURCHASES WHERE timeStamp = $timeStamp ORDER BY purchaseID ASC LIMIT 1;";
+
+        var timeStampParam = command.CreateParameter();
+        timeStampParam.ParameterName = "$timeStamp";
+        timeStampParam.Value = timeStamp;
+        command.Parameters.Add(timeStampParam);
+
+        object? result = command.ExecuteScalar();
+        return result is null or DBNull
+            ? null
+            : Convert.ToInt64(result, CultureInfo.InvariantCulture);
+    }
+
+    // Resolves a drinkID by drinkName inside the current transaction.
+    private static long? TryGetDrinkId(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        string drinkName)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText =
+            "SELECT drinkID FROM DRINKS WHERE drinkName = $drinkName ORDER BY drinkID ASC LIMIT 1;";
+
+        var drinkNameParam = command.CreateParameter();
+        drinkNameParam.ParameterName = "$drinkName";
+        drinkNameParam.Value = drinkName;
+        command.Parameters.Add(drinkNameParam);
+
+        object? result = command.ExecuteScalar();
+        return result is null or DBNull
+            ? null
+            : Convert.ToInt64(result, CultureInfo.InvariantCulture);
+    }
+
     // Holds seed values for a single menu item in DRINKS.
     private sealed record DrinkSeedItem(
         string DrinkName,
@@ -662,4 +828,11 @@ public sealed class SeedDataFactory
         int BonusesSpent,
         int BonusesEarned,
         string TimeStamp);
+
+    // Holds seed values for a single receipt line item in PURCHASE_ITEM.
+    private sealed record PurchaseItemSeedItem(
+        long PurchaseId,
+        long DrinkId,
+        int Quantity,
+        decimal UnitPrice);
 }
