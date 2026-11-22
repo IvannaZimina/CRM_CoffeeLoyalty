@@ -450,4 +450,10 @@
   <data name="UserDrinkValQuantityPositive" xml:space="preserve">
     <value>{0} ({1}) must be greater than zero.</value>
   </data>
+  <data name="CartItemValDrinkRequired" xml:space="preserve">
+    <value>{0} cannot be null.</value>
+  </data>
+  <data name="CartItemValQuantityPositive" xml:space="preserve">
+    <value>{0} ({1}) must be greater than zero.</value>
+  </data>
 </root>

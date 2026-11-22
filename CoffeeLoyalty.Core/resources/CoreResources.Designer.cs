@@ -196,6 +196,24 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} cannot be null..
+        /// </summary>
+        public static string CartItemValDrinkRequired {
+            get {
+                return ResourceManager.GetString("CartItemValDrinkRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
+        /// </summary>
+        public static string CartItemValQuantityPositive {
+            get {
+                return ResourceManager.GetString("CartItemValQuantityPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customer is deactivated..
         /// </summary>
         public static string CustomerDeactivated {
