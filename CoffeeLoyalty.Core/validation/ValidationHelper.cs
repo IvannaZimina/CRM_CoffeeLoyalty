@@ -1,7 +1,8 @@
-﻿
+﻿using System.IO;
+
 namespace CoffeeLoyalty.Core.Validation;
 
-// Contains simple checks for values used in the application.
+// Contains simple checks and normalization helpers used across the application.
 public static class ValidationHelper
 {
     // Checks that text is not null, empty, or only spaces.
@@ -32,5 +33,26 @@ public static class ValidationHelper
     public static bool IsPositive(decimal value)
     {
         return value > 0m;
+    }
+
+    // Normalizes a relative image path and returns null for empty, rooted, or URI values.
+    public static string? NormalizeRelativeImagePath(string? imagePath)
+    {
+        if (!HasText(imagePath))
+        {
+            return null;
+        }
+
+        string trimmed = imagePath!.Trim();
+
+        // Reject rooted/drive paths or scheme URIs so only relative paths remain.
+        if (Path.IsPathRooted(trimmed) ||
+            trimmed.Contains("://", StringComparison.Ordinal) ||
+            trimmed.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        return trimmed.Replace('\\', '/');
     }
 }
