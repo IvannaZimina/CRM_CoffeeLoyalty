@@ -555,4 +555,13 @@
   <data name="PurchaseItemExternalTransactionInvalid" xml:space="preserve">
     <value>External transaction is invalid or has no active connection.</value>
   </data>
+  <data name="UserDrinkCardNotFoundForCustomer" xml:space="preserve">
+    <value>No loyalty card found for customer ID {0}.</value>
+  </data>
+  <data name="UserDrinkQuantityDeltaPositive" xml:space="preserve">
+    <value>{0} ({1}) must be greater than zero.</value>
+  </data>
+  <data name="UserDrinkExternalTransactionInvalid" xml:space="preserve">
+    <value>External transaction is invalid or has no active connection.</value>
+  </data>
 </root>
