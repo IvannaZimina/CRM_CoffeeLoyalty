@@ -862,6 +862,51 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) cannot be negative..
+        /// </summary>
+        public static string PurchaseResultValAmountNonNegative {
+            get {
+                return ResourceManager.GetString("PurchaseResultValAmountNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) cannot be negative..
+        /// </summary>
+        public static string PurchaseResultValBonusesNonNegative {
+            get {
+                return ResourceManager.GetString("PurchaseResultValBonusesNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} cannot be empty..
+        /// </summary>
+        public static string PurchaseResultValErrorMessageRequired {
+            get {
+                return ResourceManager.GetString("PurchaseResultValErrorMessageRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} cannot be null..
+        /// </summary>
+        public static string PurchaseResultValItemsRequired {
+            get {
+                return ResourceManager.GetString("PurchaseResultValItemsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) must be positive..
+        /// </summary>
+        public static string PurchaseResultValPurchaseIdPositive {
+            get {
+                return ResourceManager.GetString("PurchaseResultValPurchaseIdPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
         public static string PurchaseTotal {

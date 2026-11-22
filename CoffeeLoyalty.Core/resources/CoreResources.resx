@@ -468,4 +468,19 @@
   <data name="PurchaseRequestValBonusesToSpendNonNegative" xml:space="preserve">
     <value>{0} ({1}) cannot be negative.</value>
   </data>
+  <data name="PurchaseResultValPurchaseIdPositive" xml:space="preserve">
+    <value>{0} ({1}) must be positive.</value>
+  </data>
+  <data name="PurchaseResultValAmountNonNegative" xml:space="preserve">
+    <value>{0} ({1}) cannot be negative.</value>
+  </data>
+  <data name="PurchaseResultValBonusesNonNegative" xml:space="preserve">
+    <value>{0} ({1}) cannot be negative.</value>
+  </data>
+  <data name="PurchaseResultValItemsRequired" xml:space="preserve">
+    <value>{0} cannot be null.</value>
+  </data>
+  <data name="PurchaseResultValErrorMessageRequired" xml:space="preserve">
+    <value>{0} cannot be empty.</value>
+  </data>
 </root>
