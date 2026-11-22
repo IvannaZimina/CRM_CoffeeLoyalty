@@ -286,6 +286,177 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activated drink ID {0} in menu..
+        /// </summary>
+        public static string DrinkLogActivated {
+            get {
+                return ResourceManager.GetString("DrinkLogActivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to add drink &apos;{0}&apos;: {1}.
+        /// </summary>
+        public static string DrinkLogAddFailed {
+            get {
+                return ResourceManager.GetString("DrinkLogAddFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added drink &apos;{0}&apos; (Type: {1}, Price: {2:0.00})..
+        /// </summary>
+        public static string DrinkLogCreated {
+            get {
+                return ResourceManager.GetString("DrinkLogCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deactivated drink ID {0} in menu (historical receipts preserved)..
+        /// </summary>
+        public static string DrinkLogDeactivated {
+            get {
+                return ResourceManager.GetString("DrinkLogDeactivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permission denied for role &apos;{0}&apos; on {1}. Required role: {2}..
+        /// </summary>
+        public static string DrinkLogForbidden {
+            get {
+                return ResourceManager.GetString("DrinkLogForbidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set IsActive={0} for drink ID {1}: {2}.
+        /// </summary>
+        public static string DrinkLogSetActiveFailed {
+            get {
+                return ResourceManager.GetString("DrinkLogSetActiveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unauthenticated attempt to execute {0}..
+        /// </summary>
+        public static string DrinkLogUnauthorized {
+            get {
+                return ResourceManager.GetString("DrinkLogUnauthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated drink &apos;{0}&apos; (ID: {1}, Type: {2}, Price: {3:0.00})..
+        /// </summary>
+        public static string DrinkLogUpdated {
+            get {
+                return ResourceManager.GetString("DrinkLogUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update drink &apos;{0}&apos; (ID: {1}): {2}.
+        /// </summary>
+        public static string DrinkLogUpdateFailed {
+            get {
+                return ResourceManager.GetString("DrinkLogUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid drink ID provided for update..
+        /// </summary>
+        public static string DrinkLogUpdateInvalidId {
+            get {
+                return ResourceManager.GetString("DrinkLogUpdateInvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access denied..
+        /// </summary>
+        public static string DrinkServiceAccessDenied {
+            get {
+                return ResourceManager.GetString("DrinkServiceAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active employee session is required..
+        /// </summary>
+        public static string DrinkServiceAuthRequired {
+            get {
+                return ResourceManager.GetString("DrinkServiceAuthRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drink cannot be null..
+        /// </summary>
+        public static string DrinkServiceDrinkNull {
+            get {
+                return ResourceManager.GetString("DrinkServiceDrinkNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drink ID must be greater than zero..
+        /// </summary>
+        public static string DrinkServiceIdPositive {
+            get {
+                return ResourceManager.GetString("DrinkServiceIdPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid drink data..
+        /// </summary>
+        public static string DrinkServiceInvalidDrinkData {
+            get {
+                return ResourceManager.GetString("DrinkServiceInvalidDrinkData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drink name is required..
+        /// </summary>
+        public static string DrinkServiceNameRequired {
+            get {
+                return ResourceManager.GetString("DrinkServiceNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drink price must be greater than zero..
+        /// </summary>
+        public static string DrinkServicePricePositive {
+            get {
+                return ResourceManager.GetString("DrinkServicePricePositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only {0} users can perform this action..
+        /// </summary>
+        public static string DrinkServiceRoleRequired {
+            get {
+                return ResourceManager.GetString("DrinkServiceRoleRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drink type is required..
+        /// </summary>
+        public static string DrinkServiceTypeRequired {
+            get {
+                return ResourceManager.GetString("DrinkServiceTypeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drink is unavailable..
         /// </summary>
         public static string DrinkUnavailable {

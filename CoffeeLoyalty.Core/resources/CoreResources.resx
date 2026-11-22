@@ -483,4 +483,61 @@
   <data name="PurchaseResultValErrorMessageRequired" xml:space="preserve">
     <value>{0} cannot be empty.</value>
   </data>
+  <data name="DrinkServiceAuthRequired" xml:space="preserve">
+    <value>Active employee session is required.</value>
+  </data>
+  <data name="DrinkServiceAccessDenied" xml:space="preserve">
+    <value>Access denied.</value>
+  </data>
+  <data name="DrinkServiceRoleRequired" xml:space="preserve">
+    <value>Only {0} users can perform this action.</value>
+  </data>
+  <data name="DrinkServiceInvalidDrinkData" xml:space="preserve">
+    <value>Invalid drink data.</value>
+  </data>
+  <data name="DrinkServiceDrinkNull" xml:space="preserve">
+    <value>Drink cannot be null.</value>
+  </data>
+  <data name="DrinkServiceIdPositive" xml:space="preserve">
+    <value>Drink ID must be greater than zero.</value>
+  </data>
+  <data name="DrinkServiceNameRequired" xml:space="preserve">
+    <value>Drink name is required.</value>
+  </data>
+  <data name="DrinkServiceTypeRequired" xml:space="preserve">
+    <value>Drink type is required.</value>
+  </data>
+  <data name="DrinkServicePricePositive" xml:space="preserve">
+    <value>Drink price must be greater than zero.</value>
+  </data>
+  <data name="DrinkLogCreated" xml:space="preserve">
+    <value>Added drink '{0}' (Type: {1}, Price: {2:0.00}).</value>
+  </data>
+  <data name="DrinkLogAddFailed" xml:space="preserve">
+    <value>Failed to add drink '{0}': {1}</value>
+  </data>
+  <data name="DrinkLogUpdated" xml:space="preserve">
+    <value>Updated drink '{0}' (ID: {1}, Type: {2}, Price: {3:0.00}).</value>
+  </data>
+  <data name="DrinkLogUpdateFailed" xml:space="preserve">
+    <value>Failed to update drink '{0}' (ID: {1}): {2}</value>
+  </data>
+  <data name="DrinkLogUpdateInvalidId" xml:space="preserve">
+    <value>Invalid drink ID provided for update.</value>
+  </data>
+  <data name="DrinkLogActivated" xml:space="preserve">
+    <value>Activated drink ID {0} in menu.</value>
+  </data>
+  <data name="DrinkLogDeactivated" xml:space="preserve">
+    <value>Deactivated drink ID {0} in menu (historical receipts preserved).</value>
+  </data>
+  <data name="DrinkLogSetActiveFailed" xml:space="preserve">
+    <value>Failed to set IsActive={0} for drink ID {1}: {2}</value>
+  </data>
+  <data name="DrinkLogUnauthorized" xml:space="preserve">
+    <value>Unauthenticated attempt to execute {0}.</value>
+  </data>
+  <data name="DrinkLogForbidden" xml:space="preserve">
+    <value>Permission denied for role '{0}' on {1}. Required role: {2}.</value>
+  </data>
 </root>
