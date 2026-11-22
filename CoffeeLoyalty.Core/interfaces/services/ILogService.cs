@@ -1,8 +1,7 @@
-﻿
-using CoffeeLoyalty.Core.DTOs;
+﻿using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Models;
 
-namespace CoffeeLoyalty.Core.Interfaces.Services;
+namespace CoffeeLoyalty.Core.interfaces.services;
 
 // Defines audit logging, error logging, and log retrieval operations.
 public interface ILogService

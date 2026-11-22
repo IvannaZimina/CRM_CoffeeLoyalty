@@ -1,5 +1,4 @@
-﻿
-using CoffeeLoyalty.Core.Models;
+﻿using CoffeeLoyalty.Core.Models;
 
 namespace CoffeeLoyalty.Core.Interfaces.Repositories;
 
