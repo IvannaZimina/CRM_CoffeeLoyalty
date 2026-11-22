@@ -754,6 +754,60 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bonuses earned ({0}) cannot be negative..
+        /// </summary>
+        public static string PurchaseValBonusesEarnedNonNegative {
+            get {
+                return ResourceManager.GetString("PurchaseValBonusesEarnedNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonuses spent ({0}) cannot be negative..
+        /// </summary>
+        public static string PurchaseValBonusesSpentNonNegative {
+            get {
+                return ResourceManager.GetString("PurchaseValBonusesSpentNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card ID ({0}) must be positive when provided..
+        /// </summary>
+        public static string PurchaseValCardIdPositive {
+            get {
+                return ResourceManager.GetString("PurchaseValCardIdPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Employee ID ({0}) must be positive..
+        /// </summary>
+        public static string PurchaseValEmployeeIdPositive {
+            get {
+                return ResourceManager.GetString("PurchaseValEmployeeIdPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase timestamp ({0}) must be valid..
+        /// </summary>
+        public static string PurchaseValTimeStampInvalid {
+            get {
+                return ResourceManager.GetString("PurchaseValTimeStampInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total amount ({0}) cannot be negative..
+        /// </summary>
+        public static string PurchaseValTotalAmountNonNegative {
+            get {
+                return ResourceManager.GetString("PurchaseValTotalAmountNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Action.
         /// </summary>
         public static string StatusAction {
