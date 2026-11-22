@@ -54,6 +54,7 @@
     </EmbeddedResource>
     <EmbeddedResource Update="resources\CoreResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>CoreResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
