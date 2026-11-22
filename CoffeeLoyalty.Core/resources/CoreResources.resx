@@ -420,4 +420,13 @@
   <data name="PurchaseValTimeStampInvalid" xml:space="preserve">
     <value>Purchase timestamp ({0}) must be valid.</value>
   </data>
+  <data name="DrinkValNameRequired" xml:space="preserve">
+    <value>{0} cannot be empty.</value>
+  </data>
+  <data name="DrinkValPricePositive" xml:space="preserve">
+    <value>{0} ({1}) must be greater than zero.</value>
+  </data>
+  <data name="DrinkValTypeRequired" xml:space="preserve">
+    <value>{0} cannot be empty.</value>
+  </data>
 </root>

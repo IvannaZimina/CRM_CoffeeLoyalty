@@ -1,4 +1,5 @@
-﻿using CoffeeLoyalty.Core.Validation;
+﻿using CoffeeLoyalty.Core.resources;
+using CoffeeLoyalty.Core.Validation;
 
 namespace CoffeeLoyalty.Core.Models;
 
@@ -37,7 +38,7 @@ public class Drink : BaseEntity, IActivatable
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Drink name cannot be empty.",
+                    string.Format(CoreResources.DrinkValNameRequired, nameof(DrinkName)),
                     nameof(value));
             }
 
@@ -56,7 +57,7 @@ public class Drink : BaseEntity, IActivatable
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Drink price must be positive.");
+                    string.Format(CoreResources.DrinkValPricePositive, nameof(DrinkPrice), value));
             }
 
             _drinkPrice = value;
@@ -77,7 +78,7 @@ public class Drink : BaseEntity, IActivatable
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Drink type cannot be empty.",
+                    string.Format(CoreResources.DrinkValTypeRequired, nameof(DrinkType)),
                     nameof(value));
             }
 
