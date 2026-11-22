@@ -441,4 +441,13 @@
   <data name="PurchaseItemValUnitPriceNonNegative" xml:space="preserve">
     <value>{0} ({1}) cannot be negative.</value>
   </data>
+  <data name="UserDrinkValCardIdPositive" xml:space="preserve">
+    <value>{0} ({1}) must be positive.</value>
+  </data>
+  <data name="UserDrinkValDrinkIdPositive" xml:space="preserve">
+    <value>{0} ({1}) must be positive.</value>
+  </data>
+  <data name="UserDrinkValQuantityPositive" xml:space="preserve">
+    <value>{0} ({1}) must be greater than zero.</value>
+  </data>
 </root>

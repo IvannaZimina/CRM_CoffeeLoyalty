@@ -1006,6 +1006,33 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) must be positive..
+        /// </summary>
+        public static string UserDrinkValCardIdPositive {
+            get {
+                return ResourceManager.GetString("UserDrinkValCardIdPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) must be positive..
+        /// </summary>
+        public static string UserDrinkValDrinkIdPositive {
+            get {
+                return ResourceManager.GetString("UserDrinkValDrinkIdPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
+        /// </summary>
+        public static string UserDrinkValQuantityPositive {
+            get {
+                return ResourceManager.GetString("UserDrinkValQuantityPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid password..
         /// </summary>
         public static string ValInvalidPassword {
