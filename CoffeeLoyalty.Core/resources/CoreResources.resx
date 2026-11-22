@@ -540,4 +540,13 @@
   <data name="DrinkLogForbidden" xml:space="preserve">
     <value>Permission denied for role '{0}' on {1}. Required role: {2}.</value>
   </data>
+  <data name="PurchaseNotFound" xml:space="preserve">
+    <value>Purchase not found.</value>
+  </data>
+  <data name="PurchaseInvalidCustomerId" xml:space="preserve">
+    <value>Customer ID ({0}) must be positive.</value>
+  </data>
+  <data name="PurchaseExternalTransactionInvalid" xml:space="preserve">
+    <value>External transaction is invalid or has no active connection.</value>
+  </data>
 </root>

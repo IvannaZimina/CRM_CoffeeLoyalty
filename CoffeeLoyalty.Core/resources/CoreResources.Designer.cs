@@ -961,6 +961,24 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External transaction is invalid or has no active connection..
+        /// </summary>
+        public static string PurchaseExternalTransactionInvalid {
+            get {
+                return ResourceManager.GetString("PurchaseExternalTransactionInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer ID ({0}) must be positive..
+        /// </summary>
+        public static string PurchaseInvalidCustomerId {
+            get {
+                return ResourceManager.GetString("PurchaseInvalidCustomerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
         public static string PurchaseItemValDrinkIdPositive {
@@ -993,6 +1011,15 @@ namespace CoffeeLoyalty.Core.resources {
         public static string PurchaseItemValUnitPriceNonNegative {
             get {
                 return ResourceManager.GetString("PurchaseItemValUnitPriceNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Purchase not found..
+        /// </summary>
+        public static string PurchaseNotFound {
+            get {
+                return ResourceManager.GetString("PurchaseNotFound", resourceCulture);
             }
         }
         
