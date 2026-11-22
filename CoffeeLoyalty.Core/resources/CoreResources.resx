@@ -429,4 +429,16 @@
   <data name="DrinkValTypeRequired" xml:space="preserve">
     <value>{0} cannot be empty.</value>
   </data>
+  <data name="PurchaseItemValPurchaseIdPositive" xml:space="preserve">
+    <value>{0} ({1}) must be positive.</value>
+  </data>
+  <data name="PurchaseItemValDrinkIdPositive" xml:space="preserve">
+    <value>{0} ({1}) must be positive.</value>
+  </data>
+  <data name="PurchaseItemValQuantityPositive" xml:space="preserve">
+    <value>{0} ({1}) must be greater than zero.</value>
+  </data>
+  <data name="PurchaseItemValUnitPriceNonNegative" xml:space="preserve">
+    <value>{0} ({1}) cannot be negative.</value>
+  </data>
 </root>
