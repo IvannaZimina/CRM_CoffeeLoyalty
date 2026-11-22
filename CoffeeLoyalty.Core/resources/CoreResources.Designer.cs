@@ -979,6 +979,24 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Purchase items collection cannot be empty..
+        /// </summary>
+        public static string PurchaseItemCollectionEmpty {
+            get {
+                return ResourceManager.GetString("PurchaseItemCollectionEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External transaction is invalid or has no active connection..
+        /// </summary>
+        public static string PurchaseItemExternalTransactionInvalid {
+            get {
+                return ResourceManager.GetString("PurchaseItemExternalTransactionInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
         public static string PurchaseItemValDrinkIdPositive {
