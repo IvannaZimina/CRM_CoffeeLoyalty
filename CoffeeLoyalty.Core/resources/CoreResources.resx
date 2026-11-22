@@ -549,4 +549,10 @@
   <data name="PurchaseExternalTransactionInvalid" xml:space="preserve">
     <value>External transaction is invalid or has no active connection.</value>
   </data>
+  <data name="PurchaseItemCollectionEmpty" xml:space="preserve">
+    <value>Purchase items collection cannot be empty.</value>
+  </data>
+  <data name="PurchaseItemExternalTransactionInvalid" xml:space="preserve">
+    <value>External transaction is invalid or has no active connection.</value>
+  </data>
 </root>
