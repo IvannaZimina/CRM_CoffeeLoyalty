@@ -143,12 +143,12 @@ public sealed class SeedDataFactory
         [
             new(
                 EmployeeName: "manager",
-                Role: EmployeeRole.Manager,
+                Role: UserRole.Manager,
                 PasswordHash: HashPassword("manager", "ChangeMe!Manager123"),
                 IsActive: 1),
             new(
                 EmployeeName: "cashier",
-                Role: EmployeeRole.Cashier,
+                Role: UserRole.Cashier,
                 PasswordHash: HashPassword("cashier", "ChangeMe!Cashier123"),
                 IsActive: 1)
         ];
@@ -1012,7 +1012,7 @@ public sealed class SeedDataFactory
     // Holds seed values for a single staff account in EMPLOYEES.
     private sealed record EmployeeSeedItem(
         string EmployeeName,
-        EmployeeRole Role,
+        UserRole Role,
         string PasswordHash,
         int IsActive);
 
