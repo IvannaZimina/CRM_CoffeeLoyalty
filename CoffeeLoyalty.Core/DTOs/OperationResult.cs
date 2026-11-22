@@ -82,7 +82,7 @@ public sealed class OperationResult<T> : OperationResult
     }
 
     // Creates a successful result containing data.
-    public new static OperationResult<T> Success(T value)
+    public static OperationResult<T> Success(T value)
     {
         return new OperationResult<T>(
             true, value, null, null);
