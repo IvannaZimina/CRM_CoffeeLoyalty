@@ -1321,6 +1321,33 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No loyalty card found for customer ID {0}..
+        /// </summary>
+        public static string UserDrinkCardNotFoundForCustomer {
+            get {
+                return ResourceManager.GetString("UserDrinkCardNotFoundForCustomer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External transaction is invalid or has no active connection..
+        /// </summary>
+        public static string UserDrinkExternalTransactionInvalid {
+            get {
+                return ResourceManager.GetString("UserDrinkExternalTransactionInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
+        /// </summary>
+        public static string UserDrinkQuantityDeltaPositive {
+            get {
+                return ResourceManager.GetString("UserDrinkQuantityDeltaPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
         public static string UserDrinkValCardIdPositive {
