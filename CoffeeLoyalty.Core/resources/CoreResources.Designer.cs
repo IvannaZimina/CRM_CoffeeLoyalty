@@ -61,6 +61,33 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loyalty card is inactive..
+        /// </summary>
+        public static string BonusCardInactive {
+            get {
+                return ResourceManager.GetString("BonusCardInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer account is inactive..
+        /// </summary>
+        public static string BonusCustomerInactive {
+            get {
+                return ResourceManager.GetString("BonusCustomerInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonus discount ({0}) cannot exceed order amount ({1})..
+        /// </summary>
+        public static string BonusDiscountExceedsOrder {
+            get {
+                return ResourceManager.GetString("BonusDiscountExceedsOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bonuses earned.
         /// </summary>
         public static string BonusEarned {
@@ -70,11 +97,65 @@ namespace CoffeeLoyalty.Core.resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insufficient bonus balance: requested {0}, available {1}..
+        /// </summary>
+        public static string BonusInsufficientBalance {
+            get {
+                return ResourceManager.GetString("BonusInsufficientBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order amount ({0}) cannot be negative..
+        /// </summary>
+        public static string BonusOrderAmountNonNegative {
+            get {
+                return ResourceManager.GetString("BonusOrderAmountNonNegative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonus amount to spend ({0}) must be greater than zero..
+        /// </summary>
+        public static string BonusRedeemAmountPositive {
+            get {
+                return ResourceManager.GetString("BonusRedeemAmountPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bonuses redeemed.
         /// </summary>
         public static string BonusRedeemed {
             get {
                 return ResourceManager.GetString("BonusRedeemed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string BonusTierGeneral {
+            get {
+                return ResourceManager.GetString("BonusTierGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gold.
+        /// </summary>
+        public static string BonusTierGold {
+            get {
+                return ResourceManager.GetString("BonusTierGold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Silver.
+        /// </summary>
+        public static string BonusTierSilver {
+            get {
+                return ResourceManager.GetString("BonusTierSilver", resourceCulture);
             }
         }
         

@@ -564,4 +564,31 @@
   <data name="UserDrinkExternalTransactionInvalid" xml:space="preserve">
     <value>External transaction is invalid or has no active connection.</value>
   </data>
+  <data name="BonusCustomerInactive" xml:space="preserve">
+    <value>Customer account is inactive.</value>
+  </data>
+  <data name="BonusCardInactive" xml:space="preserve">
+    <value>Loyalty card is inactive.</value>
+  </data>
+  <data name="BonusOrderAmountNonNegative" xml:space="preserve">
+    <value>Order amount ({0}) cannot be negative.</value>
+  </data>
+  <data name="BonusRedeemAmountPositive" xml:space="preserve">
+    <value>Bonus amount to spend ({0}) must be greater than zero.</value>
+  </data>
+  <data name="BonusInsufficientBalance" xml:space="preserve">
+    <value>Insufficient bonus balance: requested {0}, available {1}.</value>
+  </data>
+  <data name="BonusDiscountExceedsOrder" xml:space="preserve">
+    <value>Bonus discount ({0}) cannot exceed order amount ({1}).</value>
+  </data>
+  <data name="BonusTierGold" xml:space="preserve">
+    <value>Gold</value>
+  </data>
+  <data name="BonusTierSilver" xml:space="preserve">
+    <value>Silver</value>
+  </data>
+  <data name="BonusTierGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
 </root>
