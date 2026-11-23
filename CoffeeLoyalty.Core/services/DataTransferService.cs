@@ -830,6 +830,7 @@ public class DataTransferService : IDataTransferService
     {
         Id = log.Id,
         ObjectId = log.ObjectId,
+        EmployeeId = log.EmployeeId,
         ObjectType = log.ObjectType,
         ActionType = log.ActionType,
         Description = log.Description,

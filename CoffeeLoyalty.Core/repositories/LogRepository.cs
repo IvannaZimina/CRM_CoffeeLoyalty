@@ -24,11 +24,11 @@ public sealed class LogRepository : BaseRepository, ILogRepository
 
         const string sql = """
             INSERT INTO LOGS (
-                objectID, objectType, actionType,
+                objectID, employeeID, objectType, actionType,
                 description, timeStamp
             )
             VALUES (
-                @objectId, @objectType, @actionType,
+                @objectId, @employeeId, @objectType, @actionType,
                 @description, @timeStamp
             );
 
@@ -42,6 +42,9 @@ public sealed class LogRepository : BaseRepository, ILogRepository
 
         command.Parameters.Add("@objectId", SqliteType.Integer).Value =
             (object?)logEntry.ObjectId ?? DBNull.Value;
+
+        command.Parameters.Add("@employeeId", SqliteType.Integer).Value =
+            (object?)logEntry.EmployeeId ?? DBNull.Value;
 
         command.Parameters.Add("@objectType", SqliteType.Text).Value =
             logEntry.ObjectType;
@@ -69,7 +72,7 @@ public sealed class LogRepository : BaseRepository, ILogRepository
         CancellationToken cancellationToken = default)
     {
         const string sql = """
-            SELECT logID, objectID, objectType,
+            SELECT logID, objectID, employeeID, objectType,
                    actionType, description, timeStamp
             FROM LOGS
             ORDER BY julianday(timeStamp) DESC, logID DESC;
@@ -95,7 +98,7 @@ public sealed class LogRepository : BaseRepository, ILogRepository
         }
 
         const string sql = """
-            SELECT logID, objectID, objectType,
+            SELECT logID, objectID, employeeID, objectType,
                    actionType, description, timeStamp
             FROM LOGS
             WHERE julianday(timeStamp) >= julianday(@startDate)
@@ -128,7 +131,7 @@ public sealed class LogRepository : BaseRepository, ILogRepository
         }
 
         const string sql = """
-            SELECT logID, objectID, objectType,
+            SELECT logID, objectID, employeeID, objectType,
                    actionType, description, timeStamp
             FROM LOGS
             WHERE actionType = @actionType
@@ -172,6 +175,11 @@ public sealed class LogRepository : BaseRepository, ILogRepository
             ? null
             : reader.GetInt32(objectIdIndex);
 
+        int employeeIdIndex = reader.GetOrdinal("employeeID");
+        int? employeeId = reader.IsDBNull(employeeIdIndex)
+            ? null
+            : reader.GetInt32(employeeIdIndex);
+
         DateTime timeStamp = DateTime.Parse(
             reader.GetString(reader.GetOrdinal("timeStamp")),
             CultureInfo.InvariantCulture,
@@ -185,7 +193,8 @@ public sealed class LogRepository : BaseRepository, ILogRepository
             description: reader.GetString(
                 reader.GetOrdinal("description")),
             objectId: objectId,
-            timeStamp: timeStamp)
+            timeStamp: timeStamp,
+            employeeId: employeeId)
         {
             Id = reader.GetInt32(reader.GetOrdinal("logID"))
         };

@@ -7,6 +7,7 @@ using CoffeeLoyalty.Core.Models;
 using CoffeeLoyalty.Core.Services;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -224,11 +225,12 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
         };
 
         LogEntry logEntry1 = new(
-            objectId: 1,
+            objectId: 15,
             objectType: "Auth",
             actionType: "LogLogin",
             description: "Manager signed in.",
-            timeStamp: new DateTime(2026, 1, 10, 9, 55, 0, DateTimeKind.Utc))
+            timeStamp: new DateTime(2026, 1, 10, 9, 55, 0, DateTimeKind.Utc),
+            employeeId: 2)
         {
             Id = 300
         };
@@ -277,6 +279,9 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             Assert.Equal(3.50m, payload.Purchases[0].TotalAmount);
             Assert.Single(payload.Logs);
             Assert.Equal("LogLogin", payload.Logs[0].ActionType);
+            Assert.Equal(2, payload.Logs[0].EmployeeId);
+            Assert.Equal(15, payload.Logs[0].ObjectId);
+            Assert.Contains("\"EmployeeId\": 2", json);
 
             // Assert: info log entry with actionType LogExportJson was recorded.
             Assert.Single(logService.InfoEntries);
@@ -375,7 +380,9 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
         };
 
         string tempFile = Path.Combine(Path.GetTempPath(), $"validate_ok_{Guid.NewGuid():N}.json");
-        await File.WriteAllTextAsync(tempFile, JsonSerializer.Serialize(payload));
+        JsonNode legacyPayload = JsonSerializer.SerializeToNode(payload)!;
+        legacyPayload["Logs"]![0]!.AsObject().Remove("EmployeeId");
+        await File.WriteAllTextAsync(tempFile, legacyPayload.ToJsonString());
 
         try
         {
