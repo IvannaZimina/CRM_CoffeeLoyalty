@@ -9,7 +9,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\images\branding\logo_coffee_cup.png" />
+    <None Remove="assets\images\drinks\default_drink.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lucide.NET.Wpf" Version="0.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CoffeeLoyalty.Core\CoffeeLoyalty.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\images\branding\logo_coffee_cup.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\images\drinks\default_drink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
