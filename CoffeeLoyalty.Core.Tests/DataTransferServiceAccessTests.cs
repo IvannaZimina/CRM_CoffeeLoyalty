@@ -789,6 +789,20 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             return Task.FromResult(assignedId);
         }
 
+        // Supports the transaction-aware interface overload.
+        public Task<int> AddAsync(
+            LoyaltyCard card,
+            object? transaction,
+            CancellationToken cancellationToken = default)
+        {
+            if (transaction is not null)
+            {
+                throw new NotSupportedException();
+            }
+
+            return AddAsync(card, cancellationToken);
+        }
+
         public Task<bool> SetActiveStatusAsync(int cardId, bool isActive, CancellationToken cancellationToken = default) =>
             Task.FromResult(true);
     }

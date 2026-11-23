@@ -32,6 +32,12 @@ public interface ICardRepository
         LoyaltyCard card,
         CancellationToken cancellationToken = default);
 
+    // Issues a card within an external transaction when provided.
+    Task<int> AddAsync(
+        LoyaltyCard card,
+        object? transaction,
+        CancellationToken cancellationToken = default);
+
     // Activates or blocks an existing loyalty card.
     // Setting isActive to false preserves the card and purchase history.
     // Returns false when no card exists with the specified ID.
