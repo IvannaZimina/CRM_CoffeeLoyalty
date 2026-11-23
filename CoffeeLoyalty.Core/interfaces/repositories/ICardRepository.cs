@@ -7,6 +7,11 @@ namespace CoffeeLoyalty.Core.Interfaces.Repositories;
 // CardRepository will implement the actual database queries later.
 public interface ICardRepository
 {
+    // Retrieves all loyalty cards across customers.
+    // Returns an empty collection if no cards exist.
+    Task<IReadOnlyList<LoyaltyCard>> GetAllAsync(
+        CancellationToken cancellationToken = default);
+
     // Finds a loyalty card using its unique database ID.
     // Returns null if the requested card does not exist.
     Task<LoyaltyCard?> GetByIdAsync(
