@@ -1,4 +1,5 @@
-﻿
+﻿using CoffeeLoyalty.Core.resources;
+
 using CoffeeLoyalty.Core.Validation;
 
 namespace CoffeeLoyalty.Core.Models;
@@ -44,7 +45,7 @@ public class LogEntry : BaseEntity
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Object ID must be positive when provided.");
+                    CoreResources.ValLogObjectIdPositive);
             }
 
             _objectId = value;
@@ -62,7 +63,7 @@ public class LogEntry : BaseEntity
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Object type cannot be empty.",
+                    CoreResources.ValLogObjectTypeRequired,
                     nameof(value));
             }
 
@@ -81,7 +82,7 @@ public class LogEntry : BaseEntity
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Action type cannot be empty.",
+                    CoreResources.ValLogActionTypeRequired,
                     nameof(value));
             }
 
@@ -99,7 +100,7 @@ public class LogEntry : BaseEntity
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Log description cannot be empty.",
+                    CoreResources.ValLogDescriptionRequired,
                     nameof(value));
             }
 
@@ -118,7 +119,7 @@ public class LogEntry : BaseEntity
             if (value == default)
             {
                 throw new ArgumentException(
-                    "Log timestamp must be valid.",
+                    CoreResources.ValLogTimestampInvalid,
                     nameof(value));
             }
 

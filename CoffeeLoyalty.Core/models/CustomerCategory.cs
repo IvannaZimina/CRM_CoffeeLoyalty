@@ -1,4 +1,5 @@
-﻿
+﻿using CoffeeLoyalty.Core.resources;
+
 using CoffeeLoyalty.Core.Validation;
 
 namespace CoffeeLoyalty.Core.Models;
@@ -31,7 +32,7 @@ public class CustomerCategory : BaseEntity
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Category name cannot be empty.",
+                    CoreResources.ValCategoryNameRequired,
                     nameof(value));
             }
 
@@ -50,7 +51,7 @@ public class CustomerCategory : BaseEntity
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Bonus accrual rate cannot be negative.");
+                    CoreResources.ValCategoryBonusRateNonNegative);
             }
 
             _bonusAccrualRate = value;
@@ -67,7 +68,7 @@ public class CustomerCategory : BaseEntity
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Upgrade threshold cannot be negative.");
+                    CoreResources.ValCategoryThresholdNonNegative);
             }
 
             _upgradeThreshold = value;

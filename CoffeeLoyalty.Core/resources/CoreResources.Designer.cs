@@ -10,8 +10,8 @@
 
 namespace CoffeeLoyalty.Core.resources {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace CoffeeLoyalty.Core.resources {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CoreResources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal CoreResources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace CoffeeLoyalty.Core.resources {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loyalty card is inactive..
         /// </summary>
@@ -68,7 +68,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusCardInactive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer account is inactive..
         /// </summary>
@@ -77,7 +77,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusCustomerInactive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonus discount ({0}) cannot exceed order amount ({1})..
         /// </summary>
@@ -86,7 +86,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusDiscountExceedsOrder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses earned.
         /// </summary>
@@ -95,7 +95,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusEarned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Insufficient bonus balance: requested {0}, available {1}..
         /// </summary>
@@ -104,7 +104,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusInsufficientBalance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Order amount ({0}) cannot be negative..
         /// </summary>
@@ -113,7 +113,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusOrderAmountNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonus amount to spend ({0}) must be greater than zero..
         /// </summary>
@@ -122,7 +122,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusRedeemAmountPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses redeemed.
         /// </summary>
@@ -131,7 +131,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusRedeemed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
@@ -140,7 +140,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusTierGeneral", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gold.
         /// </summary>
@@ -149,7 +149,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusTierGold", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Silver.
         /// </summary>
@@ -158,7 +158,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BonusTierSilver", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -167,7 +167,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnAdd", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to + New customer.
         /// </summary>
@@ -176,7 +176,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnAddCustomer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
@@ -185,7 +185,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnCancel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Checkout.
         /// </summary>
@@ -194,7 +194,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnCheckout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deactivate.
         /// </summary>
@@ -203,7 +203,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnDeactivate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
@@ -212,7 +212,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnEdit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Log in.
         /// </summary>
@@ -221,7 +221,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnLogin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Log out.
         /// </summary>
@@ -230,7 +230,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnLogout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
@@ -239,7 +239,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnOk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
@@ -248,7 +248,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnSave", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show.
         /// </summary>
@@ -257,7 +257,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("BtnShow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Card is already assigned to another customer..
         /// </summary>
@@ -266,7 +266,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("CardAlreadyAssigned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Card is blocked..
         /// </summary>
@@ -275,7 +275,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("CardBlocked", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be null..
         /// </summary>
@@ -284,7 +284,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("CartItemValDrinkRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
         /// </summary>
@@ -293,7 +293,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("CartItemValQuantityPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer is deactivated..
         /// </summary>
@@ -302,7 +302,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("CustomerDeactivated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer not found..
         /// </summary>
@@ -311,7 +311,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("CustomerNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to deactivate this item?.
         /// </summary>
@@ -320,7 +320,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DlgConfirmDeactivate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You have unsaved changes. Discard them?.
         /// </summary>
@@ -329,7 +329,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DlgUnsavedChanges", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
@@ -338,7 +338,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkCategoryAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Coffee.
         /// </summary>
@@ -347,7 +347,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkCategoryCoffee", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Other.
         /// </summary>
@@ -356,7 +356,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkCategoryOther", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tea.
         /// </summary>
@@ -365,7 +365,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkCategoryTea", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Activated drink ID {0} in menu..
         /// </summary>
@@ -374,7 +374,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogActivated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to add drink &apos;{0}&apos;: {1}.
         /// </summary>
@@ -383,7 +383,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogAddFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Added drink &apos;{0}&apos; (Type: {1}, Price: {2:0.00})..
         /// </summary>
@@ -392,7 +392,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogCreated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deactivated drink ID {0} in menu (historical receipts preserved)..
         /// </summary>
@@ -401,7 +401,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogDeactivated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Permission denied for role &apos;{0}&apos; on {1}. Required role: {2}..
         /// </summary>
@@ -410,7 +410,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogForbidden", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to set IsActive={0} for drink ID {1}: {2}.
         /// </summary>
@@ -419,7 +419,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogSetActiveFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unauthenticated attempt to execute {0}..
         /// </summary>
@@ -428,7 +428,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogUnauthorized", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Updated drink &apos;{0}&apos; (ID: {1}, Type: {2}, Price: {3:0.00})..
         /// </summary>
@@ -437,7 +437,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogUpdated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to update drink &apos;{0}&apos; (ID: {1}): {2}.
         /// </summary>
@@ -446,7 +446,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogUpdateFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid drink ID provided for update..
         /// </summary>
@@ -455,7 +455,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkLogUpdateInvalidId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Access denied..
         /// </summary>
@@ -464,7 +464,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceAccessDenied", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Active employee session is required..
         /// </summary>
@@ -473,7 +473,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceAuthRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drink cannot be null..
         /// </summary>
@@ -482,7 +482,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceDrinkNull", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drink ID must be greater than zero..
         /// </summary>
@@ -491,7 +491,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid drink data..
         /// </summary>
@@ -500,7 +500,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceInvalidDrinkData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drink name is required..
         /// </summary>
@@ -509,7 +509,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceNameRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drink price must be greater than zero..
         /// </summary>
@@ -518,7 +518,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServicePricePositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only {0} users can perform this action..
         /// </summary>
@@ -527,7 +527,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceRoleRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drink type is required..
         /// </summary>
@@ -536,7 +536,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkServiceTypeRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drink is unavailable..
         /// </summary>
@@ -545,7 +545,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkUnavailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be empty..
         /// </summary>
@@ -554,7 +554,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkValNameRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
         /// </summary>
@@ -563,7 +563,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkValPricePositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be empty..
         /// </summary>
@@ -572,7 +572,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("DrinkValTypeRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cashier.
         /// </summary>
@@ -581,7 +581,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("EmployeeRoleCashier", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manager.
         /// </summary>
@@ -590,7 +590,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("EmployeeRoleManager", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Database connection failed..
         /// </summary>
@@ -599,7 +599,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("ErrorDatabaseConnection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Insufficient bonus balance..
         /// </summary>
@@ -608,7 +608,34 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("ErrorInsufficientBonuses", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to An error message is required for a failed result..
+        /// </summary>
+        public static string ErrorResultFailureMessageRequired {
+            get {
+                return ResourceManager.GetString("ErrorResultFailureMessageRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A successful result cannot contain errors..
+        /// </summary>
+        public static string ErrorResultSuccessContainsErrors {
+            get {
+                return ResourceManager.GetString("ErrorResultSuccessContainsErrors", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A successful result must contain a value..
+        /// </summary>
+        public static string ErrorResultSuccessValueRequired {
+            get {
+                return ResourceManager.GetString("ErrorResultSuccessValueRequired", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase failed and transaction was rolled back..
         /// </summary>
@@ -617,7 +644,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("ErrorTransactionRollback", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All activities.
         /// </summary>
@@ -626,7 +653,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("HintAllActivities", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter card number....
         /// </summary>
@@ -635,7 +662,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("HintEnterCardNumber", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Search customer....
         /// </summary>
@@ -644,7 +671,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("HintSearchCustomer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonus balance.
         /// </summary>
@@ -653,7 +680,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblBonusBalance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses.
         /// </summary>
@@ -662,7 +689,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblBonuses", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses earned.
         /// </summary>
@@ -671,7 +698,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblBonusesEarned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses used.
         /// </summary>
@@ -680,7 +707,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblBonusesUsed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Card number.
         /// </summary>
@@ -689,7 +716,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblCardNumber", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Card no.
         /// </summary>
@@ -698,7 +725,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblCardShort", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cart.
         /// </summary>
@@ -707,7 +734,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblCart", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer.
         /// </summary>
@@ -716,7 +743,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblCustomer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Date from.
         /// </summary>
@@ -725,7 +752,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblDateFrom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Date &amp; time.
         /// </summary>
@@ -734,7 +761,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblDateTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To.
         /// </summary>
@@ -743,7 +770,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblDateTo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
@@ -752,7 +779,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drinks.
         /// </summary>
@@ -761,7 +788,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblDrinks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Export data (JSON file).
         /// </summary>
@@ -770,7 +797,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblExportJson", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Import data (JSON file).
         /// </summary>
@@ -779,7 +806,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblImportJson", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
@@ -788,7 +815,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your new bonuses.
         /// </summary>
@@ -797,7 +824,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblNewBonuses", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
@@ -806,7 +833,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblPassword", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Quantity.
         /// </summary>
@@ -815,7 +842,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblQuantity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Role.
         /// </summary>
@@ -824,7 +851,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblRole", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
@@ -833,7 +860,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Subtotal.
         /// </summary>
@@ -842,7 +869,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblSubtotal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tier.
         /// </summary>
@@ -851,7 +878,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblTier", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
@@ -860,7 +887,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblTotal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total earned.
         /// </summary>
@@ -869,7 +896,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblTotalEarned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total (to pay).
         /// </summary>
@@ -878,7 +905,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblTotalToPay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
@@ -887,7 +914,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
@@ -896,7 +923,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LblUser", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Card not found.
         /// </summary>
@@ -905,7 +932,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LogCardNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer created.
         /// </summary>
@@ -914,7 +941,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LogCustomerCreated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer status changed.
         /// </summary>
@@ -923,7 +950,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LogCustomerStatusChanged", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase completed.
         /// </summary>
@@ -932,7 +959,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LogPurchaseCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Data exported successfully..
         /// </summary>
@@ -941,7 +968,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("MsgDataExported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Data imported successfully..
         /// </summary>
@@ -950,7 +977,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("MsgDataImported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase completed successfully..
         /// </summary>
@@ -959,7 +986,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("MsgPurchaseCompleted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Saved successfully..
         /// </summary>
@@ -968,7 +995,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("MsgSavedSuccessfully", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customers.
         /// </summary>
@@ -977,7 +1004,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavCustomers", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drinks.
         /// </summary>
@@ -986,7 +1013,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavDrinks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Import / Export.
         /// </summary>
@@ -995,7 +1022,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavImportExport", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Log out.
         /// </summary>
@@ -1004,7 +1031,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavLogout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Logs.
         /// </summary>
@@ -1013,7 +1040,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to POS.
         /// </summary>
@@ -1022,7 +1049,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavPos", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
@@ -1031,7 +1058,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("NavSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cart is empty..
         /// </summary>
@@ -1040,7 +1067,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseEmptyCart", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to External transaction is invalid or has no active connection..
         /// </summary>
@@ -1049,7 +1076,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseExternalTransactionInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customer ID ({0}) must be positive..
         /// </summary>
@@ -1058,7 +1085,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseInvalidCustomerId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase items collection cannot be empty..
         /// </summary>
@@ -1067,7 +1094,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseItemCollectionEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to External transaction is invalid or has no active connection..
         /// </summary>
@@ -1076,7 +1103,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseItemExternalTransactionInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
@@ -1085,7 +1112,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseItemValDrinkIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
@@ -1094,7 +1121,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseItemValPurchaseIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
         /// </summary>
@@ -1103,7 +1130,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseItemValQuantityPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) cannot be negative..
         /// </summary>
@@ -1112,7 +1139,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseItemValUnitPriceNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase not found..
         /// </summary>
@@ -1121,7 +1148,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) cannot be negative..
         /// </summary>
@@ -1130,7 +1157,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseRequestValBonusesToSpendNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive when provided..
         /// </summary>
@@ -1139,7 +1166,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseRequestValCardIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
@@ -1148,7 +1175,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseRequestValEmployeeIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be null..
         /// </summary>
@@ -1157,7 +1184,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseRequestValItemsRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) cannot be negative..
         /// </summary>
@@ -1166,7 +1193,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseResultValAmountNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) cannot be negative..
         /// </summary>
@@ -1175,7 +1202,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseResultValBonusesNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be empty..
         /// </summary>
@@ -1184,7 +1211,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseResultValErrorMessageRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be null..
         /// </summary>
@@ -1193,7 +1220,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseResultValItemsRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
@@ -1202,7 +1229,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseResultValPurchaseIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
@@ -1211,7 +1238,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseTotal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses earned ({0}) cannot be negative..
         /// </summary>
@@ -1220,7 +1247,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseValBonusesEarnedNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bonuses spent ({0}) cannot be negative..
         /// </summary>
@@ -1229,7 +1256,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseValBonusesSpentNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Card ID ({0}) must be positive when provided..
         /// </summary>
@@ -1238,7 +1265,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseValCardIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Employee ID ({0}) must be positive..
         /// </summary>
@@ -1247,7 +1274,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseValEmployeeIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase timestamp ({0}) must be valid..
         /// </summary>
@@ -1256,7 +1283,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseValTimeStampInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total amount ({0}) cannot be negative..
         /// </summary>
@@ -1265,7 +1292,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("PurchaseValTotalAmountNonNegative", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Action.
         /// </summary>
@@ -1274,7 +1301,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("StatusAction", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
@@ -1283,7 +1310,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("StatusActive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Blocked.
         /// </summary>
@@ -1292,7 +1319,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("StatusBlocked", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
@@ -1301,7 +1328,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("StatusError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Inactive.
         /// </summary>
@@ -1310,7 +1337,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("StatusInactive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New purchase.
         /// </summary>
@@ -1319,7 +1346,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleCashierPos", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Customers and loyalty.
         /// </summary>
@@ -1328,7 +1355,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleCustomers", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drinks.
         /// </summary>
@@ -1337,7 +1364,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleDrinks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Import / Export.
         /// </summary>
@@ -1346,7 +1373,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleImportExport", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CoffeeLoyalty - Sign In.
         /// </summary>
@@ -1355,7 +1382,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleLogin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Logs.
         /// </summary>
@@ -1364,7 +1391,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleLogs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Purchase completed!.
         /// </summary>
@@ -1373,7 +1400,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitlePurchaseSuccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select role.
         /// </summary>
@@ -1382,7 +1409,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleSelectRole", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
@@ -1391,7 +1418,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleSettings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Welcome to CoffeeLoyalty.
         /// </summary>
@@ -1400,7 +1427,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("TitleWelcome", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No loyalty card found for customer ID {0}..
         /// </summary>
@@ -1409,7 +1436,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("UserDrinkCardNotFoundForCustomer", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to External transaction is invalid or has no active connection..
         /// </summary>
@@ -1418,7 +1445,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("UserDrinkExternalTransactionInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
         /// </summary>
@@ -1427,7 +1454,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("UserDrinkQuantityDeltaPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
@@ -1436,7 +1463,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("UserDrinkValCardIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be positive..
         /// </summary>
@@ -1445,7 +1472,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("UserDrinkValDrinkIdPositive", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}) must be greater than zero..
         /// </summary>
@@ -1454,7 +1481,106 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("UserDrinkValQuantityPositive", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Customer ID must be positive..
+        /// </summary>
+        public static string ValCardCustomerIdPositive {
+            get {
+                return ResourceManager.GetString("ValCardCustomerIdPositive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bonus accrual rate cannot be negative..
+        /// </summary>
+        public static string ValCategoryBonusRateNonNegative {
+            get {
+                return ResourceManager.GetString("ValCategoryBonusRateNonNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Category name cannot be empty..
+        /// </summary>
+        public static string ValCategoryNameRequired {
+            get {
+                return ResourceManager.GetString("ValCategoryNameRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade threshold cannot be negative..
+        /// </summary>
+        public static string ValCategoryThresholdNonNegative {
+            get {
+                return ResourceManager.GetString("ValCategoryThresholdNonNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bonus balance cannot be negative..
+        /// </summary>
+        public static string ValCustomerBonusBalanceNonNegative {
+            get {
+                return ResourceManager.GetString("ValCustomerBonusBalanceNonNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Category ID must be positive..
+        /// </summary>
+        public static string ValCustomerCategoryIdPositive {
+            get {
+                return ResourceManager.GetString("ValCustomerCategoryIdPositive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Customer name cannot be empty..
+        /// </summary>
+        public static string ValCustomerNameRequired {
+            get {
+                return ResourceManager.GetString("ValCustomerNameRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Registration timestamp must be valid..
+        /// </summary>
+        public static string ValCustomerTimestampInvalid {
+            get {
+                return ResourceManager.GetString("ValCustomerTimestampInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Employee name cannot be empty..
+        /// </summary>
+        public static string ValEmployeeNameRequired {
+            get {
+                return ResourceManager.GetString("ValEmployeeNameRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Password hash cannot be empty..
+        /// </summary>
+        public static string ValEmployeePasswordHashRequired {
+            get {
+                return ResourceManager.GetString("ValEmployeePasswordHashRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid employee role..
+        /// </summary>
+        public static string ValEmployeeRoleInvalid {
+            get {
+                return ResourceManager.GetString("ValEmployeeRoleInvalid", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid password..
         /// </summary>
@@ -1463,7 +1589,52 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("ValInvalidPassword", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Action type cannot be empty..
+        /// </summary>
+        public static string ValLogActionTypeRequired {
+            get {
+                return ResourceManager.GetString("ValLogActionTypeRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Log description cannot be empty..
+        /// </summary>
+        public static string ValLogDescriptionRequired {
+            get {
+                return ResourceManager.GetString("ValLogDescriptionRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Object ID must be positive when provided..
+        /// </summary>
+        public static string ValLogObjectIdPositive {
+            get {
+                return ResourceManager.GetString("ValLogObjectIdPositive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Object type cannot be empty..
+        /// </summary>
+        public static string ValLogObjectTypeRequired {
+            get {
+                return ResourceManager.GetString("ValLogObjectTypeRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Log timestamp must be valid..
+        /// </summary>
+        public static string ValLogTimestampInvalid {
+            get {
+                return ResourceManager.GetString("ValLogTimestampInvalid", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Price must be greater than zero..
         /// </summary>
@@ -1472,7 +1643,7 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("ValPositivePrice", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This field is required..
         /// </summary>

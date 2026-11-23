@@ -1,4 +1,5 @@
-﻿
+﻿using CoffeeLoyalty.Core.resources;
+
 using CoffeeLoyalty.Core.Validation;
 
 namespace CoffeeLoyalty.Core.Models;
@@ -41,7 +42,7 @@ public class Customer : BaseEntity, IActivatable
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Category ID must be positive.");
+                    CoreResources.ValCustomerCategoryIdPositive);
             }
 
             _categoryId = value;
@@ -58,7 +59,7 @@ public class Customer : BaseEntity, IActivatable
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Customer name cannot be empty.",
+                    CoreResources.ValCustomerNameRequired,
                     nameof(value));
             }
 
@@ -77,7 +78,7 @@ public class Customer : BaseEntity, IActivatable
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Bonus balance cannot be negative.");
+                    CoreResources.ValCustomerBonusBalanceNonNegative);
             }
 
             _bonusBalance = value;
@@ -102,7 +103,7 @@ public class Customer : BaseEntity, IActivatable
             if (value == default)
             {
                 throw new ArgumentException(
-                    "Registration timestamp must be valid.",
+                    CoreResources.ValCustomerTimestampInvalid,
                     nameof(value));
             }
 

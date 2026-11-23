@@ -1,4 +1,5 @@
-﻿
+﻿using CoffeeLoyalty.Core.resources;
+
 using CoffeeLoyalty.Core.Validation;
 
 namespace CoffeeLoyalty.Core.Models;
@@ -28,7 +29,7 @@ public class LoyaltyCard : BaseEntity, IActivatable
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Customer ID must be positive.");
+                    CoreResources.ValCardCustomerIdPositive);
             }
 
             _customerId = value;
