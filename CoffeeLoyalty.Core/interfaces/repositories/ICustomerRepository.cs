@@ -33,11 +33,23 @@ public interface ICustomerRepository
         Customer customer,
         CancellationToken cancellationToken = default);
 
+    // Adds a customer using an external transaction when provided.
+    Task<int> AddAsync(
+        Customer customer,
+        object? transaction,
+        CancellationToken cancellationToken = default);
+
     // Updates an existing customer's profile and loyalty information.
     // This includes their name, category, bonus balance, and other properties.
     // Returns true if the customer was found and updated.
     Task<bool> UpdateAsync(
         Customer customer,
+        CancellationToken cancellationToken = default);
+
+    // Updates a customer within an external checkout transaction.
+    Task<bool> UpdateAsync(
+        Customer customer,
+        object? transaction,
         CancellationToken cancellationToken = default);
 
     // Changes the active status of an existing customer account.

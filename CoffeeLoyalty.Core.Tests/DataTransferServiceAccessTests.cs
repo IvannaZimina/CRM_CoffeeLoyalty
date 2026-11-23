@@ -726,8 +726,36 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             return Task.FromResult(assignedId);
         }
 
+        // Supports the new repository overload in existing test doubles.
+        public Task<int> AddAsync(
+            Customer customer,
+            object? transaction,
+            CancellationToken cancellationToken = default)
+        {
+            if (transaction is not null)
+            {
+                throw new NotSupportedException();
+            }
+
+            return AddAsync(customer, cancellationToken);
+        }
+
         public Task<bool> UpdateAsync(Customer customer, CancellationToken cancellationToken = default) =>
             Task.FromResult(true);
+
+        // Preserves existing fake behavior without simulating SQLite transactions.
+        public Task<bool> UpdateAsync(
+            Customer customer,
+            object? transaction,
+            CancellationToken cancellationToken = default)
+        {
+            if (transaction is not null)
+            {
+                throw new NotSupportedException();
+            }
+
+            return UpdateAsync(customer, cancellationToken);
+        }
 
         public Task<bool> SetActiveStatusAsync(int customerId, bool isActive, CancellationToken cancellationToken = default) =>
             Task.FromResult(true);
