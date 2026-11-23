@@ -1,4 +1,5 @@
-﻿
+﻿using CoffeeLoyalty.Core.resources;
+
 namespace CoffeeLoyalty.Core.DTOs;
 
 // Represents the result of an operation without using WPF.
@@ -27,14 +28,14 @@ public class OperationResult
             (errorMessage != null || errorCode != null))
         {
             throw new ArgumentException(
-                "A successful result cannot contain errors.");
+                CoreResources.ErrorResultSuccessContainsErrors);
         }
 
         // A failed result must have a readable error message.
         if (!isSuccess && string.IsNullOrWhiteSpace(errorMessage))
         {
             throw new ArgumentException(
-                "An error message is required for a failed result.");
+                CoreResources.ErrorResultFailureMessageRequired);
         }
 
         IsSuccess = isSuccess;
@@ -75,7 +76,7 @@ public sealed class OperationResult<T> : OperationResult
         if (isSuccess && value is null)
         {
             throw new ArgumentException(
-                "A successful result must contain a value.");
+                CoreResources.ErrorResultSuccessValueRequired);
         }
 
         Value = value;

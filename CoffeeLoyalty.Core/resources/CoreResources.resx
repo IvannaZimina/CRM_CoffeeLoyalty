@@ -591,4 +591,61 @@
   <data name="BonusTierGeneral" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="ValCategoryNameRequired" xml:space="preserve">
+    <value>Category name cannot be empty.</value>
+  </data>
+  <data name="ValCategoryBonusRateNonNegative" xml:space="preserve">
+    <value>Bonus accrual rate cannot be negative.</value>
+  </data>
+  <data name="ValCategoryThresholdNonNegative" xml:space="preserve">
+    <value>Upgrade threshold cannot be negative.</value>
+  </data>
+  <data name="ValCustomerCategoryIdPositive" xml:space="preserve">
+    <value>Category ID must be positive.</value>
+  </data>
+  <data name="ValCustomerNameRequired" xml:space="preserve">
+    <value>Customer name cannot be empty.</value>
+  </data>
+  <data name="ValCustomerBonusBalanceNonNegative" xml:space="preserve">
+    <value>Bonus balance cannot be negative.</value>
+  </data>
+  <data name="ValCustomerTimestampInvalid" xml:space="preserve">
+    <value>Registration timestamp must be valid.</value>
+  </data>
+  <data name="ValCardCustomerIdPositive" xml:space="preserve">
+    <value>Customer ID must be positive.</value>
+  </data>
+  <data name="ValEmployeeNameRequired" xml:space="preserve">
+    <value>Employee name cannot be empty.</value>
+  </data>
+  <data name="ValEmployeeRoleInvalid" xml:space="preserve">
+    <value>Invalid employee role.</value>
+  </data>
+  <data name="ValEmployeePasswordHashRequired" xml:space="preserve">
+    <value>Password hash cannot be empty.</value>
+  </data>
+  <data name="ValLogObjectIdPositive" xml:space="preserve">
+    <value>Object ID must be positive when provided.</value>
+  </data>
+  <data name="ValLogObjectTypeRequired" xml:space="preserve">
+    <value>Object type cannot be empty.</value>
+  </data>
+  <data name="ValLogActionTypeRequired" xml:space="preserve">
+    <value>Action type cannot be empty.</value>
+  </data>
+  <data name="ValLogDescriptionRequired" xml:space="preserve">
+    <value>Log description cannot be empty.</value>
+  </data>
+  <data name="ValLogTimestampInvalid" xml:space="preserve">
+    <value>Log timestamp must be valid.</value>
+  </data>
+  <data name="ErrorResultSuccessContainsErrors" xml:space="preserve">
+    <value>A successful result cannot contain errors.</value>
+  </data>
+  <data name="ErrorResultFailureMessageRequired" xml:space="preserve">
+    <value>An error message is required for a failed result.</value>
+  </data>
+  <data name="ErrorResultSuccessValueRequired" xml:space="preserve">
+    <value>A successful result must contain a value.</value>
+  </data>
 </root>

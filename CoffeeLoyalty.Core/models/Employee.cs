@@ -1,4 +1,5 @@
-﻿
+﻿using CoffeeLoyalty.Core.resources;
+
 using CoffeeLoyalty.Core.Enums;
 using CoffeeLoyalty.Core.Validation;
 
@@ -37,7 +38,7 @@ public class Employee : BaseEntity, IActivatable
             if (!ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Employee name cannot be empty.",
+                    CoreResources.ValEmployeeNameRequired,
                     nameof(value));
             }
 
@@ -58,7 +59,7 @@ public class Employee : BaseEntity, IActivatable
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    "Invalid employee role.");
+                    CoreResources.ValEmployeeRoleInvalid);
             }
 
             _employeeRole = value;
@@ -77,7 +78,7 @@ public class Employee : BaseEntity, IActivatable
             if (value is not null && !ValidationHelper.HasText(value))
             {
                 throw new ArgumentException(
-                    "Password hash cannot be empty.",
+                    CoreResources.ValEmployeePasswordHashRequired,
                     nameof(value));
             }
 
