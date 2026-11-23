@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -647,5 +647,26 @@
   </data>
   <data name="ErrorResultSuccessValueRequired" xml:space="preserve">
     <value>A successful result must contain a value.</value>
+  </data>
+  <data name="LogSessionInvalidEmployee" xml:space="preserve">
+    <value>The current employee must be active and have a saved ID.</value>
+  </data>
+  <data name="LogServiceAccessDenied" xml:space="preserve">
+    <value>Only an authenticated manager can view audit logs.</value>
+  </data>
+  <data name="LogServiceInvalidEntry" xml:space="preserve">
+    <value>The log entry contains missing or invalid required information.</value>
+  </data>
+  <data name="LogServiceInvalidFilter" xml:space="preserve">
+    <value>The log filter is invalid.</value>
+  </data>
+  <data name="LogServiceWriteFailed" xml:space="preserve">
+    <value>The log entry could not be saved.</value>
+  </data>
+  <data name="LogServiceReadFailed" xml:space="preserve">
+    <value>The audit log could not be retrieved.</value>
+  </data>
+  <data name="LogServiceDetailsRedacted" xml:space="preserve">
+    <value>Technical or sensitive details have been omitted.</value>
   </data>
 </root>
