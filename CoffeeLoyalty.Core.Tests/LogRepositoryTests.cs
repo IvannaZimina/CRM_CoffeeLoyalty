@@ -223,7 +223,51 @@ public class LogRepositoryTests
         });
     }
 
-    // Creates an isolated SQLite database with the real LOGS schema.
+    [Fact]
+    public async Task AddLog_PreservesDifferentEmployeeAndObjectIds()
+    {
+        await WithDatabaseAsync(async (repository, factory) =>
+        {
+            await using (SqliteConnection connection = factory.OpenConnection())
+            {
+                await using SqliteCommand command = connection.CreateCommand();
+                command.CommandText = """
+                    INSERT INTO EMPLOYEES (employeeID, employeeName, employeeRole, employeePassword, isActive)
+                    VALUES (2, 'Test manager', 'Manager', 'test-only-hash', 1);
+                    """;
+                await command.ExecuteNonQueryAsync();
+            }
+
+            LogEntry entry = new("DRINKS", "DrinkUpdated", "Updated drink.",
+                objectId: 15, timeStamp: TestTime, employeeId: 2);
+
+            int id = await repository.AddAsync(entry);
+            LogEntry saved = Assert.Single(await repository.GetAllAsync());
+
+            Assert.Equal(id, saved.Id);
+            Assert.Equal(2, saved.EmployeeId);
+            Assert.Equal(15, saved.ObjectId);
+            Assert.Equal(2, Assert.Single(await repository.GetByActionTypeAsync("DrinkUpdated")).EmployeeId);
+        });
+    }
+
+    [Fact]
+    public async Task AddLog_WithUnknownEmployee_FailsForeignKeyConstraint()
+    {
+        await WithDatabaseAsync(async (repository, factory) =>
+        {
+            LogEntry entry = new("System", "LogTest", "Invalid actor",
+                timeStamp: TestTime, employeeId: 999999);
+
+            SqliteException error = await Assert.ThrowsAsync<SqliteException>(
+                () => repository.AddAsync(entry));
+
+            Assert.Equal(19, error.SqliteErrorCode);
+            Assert.Empty(await repository.GetAllAsync());
+        });
+    }
+
+    // Creates an isolated SQLite database with the real employee and log schemas.
     private static async Task WithDatabaseAsync(
         Func<LogRepository, SqliteConnectionFactory, Task> test)
     {
@@ -238,19 +282,22 @@ public class LogRepositoryTests
             await using (SqliteConnection connection =
                 factory.OpenConnection())
             {
-                await using Stream schemaStream =
-                    typeof(DatabaseInitializer).Assembly
-                        .GetManifestResourceStream(
-                            "CoffeeLoyalty.Core.data.schemas.LogsSchema.sql")
-                    ?? throw new InvalidOperationException();
+                foreach (string schemaName in new[] { "EmployeesSchema.sql", "LogsSchema.sql" })
+                {
+                    await using Stream schemaStream =
+                        typeof(DatabaseInitializer).Assembly
+                            .GetManifestResourceStream(
+                                $"CoffeeLoyalty.Core.data.schemas.{schemaName}")
+                        ?? throw new InvalidOperationException();
 
-                using StreamReader reader = new(schemaStream);
+                    using StreamReader reader = new(schemaStream);
 
-                await using SqliteCommand command =
-                    connection.CreateCommand();
+                    await using SqliteCommand command =
+                        connection.CreateCommand();
 
-                command.CommandText = await reader.ReadToEndAsync();
-                await command.ExecuteNonQueryAsync();
+                    command.CommandText = await reader.ReadToEndAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
             }
 
             LogRepository repository = new(factory);

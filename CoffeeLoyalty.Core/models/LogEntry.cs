@@ -23,9 +23,11 @@ public class LogEntry : BaseEntity
         string actionType,
         string description,
         int? objectId = null,
-        DateTime? timeStamp = null)
+        DateTime? timeStamp = null,
+        int? employeeId = null)
     {
         ObjectId = objectId;
+        EmployeeId = employeeId;
         ObjectType = objectType;
         ActionType = actionType;
         Description = description;
@@ -51,6 +53,9 @@ public class LogEntry : BaseEntity
             _objectId = value;
         }
     }
+
+    // Identifies the employee who performed the action; null is allowed for system and legacy events.
+    public int? EmployeeId { get; set; }
 
     // Describes the type of object involved in the event.
     // Examples: CUSTOMERS, PURCHASES, EMPLOYEES, or System.

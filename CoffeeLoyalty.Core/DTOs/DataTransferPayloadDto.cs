@@ -99,6 +99,7 @@ public class LogTransferDto
 {
     public int? Id { get; set; }
     public int? ObjectId { get; set; }
+    public int? EmployeeId { get; set; }
     public string? ObjectType { get; set; }
     public string? ActionType { get; set; }
     public string? Description { get; set; }

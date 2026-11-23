@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using Microsoft.Data.Sqlite;
+
 namespace CoffeeLoyalty.Core.Data;
 
 // Runs registered SQL schema scripts and seeds initial data in order.
@@ -56,11 +58,48 @@ public sealed class DatabaseInitializer
             command.ExecuteNonQuery();
         }
 
+        // Upgrade existing LOGS tables before inserting seed data.
+        EnsureLogEmployeeIdColumn(connection, transaction);
+
         // Seed initial data (such as menu items for DRINKS) after schemas are created.
         _seedDataFactory.Seed(connection, transaction);
 
         // Commit all changes only when every schema and seed step succeeds.
         transaction.Commit();
+    }
+
+    // Adds actor tracking to legacy databases without deleting historical records.
+    private static void EnsureLogEmployeeIdColumn(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        bool hasEmployeeId = false;
+
+        using (SqliteCommand check = connection.CreateCommand())
+        {
+            check.Transaction = transaction;
+            check.CommandText = "PRAGMA table_info(LOGS);";
+
+            using SqliteDataReader reader = check.ExecuteReader();
+            while (reader.Read())
+            {
+                if (string.Equals(reader.GetString(1), "employeeID", StringComparison.OrdinalIgnoreCase))
+                {
+                    hasEmployeeId = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasEmployeeId)
+        {
+            return;
+        }
+
+        using SqliteCommand alter = connection.CreateCommand();
+        alter.Transaction = transaction;
+        alter.CommandText = "ALTER TABLE LOGS ADD COLUMN employeeID INTEGER REFERENCES EMPLOYEES(employeeID);";
+        alter.ExecuteNonQuery();
     }
 
     // Reads an embedded SQL script from CoffeeLoyalty.Core/data/schemas by file name.
