@@ -169,7 +169,7 @@ public class DrinkService : IDrinkService
     }
 
     // Adds a new drink to the menu after Manager role and data validation checks.
-    // Logs creation or failure events with the active employee ID.
+    // LogService records the active employee ID from the shared session automatically.
     public async Task<OperationResult<Drink>> AddDrinkAsync(
         Drink drink,
         CancellationToken cancellationToken = default)
@@ -388,42 +388,29 @@ public class DrinkService : IDrinkService
         return OperationResult.Success();
     }
 
-    // Writes an informational audit log entry with the active employee ID appended.
+    // Writes an informational audit log entry; LogService records employee ID from session.
     private Task TryLogInfoAsync(
         string actionType,
         string description,
         int? objectId,
-        CancellationToken cancellationToken)
-    {
-        string actorSuffix = GetActorAuditSuffix();
-        return _logService.LogInfoAsync(
+        CancellationToken cancellationToken) =>
+        _logService.LogInfoAsync(
             AuditObjectType,
             actionType,
-            $"{description}{actorSuffix}",
+            description,
             objectId,
             cancellationToken);
-    }
 
-    // Writes an error audit log entry with the active employee ID appended.
+    // Writes an error audit log entry; LogService records employee ID from session.
     private Task TryLogErrorAsync(
         string actionType,
         string description,
         int? objectId,
-        CancellationToken cancellationToken)
-    {
-        string actorSuffix = GetActorAuditSuffix();
-        return _logService.LogErrorAsync(
+        CancellationToken cancellationToken) =>
+        _logService.LogErrorAsync(
             AuditObjectType,
             actionType,
-            $"{description}{actorSuffix}",
+            description,
             objectId,
             cancellationToken);
-    }
-
-    // Formats the currently signed-in employee ID for log descriptions.
-    private string GetActorAuditSuffix()
-    {
-        int? employeeId = _authService.CurrentEmployee?.Id;
-        return employeeId.HasValue ? $" [EmployeeId={employeeId.Value}]" : string.Empty;
-    }
 }
