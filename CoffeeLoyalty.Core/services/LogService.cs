@@ -27,7 +27,7 @@ public sealed class LogService : ILogService
     // Records an informational action. Legacy action names are kept unchanged.
     public Task<OperationResult> LogInfoAsync(
         string objectType,
-        LogActionType actionType,
+        string actionType,
         string description,
         int? objectId = null,
         CancellationToken cancellationToken = default)
@@ -38,7 +38,7 @@ public sealed class LogService : ILogService
     // Records an application error with sensitive details removed when recognizable.
     public Task<OperationResult> LogErrorAsync(
         string objectType,
-        LogActionType actionType,
+        string actionType,
         string description,
         int? objectId = null,
         CancellationToken cancellationToken = default)
@@ -72,24 +72,24 @@ public sealed class LogService : ILogService
 
     // Applies the same Manager-only permission check before action filtering.
     public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(
-        LogActionType actionType,
+        string actionType,
         CancellationToken cancellationToken = default)
     {
         return ReadAsync(async token =>
         {
-            if (!Enum.IsDefined(actionType))
+            if (string.IsNullOrWhiteSpace(actionType))
             {
                 throw new ArgumentException(nameof(actionType));
             }
 
-            return await _repository.GetByActionTypeAsync(actionType.ToString(), token);
+            return await _repository.GetByActionTypeAsync(actionType.Trim(), token);
         }, cancellationToken);
     }
 
     // Records employee and object IDs separately and never exposes repository exception messages.
     private async Task<OperationResult> WriteAsync(
         string objectType,
-        LogActionType actionType,
+        string actionType,
         string description,
         int? objectId,
         CancellationToken cancellationToken)
@@ -97,7 +97,7 @@ public sealed class LogService : ILogService
         cancellationToken.ThrowIfCancellationRequested();
 
         if (string.IsNullOrWhiteSpace(objectType) ||
-            !Enum.IsDefined(actionType) ||
+            string.IsNullOrWhiteSpace(actionType) ||
             string.IsNullOrWhiteSpace(description) ||
             objectId is <= 0)
         {
@@ -108,7 +108,7 @@ public sealed class LogService : ILogService
         {
             LogEntry entry = new(
                 objectType: objectType,
-                actionType: actionType.ToString(),
+                actionType: actionType,
                 description: SafeDescription(description),
                 objectId: objectId,
                 employeeId: _currentEmployee.IsAuthenticated ? _currentEmployee.EmployeeId : null);

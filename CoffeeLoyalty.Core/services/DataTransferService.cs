@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Diagnostics;
 using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.resources;
@@ -80,7 +80,7 @@ public class DataTransferService : IDataTransferService
         {
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: LogActionType.ErrorExportInvalidPath,
+                actionType: "ErrorExportInvalidPath",
                 description: pathCheck.ErrorMessage ?? "Invalid export file path.",
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -144,7 +144,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogInfoAsync(
                 objectType: LogObjectType,
-                actionType: LogActionType.LogExportJson,
+                actionType: "LogExportJson",
                 description: $"Exported {exportedCount} records to '{Path.GetFileName(filePath)}' " +
                              $"(Drinks: {payload.Drinks.Count}, Customers: {payload.Customers.Count}, " +
                              $"Cards: {payload.Cards.Count}, Purchases: {payload.Purchases.Count}, Logs: {payload.Logs.Count}).",
@@ -159,7 +159,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: LogActionType.ErrorExportJson,
+                actionType: "ErrorExportJson",
                 description: message,
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -204,7 +204,7 @@ public class DataTransferService : IDataTransferService
         {
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: LogActionType.ErrorImportValidation,
+                actionType: "ErrorImportValidation",
                 description: pathCheck.ErrorMessage ?? "Invalid import file path.",
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -223,7 +223,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: LogActionType.ErrorImportValidation,
+                    actionType: "ErrorImportValidation",
                     description: emptyError,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -241,7 +241,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: LogActionType.ErrorImportValidation,
+                    actionType: "ErrorImportValidation",
                     description: nullPayloadError,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -272,7 +272,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: LogActionType.ErrorImportValidation,
+                    actionType: "ErrorImportValidation",
                     description: joinedSchemaErrors,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -289,7 +289,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: LogActionType.ErrorImportValidation,
+                    actionType: "ErrorImportValidation",
                     description: readErr,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -444,7 +444,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: LogActionType.ErrorImportValidation,
+                    actionType: "ErrorImportValidation",
                     description: $"Validation failed for '{Path.GetFileName(filePath)}': {combinedErrors}",
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -460,7 +460,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: LogActionType.ErrorImportValidation,
+                actionType: "ErrorImportValidation",
                 description: message,
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -544,24 +544,24 @@ public class DataTransferService : IDataTransferService
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            await AuditImportAsync(true, LogActionType.ErrorImportCancelled, CoreResources.LogJsonImportCancelled);
+            await AuditImportAsync(true, "ErrorImportCancelled", CoreResources.LogJsonImportCancelled);
             throw;
         }
         catch (Exception ex)
         {
             Trace.TraceWarning(ex.GetType().Name);
-            await AuditImportAsync(true, LogActionType.ErrorImportJson, CoreResources.ErrorJsonImportPersistence);
+            await AuditImportAsync(true, "ErrorImportJson", CoreResources.ErrorJsonImportPersistence);
             return OperationResult<int>.Failure(CoreResources.ErrorJsonImportPersistence, "IMPORT_PERSISTENCE_ERROR");
         }
 
         // Log after the transaction closes. Audit failure cannot undo or misreport a committed import.
-        await AuditImportAsync(false, LogActionType.LogImportJson, string.Format(CultureInfo.InvariantCulture,
+        await AuditImportAsync(false, "LogImportJson", string.Format(CultureInfo.InvariantCulture,
             CoreResources.LogJsonImportCompleted, importedCount, Path.GetFileName(filePath),
             payload.Drinks.Count, payload.Customers.Count, payload.Cards.Count));
         return OperationResult<int>.Success(importedCount);
     }
 
-    private async Task AuditImportAsync(bool error, LogActionType action, string message)
+    private async Task AuditImportAsync(bool error, string action, string message)
     {
         try
         {
@@ -585,7 +585,7 @@ public class DataTransferService : IDataTransferService
 
         await _logService.LogErrorAsync(
             objectType: LogObjectType,
-            actionType: LogActionType.ErrorExportJson,
+            actionType: "ErrorExportJson",
             description: message,
             objectId: null,
             cancellationToken: cancellationToken);
@@ -605,7 +605,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: LogActionType.ErrorAccessDenied,
+                actionType: "ErrorAccessDenied",
                 description: $"Access denied for {operationName}. Required role: {UserRole.Manager}, current: {currentRoleText}.",
                 objectId: null,
                 cancellationToken: cancellationToken);
