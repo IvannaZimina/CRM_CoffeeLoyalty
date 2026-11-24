@@ -63,15 +63,21 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
 
             return OperationResult<IReadOnlyList<UserDrink>>.Success(items);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("UserDrinkRepository: {0}", ex.GetType().Name);
             return OperationResult<IReadOnlyList<UserDrink>>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<IReadOnlyList<UserDrink>>.Failure(ex.Message, "USER_DRINK_GET_ERROR");
+            System.Diagnostics.Trace.TraceWarning("UserDrinkRepository: {0}", ex.GetType().Name);
+            return OperationResult<IReadOnlyList<UserDrink>>.Failure(CoreResources.ErrorUserDrinkReadFailed, "USER_DRINK_GET_ERROR");
         }
     }
 
@@ -193,15 +199,21 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
             UserDrink updatedRecord = MapUserDrink(reader);
             return OperationResult<UserDrink>.Success(updatedRecord);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("UserDrinkRepository: {0}", ex.GetType().Name);
             return OperationResult<UserDrink>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<UserDrink>.Failure(ex.Message, "USER_DRINK_UPSERT_ERROR");
+            System.Diagnostics.Trace.TraceWarning("UserDrinkRepository: {0}", ex.GetType().Name);
+            return OperationResult<UserDrink>.Failure(CoreResources.UserDrinkUpdateFailed, "USER_DRINK_UPSERT_ERROR");
         }
         finally
         {

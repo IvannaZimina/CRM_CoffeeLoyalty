@@ -364,17 +364,18 @@ public class PurchaseService : IPurchaseService
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseService: {0}", ex.GetType().Name);
             // Roll back any uncommitted SQLite changes and log the failure.
             await RollbackSafeAsync(transaction);
 
             await _logService.LogErrorAsync(
                 AuditObjectType,
                 "ErrorPurchaseFailed",
-                ex.Message,
+                CoreResources.ErrorPurchaseProcessingFailed,
                 null,
                 cancellationToken);
 
-            return PurchaseResult.Failure(ex.Message, "PURCHASE_PROCESS_ERROR");
+            return PurchaseResult.Failure(CoreResources.ErrorPurchaseProcessingFailed, "PURCHASE_PROCESS_ERROR");
         }
         finally
         {

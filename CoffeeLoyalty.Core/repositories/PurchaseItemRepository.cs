@@ -66,15 +66,21 @@ public class PurchaseItemRepository : BaseRepository, IPurchaseItemRepository
             item.Id = createdId;
             return OperationResult<PurchaseItem>.Success(item);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseItemRepository: {0}", ex.GetType().Name);
             return OperationResult<PurchaseItem>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<PurchaseItem>.Failure(ex.Message, "PURCHASE_ITEM_ADD_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseItemRepository: {0}", ex.GetType().Name);
+            return OperationResult<PurchaseItem>.Failure(CoreResources.PurchaseItemsSaveFailed, "PURCHASE_ITEM_ADD_ERROR");
         }
         finally
         {
@@ -163,15 +169,21 @@ public class PurchaseItemRepository : BaseRepository, IPurchaseItemRepository
 
             return OperationResult.Success();
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseItemRepository: {0}", ex.GetType().Name);
             return OperationResult.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult.Failure(ex.Message, "PURCHASE_ITEM_ADD_RANGE_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseItemRepository: {0}", ex.GetType().Name);
+            return OperationResult.Failure(CoreResources.PurchaseItemsSaveFailed, "PURCHASE_ITEM_ADD_RANGE_ERROR");
         }
     }
 
@@ -217,15 +229,21 @@ public class PurchaseItemRepository : BaseRepository, IPurchaseItemRepository
 
             return OperationResult<IReadOnlyList<PurchaseItem>>.Success(items);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseItemRepository: {0}", ex.GetType().Name);
             return OperationResult<IReadOnlyList<PurchaseItem>>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<IReadOnlyList<PurchaseItem>>.Failure(ex.Message, "PURCHASE_ITEM_GET_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseItemRepository: {0}", ex.GetType().Name);
+            return OperationResult<IReadOnlyList<PurchaseItem>>.Failure(CoreResources.ErrorPurchaseItemsReadFailed, "PURCHASE_ITEM_GET_ERROR");
         }
     }
 

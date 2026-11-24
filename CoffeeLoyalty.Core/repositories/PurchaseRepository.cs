@@ -113,15 +113,21 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
                 }
             }
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
             return OperationResult<Purchase>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<Purchase>.Failure(ex.Message, "PURCHASE_ADD_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
+            return OperationResult<Purchase>.Failure(CoreResources.PurchaseSaveFailed, "PURCHASE_ADD_ERROR");
         }
     }
 
@@ -172,15 +178,21 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
             Purchase purchase = MapPurchase(reader);
             return OperationResult<Purchase>.Success(purchase);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
             return OperationResult<Purchase>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<Purchase>.Failure(ex.Message, "PURCHASE_GET_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
+            return OperationResult<Purchase>.Failure(CoreResources.ErrorPurchaseReadFailed, "PURCHASE_GET_ERROR");
         }
     }
 
@@ -230,15 +242,21 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
 
             return OperationResult<IReadOnlyList<Purchase>>.Success(purchases);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
             return OperationResult<IReadOnlyList<Purchase>>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<IReadOnlyList<Purchase>>.Failure(ex.Message, "PURCHASE_GET_BY_CUSTOMER_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
+            return OperationResult<IReadOnlyList<Purchase>>.Failure(CoreResources.ErrorPurchaseReadFailed, "PURCHASE_GET_BY_CUSTOMER_ERROR");
         }
     }
 
@@ -275,15 +293,21 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
 
             return OperationResult<IReadOnlyList<Purchase>>.Success(purchases);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (SqliteException ex)
         {
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
             return OperationResult<IReadOnlyList<Purchase>>.Failure(
-                $"{CoreResources.ErrorDatabaseConnection} ({ex.Message})",
+                CoreResources.ErrorDatabaseConnection,
                 "DB_ERROR");
         }
         catch (Exception ex)
         {
-            return OperationResult<IReadOnlyList<Purchase>>.Failure(ex.Message, "PURCHASE_GET_ALL_ERROR");
+            System.Diagnostics.Trace.TraceWarning("PurchaseRepository: {0}", ex.GetType().Name);
+            return OperationResult<IReadOnlyList<Purchase>>.Failure(CoreResources.ErrorPurchaseReadFailed, "PURCHASE_GET_ALL_ERROR");
         }
     }
 

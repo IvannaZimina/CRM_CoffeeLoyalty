@@ -97,7 +97,7 @@ public class DataTransferService : IDataTransferService
 
             if (!drinksResult.IsSuccess)
             {
-                return await FailExportRepositoryAsync("Drinks", drinksResult.ErrorMessage, cancellationToken);
+                return await FailExportRepositoryAsync("Drinks", cancellationToken);
             }
 
             OperationResult<IReadOnlyList<Purchase>> purchasesResult =
@@ -105,7 +105,7 @@ public class DataTransferService : IDataTransferService
 
             if (!purchasesResult.IsSuccess)
             {
-                return await FailExportRepositoryAsync("Purchases", purchasesResult.ErrorMessage, cancellationToken);
+                return await FailExportRepositoryAsync("Purchases", cancellationToken);
             }
 
             IReadOnlyList<Drink> drinks = drinksResult.Value ?? [];
@@ -153,9 +153,17 @@ public class DataTransferService : IDataTransferService
 
             return OperationResult<int>.Success(exportedCount);
         }
+        catch (SqliteException ex)
+        {
+            Trace.TraceWarning("JSON export database: {0}", ex.GetType().Name);
+            await _logService.LogErrorAsync(LogObjectType, "ErrorExportJson",
+                CoreResources.ErrorDatabaseConnection, null, cancellationToken);
+            return OperationResult<int>.Failure(CoreResources.ErrorDatabaseConnection, "EXPORT_REPOSITORY_ERROR");
+        }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
-            string message = $"Failed to export JSON data: {ex.Message}";
+            Trace.TraceWarning("JSON export: {0}", ex.GetType().Name);
+            string message = CoreResources.ErrorJsonExportFailed;
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
@@ -285,7 +293,7 @@ public class DataTransferService : IDataTransferService
 
             if (!existingDrinksResult.IsSuccess)
             {
-                string readErr = existingDrinksResult.ErrorMessage ?? "Failed to load existing drinks for validation.";
+                string readErr = CoreResources.ErrorJsonImportReadFailed;
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
@@ -454,9 +462,17 @@ public class DataTransferService : IDataTransferService
 
             return OperationResult<ValidatedImport>.Success(new(payload, warnings.AsReadOnly(), existingCustomerIds));
         }
+        catch (SqliteException ex)
+        {
+            Trace.TraceWarning("JSON import validation database: {0}", ex.GetType().Name);
+            await _logService.LogErrorAsync(LogObjectType, "ErrorImportValidation",
+                CoreResources.ErrorDatabaseConnection, null, cancellationToken);
+            return OperationResult<ValidatedImport>.Failure(CoreResources.ErrorDatabaseConnection, "REPOSITORY_READ_FAILED");
+        }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
-            string message = $"Failed to read or parse import JSON file: {ex.Message}";
+            Trace.TraceWarning("JSON import validation: {0}", ex.GetType().Name);
+            string message = CoreResources.ErrorJsonImportReadFailed;
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
@@ -578,10 +594,9 @@ public class DataTransferService : IDataTransferService
 
     private async Task<OperationResult<int>> FailExportRepositoryAsync(
         string sectionName,
-        string? details,
         CancellationToken cancellationToken)
     {
-        string message = $"Failed to load {sectionName} for export: {details ?? "Repository error."}";
+        string message = string.Format(CoreResources.ErrorJsonExportRepository, sectionName);
 
         await _logService.LogErrorAsync(
             objectType: LogObjectType,
@@ -638,7 +653,7 @@ public class DataTransferService : IDataTransferService
 
         if (requireExistingFile && !File.Exists(filePath))
         {
-            return OperationResult.Failure($"File '{filePath}' does not exist.", "FILE_NOT_FOUND");
+            return OperationResult.Failure(CoreResources.ErrorJsonFileNotFound, "FILE_NOT_FOUND");
         }
 
         return OperationResult.Success();
