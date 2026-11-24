@@ -38,11 +38,60 @@ public sealed class AuthService : IAuthService
     public bool IsAuthenticated => _session.IsAuthenticated;
 
     /// <summary>Authenticates an active employee using role-appropriate credential checks.</summary>
-    public async Task<OperationResult> LoginAsync(
+    public Task<OperationResult> LoginAsync(
         string employeeName,
         UserRole selectedRole,
         string? password = null,
         CancellationToken cancellationToken = default)
+    {
+        return LoginCoreAsync(selectedRole, password,
+            token => _employees.GetByNameAsync(employeeName.Trim(), token),
+            !string.IsNullOrWhiteSpace(employeeName), cancellationToken);
+    }
+
+    // Supports role selection without requiring an employee name from the caller.
+    public Task<OperationResult> LoginAsync(
+        UserRole selectedRole,
+        string? password = null,
+        CancellationToken cancellationToken = default)
+    {
+        return LoginCoreAsync(selectedRole, password,
+            token => ResolveRoleAccountAsync(selectedRole, token),
+            true, cancellationToken);
+    }
+
+    // The role must identify exactly one active account; never choose an arbitrary employee.
+    private async Task<Employee?> ResolveRoleAccountAsync(
+        UserRole selectedRole, CancellationToken cancellationToken)
+    {
+        IReadOnlyList<Employee> employees = await _employees.GetAllAsync(cancellationToken);
+        Employee? match = null;
+        foreach (Employee employee in employees)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!employee.IsActive || employee.EmployeeRole != selectedRole)
+            {
+                continue;
+            }
+
+            if (match is not null)
+            {
+                return null;
+            }
+
+            match = employee;
+        }
+
+        return match;
+    }
+
+    // Both login paths share the same authorization, password verification and audit logic.
+    private async Task<OperationResult> LoginCoreAsync(
+        UserRole selectedRole,
+        string? password,
+        Func<CancellationToken, Task<Employee?>> resolveEmployee,
+        bool validRequest,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -52,7 +101,7 @@ public sealed class AuthService : IAuthService
             await LogoutAsync(cancellationToken);
         }
 
-        if (string.IsNullOrWhiteSpace(employeeName) || !Enum.IsDefined(selectedRole))
+        if (!validRequest || !Enum.IsDefined(selectedRole))
         {
             await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthInvalidAttempt, cancellationToken);
             return InvalidCredentials();
@@ -60,7 +109,7 @@ public sealed class AuthService : IAuthService
 
         try
         {
-            Employee? employee = await _employees.GetByNameAsync(employeeName.Trim(), cancellationToken);
+            Employee? employee = await resolveEmployee(cancellationToken);
             if (employee is null || employee.Id <= 0 || !employee.IsActive ||
                 employee.EmployeeRole != selectedRole)
             {
