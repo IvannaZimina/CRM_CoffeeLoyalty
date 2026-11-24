@@ -1,5 +1,4 @@
-using CoffeeLoyalty.Core.Enums;
-using CoffeeLoyalty.Core.resources;
+﻿using CoffeeLoyalty.Core.resources;
 
 using CoffeeLoyalty.Core.Validation;
 
@@ -95,14 +94,6 @@ public class LogEntry : BaseEntity
             _actionType = value.Trim();
         }
     }
-
-    // Resolves recognized event names without losing the original historical text.
-    // Unknown legacy names (including numeric strings) have no typed value.
-    public LogActionType? KnownActionType =>
-        Enum.TryParse(ActionType, out LogActionType action) &&
-        Enum.IsDefined(action) && action.ToString() == ActionType
-            ? action
-            : null;
 
     // Stores a readable explanation of the event.
     // Empty descriptions are rejected so log records remain useful.

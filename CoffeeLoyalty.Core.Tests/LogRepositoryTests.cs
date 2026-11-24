@@ -1,6 +1,4 @@
-using CoffeeLoyalty.Core.Services;
-using CoffeeLoyalty.Core.Enums;
-
+﻿
 using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.Models;
 using CoffeeLoyalty.Core.Repositories;
@@ -13,36 +11,6 @@ public class LogRepositoryTests
 {
     private static readonly DateTime TestTime =
         new(2026, 1, 2, 10, 0, 0, DateTimeKind.Utc);
-
-    [Fact]
-    public async Task TypedAction_RoundTripsAsTextAndFiltersCorrectly()
-    {
-        await WithDatabaseAsync(async (repository, factory) =>
-        {
-            var service = new LogService(repository, new EmployeeSession());
-            Assert.True((await service.LogInfoAsync("System", LogActionType.LogStartup, "Started.")).IsSuccess);
-            LogEntry saved = Assert.Single(await repository.GetByActionTypeAsync("LogStartup"));
-            Assert.Equal<LogActionType?>(LogActionType.LogStartup, saved.KnownActionType);
-            await using SqliteConnection connection = factory.OpenConnection();
-            await using SqliteCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT actionType || ':' || typeof(actionType) FROM LOGS;";
-            Assert.Equal("LogStartup:text", Convert.ToString(await command.ExecuteScalarAsync()));
-        });
-    }
-
-    [Theory]
-    [InlineData("LegacyCustomAction")]
-    [InlineData("1")]
-    public async Task LegacyAction_RemainsReadableWithoutFalseEnumMapping(string action)
-    {
-        await WithDatabaseAsync(async (repository, factory) =>
-        {
-            await repository.AddAsync(new LogEntry("System", action, "Legacy event."));
-            LogEntry saved = Assert.Single(await repository.GetAllAsync());
-            Assert.Equal(action, saved.ActionType);
-            Assert.Null(saved.KnownActionType);
-        });
-    }
 
     [Fact]
     public async Task AddSystemLog_PreservesNullableObjectId()

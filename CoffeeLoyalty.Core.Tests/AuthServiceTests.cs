@@ -239,18 +239,18 @@ public class AuthServiceTests
     {
         public List<(string action, string description, int? objectId)> Events { get; } = [];
         public Action? BeforeInfo { get; init; }
-        public Task<OperationResult> LogInfoAsync(string objectType, LogActionType actionType, string description,
+        public Task<OperationResult> LogInfoAsync(string objectType, string actionType, string description,
             int? objectId = null, CancellationToken cancellationToken = default)
         {
             BeforeInfo?.Invoke();
             cancellationToken.ThrowIfCancellationRequested();
-            Events.Add((actionType.ToString(), description, objectId));
+            Events.Add((actionType, description, objectId));
             return Task.FromResult(OperationResult.Success());
         }
-        public Task<OperationResult> LogErrorAsync(string objectType, LogActionType actionType, string description,
+        public Task<OperationResult> LogErrorAsync(string objectType, string actionType, string description,
             int? objectId = null, CancellationToken cancellationToken = default)
         {
-            Events.Add((actionType.ToString(), description, objectId));
+            Events.Add((actionType, description, objectId));
             return Task.FromResult(OperationResult.Success());
         }
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetAllAsync(CancellationToken cancellationToken = default) =>
@@ -258,7 +258,7 @@ public class AuthServiceTests
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByDateRangeAsync(DateTime startDate, DateTime endDate,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
-        public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(LogActionType actionType,
+        public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(string actionType,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
     }
