@@ -669,4 +669,28 @@
   <data name="LogServiceDetailsRedacted" xml:space="preserve">
     <value>Technical or sensitive details have been omitted.</value>
   </data>
+  <data name="ErrorAuthInvalidCredentials" xml:space="preserve">
+    <value>Sign-in failed. Check the employee account, role, or credentials.</value>
+  </data>
+  <data name="ErrorAuthUpdateFailed" xml:space="preserve">
+    <value>The employee credentials could not be updated.</value>
+  </data>
+  <data name="ErrorAuthFailed" xml:space="preserve">
+    <value>Authentication could not be completed.</value>
+  </data>
+  <data name="LogAuthInvalidAttempt" xml:space="preserve">
+    <value>Invalid sign-in attempt.</value>
+  </data>
+  <data name="LogAuthDenied" xml:space="preserve">
+    <value>Sign-in denied.</value>
+  </data>
+  <data name="LogAuthFailed" xml:space="preserve">
+    <value>Authentication could not be completed.</value>
+  </data>
+  <data name="LogAuthSignedIn" xml:space="preserve">
+    <value>Employee signed in.</value>
+  </data>
+  <data name="LogAuthSignedOut" xml:space="preserve">
+    <value>Employee signed out.</value>
+  </data>
 </root>

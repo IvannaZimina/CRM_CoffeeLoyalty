@@ -1694,5 +1694,53 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LogServiceDetailsRedacted", resourceCulture);
             }
         }
+
+        public static string ErrorAuthInvalidCredentials {
+            get {
+                return ResourceManager.GetString("ErrorAuthInvalidCredentials", resourceCulture);
+            }
+        }
+
+        public static string ErrorAuthUpdateFailed {
+            get {
+                return ResourceManager.GetString("ErrorAuthUpdateFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorAuthFailed {
+            get {
+                return ResourceManager.GetString("ErrorAuthFailed", resourceCulture);
+            }
+        }
+
+        public static string LogAuthInvalidAttempt {
+            get {
+                return ResourceManager.GetString("LogAuthInvalidAttempt", resourceCulture);
+            }
+        }
+
+        public static string LogAuthDenied {
+            get {
+                return ResourceManager.GetString("LogAuthDenied", resourceCulture);
+            }
+        }
+
+        public static string LogAuthFailed {
+            get {
+                return ResourceManager.GetString("LogAuthFailed", resourceCulture);
+            }
+        }
+
+        public static string LogAuthSignedIn {
+            get {
+                return ResourceManager.GetString("LogAuthSignedIn", resourceCulture);
+            }
+        }
+
+        public static string LogAuthSignedOut {
+            get {
+                return ResourceManager.GetString("LogAuthSignedOut", resourceCulture);
+            }
+        }
     }
 }
