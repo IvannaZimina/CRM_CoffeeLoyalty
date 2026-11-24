@@ -369,7 +369,7 @@ public class PurchaseTests
         // Releases SQLite connection pools and deletes the temporary database file after each test.
         public ValueTask DisposeAsync()
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(_dbPath);
             if (File.Exists(_dbPath))
             {
                 File.Delete(_dbPath);

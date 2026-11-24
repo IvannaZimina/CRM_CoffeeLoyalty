@@ -197,7 +197,7 @@ public class CheckoutRepositoriesTests
 
         public ValueTask DisposeAsync()
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(_dbPath);
             if (File.Exists(_dbPath))
             {
                 File.Delete(_dbPath);

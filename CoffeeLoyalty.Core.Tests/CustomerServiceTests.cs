@@ -299,7 +299,7 @@ public class CustomerServiceTests
 
         public ValueTask DisposeAsync()
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(_path);
             File.Delete(_path);
             return ValueTask.CompletedTask;
         }

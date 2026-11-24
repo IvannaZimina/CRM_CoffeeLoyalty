@@ -2021,5 +2021,29 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("ValRequiredField", resourceCulture);
             }
         }
+        public static string ErrorJsonImportPersistence {
+            get {
+                return ResourceManager.GetString("ErrorJsonImportPersistence", resourceCulture);
+            }
+        }
+
+        public static string LogJsonImportCancelled {
+            get {
+                return ResourceManager.GetString("LogJsonImportCancelled", resourceCulture);
+            }
+        }
+
+        public static string LogJsonImportCompleted {
+            get {
+                return ResourceManager.GetString("LogJsonImportCompleted", resourceCulture);
+            }
+        }
+
+        public static string ErrorJsonImportAuditFailed {
+            get {
+                return ResourceManager.GetString("ErrorJsonImportAuditFailed", resourceCulture);
+            }
+        }
+
     }
 }

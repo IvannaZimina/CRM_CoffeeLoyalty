@@ -190,7 +190,7 @@ public class EmployeeRepositoryTests
         }
         finally
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(databasePath);
 
             if (File.Exists(databasePath))
             {

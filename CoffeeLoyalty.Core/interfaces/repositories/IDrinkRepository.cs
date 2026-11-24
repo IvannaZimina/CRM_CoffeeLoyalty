@@ -24,6 +24,12 @@ public interface IDrinkRepository
         Drink drink,
         CancellationToken cancellationToken = default);
 
+    // Adds a drink using the caller's transaction when supplied.
+    Task<OperationResult<Drink>> AddAsync(
+        Drink drink,
+        object? transaction,
+        CancellationToken cancellationToken = default);
+
     // Updates existing drink details such as name, price, type, and image path.
     Task<OperationResult> UpdateAsync(
         Drink drink,

@@ -296,7 +296,7 @@ public class CustomerRepositoryTests
         }
         finally
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(databasePath);
 
             if (File.Exists(databasePath))
             {
