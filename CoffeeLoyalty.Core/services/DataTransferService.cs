@@ -80,7 +80,7 @@ public class DataTransferService : IDataTransferService
         {
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: "ErrorExportInvalidPath",
+                actionType: LogActionType.ErrorExportInvalidPath,
                 description: pathCheck.ErrorMessage ?? "Invalid export file path.",
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -144,7 +144,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogInfoAsync(
                 objectType: LogObjectType,
-                actionType: "LogExportJson",
+                actionType: LogActionType.LogExportJson,
                 description: $"Exported {exportedCount} records to '{Path.GetFileName(filePath)}' " +
                              $"(Drinks: {payload.Drinks.Count}, Customers: {payload.Customers.Count}, " +
                              $"Cards: {payload.Cards.Count}, Purchases: {payload.Purchases.Count}, Logs: {payload.Logs.Count}).",
@@ -156,7 +156,7 @@ public class DataTransferService : IDataTransferService
         catch (SqliteException ex)
         {
             Trace.TraceWarning("JSON export database: {0}", ex.GetType().Name);
-            await _logService.LogErrorAsync(LogObjectType, "ErrorExportJson",
+            await _logService.LogErrorAsync(LogObjectType, LogActionType.ErrorExportJson,
                 CoreResources.ErrorDatabaseConnection, null, cancellationToken);
             return OperationResult<int>.Failure(CoreResources.ErrorDatabaseConnection, "EXPORT_REPOSITORY_ERROR");
         }
@@ -167,7 +167,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: "ErrorExportJson",
+                actionType: LogActionType.ErrorExportJson,
                 description: message,
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -212,7 +212,7 @@ public class DataTransferService : IDataTransferService
         {
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: "ErrorImportValidation",
+                actionType: LogActionType.ErrorImportValidation,
                 description: pathCheck.ErrorMessage ?? "Invalid import file path.",
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -231,7 +231,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: "ErrorImportValidation",
+                    actionType: LogActionType.ErrorImportValidation,
                     description: emptyError,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -249,7 +249,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: "ErrorImportValidation",
+                    actionType: LogActionType.ErrorImportValidation,
                     description: nullPayloadError,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -280,7 +280,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: "ErrorImportValidation",
+                    actionType: LogActionType.ErrorImportValidation,
                     description: joinedSchemaErrors,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -297,7 +297,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: "ErrorImportValidation",
+                    actionType: LogActionType.ErrorImportValidation,
                     description: readErr,
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -452,7 +452,7 @@ public class DataTransferService : IDataTransferService
 
                 await _logService.LogErrorAsync(
                     objectType: LogObjectType,
-                    actionType: "ErrorImportValidation",
+                    actionType: LogActionType.ErrorImportValidation,
                     description: $"Validation failed for '{Path.GetFileName(filePath)}': {combinedErrors}",
                     objectId: null,
                     cancellationToken: cancellationToken);
@@ -465,7 +465,7 @@ public class DataTransferService : IDataTransferService
         catch (SqliteException ex)
         {
             Trace.TraceWarning("JSON import validation database: {0}", ex.GetType().Name);
-            await _logService.LogErrorAsync(LogObjectType, "ErrorImportValidation",
+            await _logService.LogErrorAsync(LogObjectType, LogActionType.ErrorImportValidation,
                 CoreResources.ErrorDatabaseConnection, null, cancellationToken);
             return OperationResult<ValidatedImport>.Failure(CoreResources.ErrorDatabaseConnection, "REPOSITORY_READ_FAILED");
         }
@@ -476,7 +476,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: "ErrorImportValidation",
+                actionType: LogActionType.ErrorImportValidation,
                 description: message,
                 objectId: null,
                 cancellationToken: cancellationToken);
@@ -560,24 +560,24 @@ public class DataTransferService : IDataTransferService
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            await AuditImportAsync(true, "ErrorImportCancelled", CoreResources.LogJsonImportCancelled);
+            await AuditImportAsync(true, LogActionType.ErrorImportCancelled, CoreResources.LogJsonImportCancelled);
             throw;
         }
         catch (Exception ex)
         {
             Trace.TraceWarning(ex.GetType().Name);
-            await AuditImportAsync(true, "ErrorImportJson", CoreResources.ErrorJsonImportPersistence);
+            await AuditImportAsync(true, LogActionType.ErrorImportJson, CoreResources.ErrorJsonImportPersistence);
             return OperationResult<int>.Failure(CoreResources.ErrorJsonImportPersistence, "IMPORT_PERSISTENCE_ERROR");
         }
 
         // Log after the transaction closes. Audit failure cannot undo or misreport a committed import.
-        await AuditImportAsync(false, "LogImportJson", string.Format(CultureInfo.InvariantCulture,
+        await AuditImportAsync(false, LogActionType.LogImportJson, string.Format(CultureInfo.InvariantCulture,
             CoreResources.LogJsonImportCompleted, importedCount, Path.GetFileName(filePath),
             payload.Drinks.Count, payload.Customers.Count, payload.Cards.Count));
         return OperationResult<int>.Success(importedCount);
     }
 
-    private async Task AuditImportAsync(bool error, string action, string message)
+    private async Task AuditImportAsync(bool error, LogActionType action, string message)
     {
         try
         {
@@ -600,7 +600,7 @@ public class DataTransferService : IDataTransferService
 
         await _logService.LogErrorAsync(
             objectType: LogObjectType,
-            actionType: "ErrorExportJson",
+            actionType: LogActionType.ErrorExportJson,
             description: message,
             objectId: null,
             cancellationToken: cancellationToken);
@@ -620,7 +620,7 @@ public class DataTransferService : IDataTransferService
 
             await _logService.LogErrorAsync(
                 objectType: LogObjectType,
-                actionType: "ErrorAccessDenied",
+                actionType: LogActionType.ErrorAccessDenied,
                 description: $"Access denied for {operationName}. Required role: {UserRole.Manager}, current: {currentRoleText}.",
                 objectId: null,
                 cancellationToken: cancellationToken);

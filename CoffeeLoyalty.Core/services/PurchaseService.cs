@@ -1,4 +1,5 @@
-﻿using CoffeeLoyalty.Core.Data;
+﻿using CoffeeLoyalty.Core.Enums;
+using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.interfaces.services;
 using CoffeeLoyalty.Core.Interfaces.Repositories;
@@ -66,7 +67,7 @@ public class PurchaseService : IPurchaseService
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            await AuditAsync(true, "ErrorPurchaseFailed", "Purchase cancelled.");
+            await AuditAsync(true, LogActionType.ErrorPurchaseFailed, "Purchase cancelled.");
             throw;
         }
         catch (Exception ex)
@@ -78,17 +79,17 @@ public class PurchaseService : IPurchaseService
 
         if (result.IsSuccess)
         {
-            await AuditAsync(false, "LogPurchase",
+            await AuditAsync(false, LogActionType.LogPurchase,
                 $"Purchase #{result.PurchaseId} completed (Total: {result.TotalAmount:0.00}, Spent: {result.BonusesSpent}, Earned: {result.BonusesEarned}).",
                 result.PurchaseId);
         }
         else
         {
-            string action = result.ErrorCode switch
+            LogActionType action = result.ErrorCode switch
             {
-                "UNAUTHENTICATED" => "ErrorPurchaseUnauthorized",
-                "EMPLOYEE_MISMATCH" => "ErrorPurchaseForbidden",
-                _ => "ErrorPurchaseFailed"
+                "UNAUTHENTICATED" => LogActionType.ErrorPurchaseUnauthorized,
+                "EMPLOYEE_MISMATCH" => LogActionType.ErrorPurchaseForbidden,
+                _ => LogActionType.ErrorPurchaseFailed
             };
 
             // Record a stable error code rather than arbitrary exception details.
@@ -285,7 +286,7 @@ public class PurchaseService : IPurchaseService
     }
 
     // Audit is best-effort and must never change the outcome of a completed checkout.
-    private async Task AuditAsync(bool error, string action, string description, int? objectId = null)
+    private async Task AuditAsync(bool error, LogActionType action, string description, int? objectId = null)
     {
         try
         {
