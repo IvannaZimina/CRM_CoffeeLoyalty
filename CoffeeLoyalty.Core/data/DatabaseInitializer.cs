@@ -46,6 +46,9 @@ public sealed class DatabaseInitializer
         // Group schema creation and seeding into one atomic transaction.
         using var transaction = connection.BeginTransaction();
 
+        // Detect existing application databases before CREATE TABLE IF NOT EXISTS changes the schema.
+        bool isNewDatabase = !HasExistingApplicationSchema(connection, transaction);
+
         foreach (string schemaFile in SchemaFiles)
         {
             // Load the embedded SQL script for the current schema (including DrinksSchema.sql).
@@ -61,11 +64,37 @@ public sealed class DatabaseInitializer
         // Upgrade existing LOGS tables before inserting seed data.
         EnsureLogEmployeeIdColumn(connection, transaction);
 
-        // Seed initial data (such as menu items for DRINKS) after schemas are created.
-        _seedDataFactory.Seed(connection, transaction);
+        // Demo records belong only to a fresh database, never to an existing customer database.
+        if (isNewDatabase)
+        {
+            _seedDataFactory.Seed(connection, transaction);
+        }
+        else
+        {
+            _seedDataFactory.SeedReferenceData(connection, transaction);
+        }
 
         // Commit all changes only when every schema and seed step succeeds.
         transaction.Commit();
+    }
+
+    // Existing or partially migrated databases must not receive a fresh demonstration dataset.
+    private static bool HasExistingApplicationSchema(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = """
+            SELECT EXISTS (
+                SELECT 1 FROM sqlite_master
+                WHERE type = 'table' AND upper(name) IN (
+                    'CATEGORIES', 'CUSTOMERS', 'CARDS', 'EMPLOYEES', 'PURCHASES',
+                    'DRINKS', 'PURCHASE_ITEM', 'USER_DRINK', 'LOGS'
+                )
+            );
+            """;
+        return Convert.ToInt64(command.ExecuteScalar()) != 0;
     }
 
     // Adds actor tracking to legacy databases without deleting historical records.
