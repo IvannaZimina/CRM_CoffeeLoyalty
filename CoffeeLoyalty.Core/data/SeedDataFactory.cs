@@ -1,6 +1,5 @@
-﻿using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
+using System.Globalization;
+using CoffeeLoyalty.Core.Validation;
 using CoffeeLoyalty.Core.Enums;
 using Microsoft.Data.Sqlite;
 
@@ -144,12 +143,12 @@ public sealed class SeedDataFactory
             new(
                 EmployeeName: "manager",
                 Role: UserRole.Manager,
-                PasswordHash: HashPassword("manager", "ChangeMe!Manager123"),
+                PasswordHash: PasswordHasher.HashPassword("ChangeMe!Manager123"),
                 IsActive: 1),
             new(
                 EmployeeName: "cashier",
                 Role: UserRole.Cashier,
-                PasswordHash: HashPassword("cashier", "ChangeMe!Cashier123"),
+                PasswordHash: PasswordHasher.HashPassword("ChangeMe!Cashier123"),
                 IsActive: 1)
         ];
 
@@ -867,15 +866,8 @@ public sealed class SeedDataFactory
         }
     }
 
-    // Hashes a plain-text password with a per-account salt so raw passwords are never stored.
-    private static string HashPassword(string salt, string plainPassword)
-    {
-        byte[] bytes = Encoding.UTF8.GetBytes($"{salt}:{plainPassword}");
-        byte[] hash = SHA256.HashData(bytes);
-        return Convert.ToHexString(hash);
-    }
 
-    // Resolves a categoryID by categoryName inside the current transaction.
+// Resolves a categoryID by categoryName inside the current transaction.
     private static long? TryGetCategoryId(
         SqliteConnection connection,
         SqliteTransaction transaction,
