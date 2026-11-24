@@ -54,7 +54,7 @@ public sealed class AuthService : IAuthService
 
         if (string.IsNullOrWhiteSpace(employeeName) || !Enum.IsDefined(selectedRole))
         {
-            await LogFailureAsync("ErrorLogin", CoreResources.LogAuthInvalidAttempt, cancellationToken);
+            await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthInvalidAttempt, cancellationToken);
             return InvalidCredentials();
         }
 
@@ -64,7 +64,7 @@ public sealed class AuthService : IAuthService
             if (employee is null || employee.Id <= 0 || !employee.IsActive ||
                 employee.EmployeeRole != selectedRole)
             {
-                await LogFailureAsync("ErrorLogin", CoreResources.LogAuthDenied, cancellationToken);
+                await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthDenied, cancellationToken);
                 return InvalidCredentials();
             }
 
@@ -72,7 +72,7 @@ public sealed class AuthService : IAuthService
             {
                 if (string.IsNullOrEmpty(password))
                 {
-                    await LogFailureAsync("ErrorLogin", CoreResources.LogAuthDenied, cancellationToken);
+                    await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthDenied, cancellationToken);
                     return InvalidCredentials();
                 }
 
@@ -82,7 +82,7 @@ public sealed class AuthService : IAuthService
 
                 if (!validModern && !validLegacy)
                 {
-                    await LogFailureAsync("ErrorLogin", CoreResources.LogAuthDenied, cancellationToken);
+                    await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthDenied, cancellationToken);
                     return InvalidCredentials();
                 }
 
@@ -92,7 +92,7 @@ public sealed class AuthService : IAuthService
                     employee.EmployeePassword = PasswordHasher.HashPassword(password);
                     if (!await _employees.UpdateAsync(employee, cancellationToken))
                     {
-                        await LogFailureAsync("ErrorLogin", CoreResources.LogAuthFailed, cancellationToken);
+                        await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthFailed, cancellationToken);
                         return OperationResult.Failure(CoreResources.ErrorAuthUpdateFailed, "AUTH_UPDATE_FAILED");
                     }
                 }
@@ -101,7 +101,7 @@ public sealed class AuthService : IAuthService
             // Cashiers are authenticated by active employee account and selected role.
             cancellationToken.ThrowIfCancellationRequested();
             _session.SetCurrentEmployee(employee);
-            await LogInfoBestEffortAsync("LogLogin", CoreResources.LogAuthSignedIn, employee.Id, cancellationToken);
+            await LogInfoBestEffortAsync(LogActionType.LogLogin, CoreResources.LogAuthSignedIn, employee.Id, cancellationToken);
             return OperationResult.Success();
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -113,7 +113,7 @@ public sealed class AuthService : IAuthService
         catch (Exception)
         {
             _session.Clear();
-            await LogFailureAsync("ErrorLogin", CoreResources.LogAuthFailed, cancellationToken);
+            await LogFailureAsync(LogActionType.ErrorLogin, CoreResources.LogAuthFailed, cancellationToken);
             return OperationResult.Failure(CoreResources.ErrorAuthFailed, "AUTH_FAILED");
         }
     }
@@ -131,7 +131,7 @@ public sealed class AuthService : IAuthService
         try
         {
             // Log before clearing: LogService reads the actor from this same session.
-            await LogInfoBestEffortAsync("LogLogout", CoreResources.LogAuthSignedOut, actor.Id, cancellationToken);
+            await LogInfoBestEffortAsync(LogActionType.LogLogout, CoreResources.LogAuthSignedOut, actor.Id, cancellationToken);
             return OperationResult.Success();
         }
         finally
@@ -185,7 +185,7 @@ public sealed class AuthService : IAuthService
         return CryptographicOperations.FixedTimeEquals(actual, expected);
     }
 
-    private async Task LogFailureAsync(string action, string description, CancellationToken token)
+    private async Task LogFailureAsync(LogActionType action, string description, CancellationToken token)
     {
         try
         {
@@ -201,7 +201,7 @@ public sealed class AuthService : IAuthService
         }
     }
 
-    private async Task LogInfoBestEffortAsync(string action, string description, int employeeId, CancellationToken token)
+    private async Task LogInfoBestEffortAsync(LogActionType action, string description, int employeeId, CancellationToken token)
     {
         try
         {

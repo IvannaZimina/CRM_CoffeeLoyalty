@@ -40,6 +40,8 @@ public class DrinkService : IDrinkService
         OperationResult permissionCheck = await EnsureAuthenticatedAndRoleAsync(
             UserRole.Manager,
             "GetAllDrinks",
+            LogActionType.GetAllDrinksUnauthorized,
+            LogActionType.GetAllDrinksForbidden,
             cancellationToken);
 
         if (permissionCheck.IsFailure)
@@ -58,7 +60,7 @@ public class DrinkService : IDrinkService
         CancellationToken cancellationToken = default)
     {
         // Ensure an employee session is active before reading menu items.
-        OperationResult authCheck = await EnsureAuthenticatedAsync("GetAvailableDrinks", cancellationToken);
+        OperationResult authCheck = await EnsureAuthenticatedAsync("GetAvailableDrinks", LogActionType.GetAvailableDrinksUnauthorized, cancellationToken);
         if (authCheck.IsFailure)
         {
             return OperationResult<IReadOnlyList<Drink>>.Failure(
@@ -75,7 +77,7 @@ public class DrinkService : IDrinkService
         int drinkId,
         CancellationToken cancellationToken = default)
     {
-        OperationResult authCheck = await EnsureAuthenticatedAsync("GetDrinkById", cancellationToken);
+        OperationResult authCheck = await EnsureAuthenticatedAsync("GetDrinkById", LogActionType.GetDrinkByIdUnauthorized, cancellationToken);
         if (authCheck.IsFailure)
         {
             return OperationResult<Drink>.Failure(
@@ -99,7 +101,7 @@ public class DrinkService : IDrinkService
         string drinkType,
         CancellationToken cancellationToken = default)
     {
-        OperationResult authCheck = await EnsureAuthenticatedAsync("GetDrinksByType", cancellationToken);
+        OperationResult authCheck = await EnsureAuthenticatedAsync("GetDrinksByType", LogActionType.GetDrinksByTypeUnauthorized, cancellationToken);
         if (authCheck.IsFailure)
         {
             return OperationResult<IReadOnlyList<Drink>>.Failure(
@@ -134,7 +136,7 @@ public class DrinkService : IDrinkService
         string searchText,
         CancellationToken cancellationToken = default)
     {
-        OperationResult authCheck = await EnsureAuthenticatedAsync("SearchDrinks", cancellationToken);
+        OperationResult authCheck = await EnsureAuthenticatedAsync("SearchDrinks", LogActionType.SearchDrinksUnauthorized, cancellationToken);
         if (authCheck.IsFailure)
         {
             return OperationResult<IReadOnlyList<Drink>>.Failure(
@@ -177,6 +179,8 @@ public class DrinkService : IDrinkService
         OperationResult permissionCheck = await EnsureAuthenticatedAndRoleAsync(
             UserRole.Manager,
             "AddDrink",
+            LogActionType.AddDrinkUnauthorized,
+            LogActionType.AddDrinkForbidden,
             cancellationToken);
 
         if (permissionCheck.IsFailure)
@@ -190,7 +194,7 @@ public class DrinkService : IDrinkService
         if (validationResult.IsFailure)
         {
             await TryLogErrorAsync(
-                "AddDrinkValidationFailed",
+                LogActionType.AddDrinkValidationFailed,
                 validationResult.ErrorMessage ?? CoreResources.DrinkServiceInvalidDrinkData,
                 null,
                 cancellationToken);
@@ -204,7 +208,7 @@ public class DrinkService : IDrinkService
         if (addResult.IsFailure || addResult.Value is null)
         {
             await TryLogErrorAsync(
-                "AddDrinkFailed",
+                LogActionType.AddDrinkFailed,
                 string.Format(CoreResources.DrinkLogAddFailed, drink.DrinkName, addResult.ErrorMessage),
                 drink.Id > 0 ? drink.Id : null,
                 cancellationToken);
@@ -213,7 +217,7 @@ public class DrinkService : IDrinkService
         }
 
         await TryLogInfoAsync(
-            "DrinkCreated",
+            LogActionType.DrinkCreated,
             string.Format(
                 CoreResources.DrinkLogCreated,
                 addResult.Value.DrinkName,
@@ -234,6 +238,8 @@ public class DrinkService : IDrinkService
         OperationResult permissionCheck = await EnsureAuthenticatedAndRoleAsync(
             UserRole.Manager,
             "UpdateDrink",
+            LogActionType.UpdateDrinkUnauthorized,
+            LogActionType.UpdateDrinkForbidden,
             cancellationToken);
 
         if (permissionCheck.IsFailure)
@@ -245,7 +251,7 @@ public class DrinkService : IDrinkService
         if (validationResult.IsFailure)
         {
             await TryLogErrorAsync(
-                "UpdateDrinkValidationFailed",
+                LogActionType.UpdateDrinkValidationFailed,
                 validationResult.ErrorMessage ?? CoreResources.DrinkServiceInvalidDrinkData,
                 drink is not null && drink.Id > 0 ? drink.Id : null,
                 cancellationToken);
@@ -257,7 +263,7 @@ public class DrinkService : IDrinkService
         if (updateResult.IsFailure)
         {
             await TryLogErrorAsync(
-                "UpdateDrinkFailed",
+                LogActionType.UpdateDrinkFailed,
                 string.Format(
                     CoreResources.DrinkLogUpdateFailed,
                     drink!.DrinkName,
@@ -270,7 +276,7 @@ public class DrinkService : IDrinkService
         }
 
         await TryLogInfoAsync(
-            "DrinkUpdated",
+            LogActionType.DrinkUpdated,
             string.Format(
                 CoreResources.DrinkLogUpdated,
                 drink!.DrinkName,
@@ -293,6 +299,8 @@ public class DrinkService : IDrinkService
         OperationResult permissionCheck = await EnsureAuthenticatedAndRoleAsync(
             UserRole.Manager,
             "SetDrinkActiveStatus",
+            LogActionType.SetDrinkActiveStatusUnauthorized,
+            LogActionType.SetDrinkActiveStatusForbidden,
             cancellationToken);
 
         if (permissionCheck.IsFailure)
@@ -303,7 +311,7 @@ public class DrinkService : IDrinkService
         if (!ValidationHelper.IsPositive(drinkId))
         {
             await TryLogErrorAsync(
-                "SetDrinkActiveStatusFailed",
+                LogActionType.SetDrinkActiveStatusFailed,
                 CoreResources.DrinkLogUpdateInvalidId,
                 null,
                 cancellationToken);
@@ -321,7 +329,7 @@ public class DrinkService : IDrinkService
         if (statusResult.IsFailure)
         {
             await TryLogErrorAsync(
-                "SetDrinkActiveStatusFailed",
+                LogActionType.SetDrinkActiveStatusFailed,
                 string.Format(CoreResources.DrinkLogSetActiveFailed, isActive, drinkId, statusResult.ErrorMessage),
                 drinkId,
                 cancellationToken);
@@ -329,7 +337,7 @@ public class DrinkService : IDrinkService
             return statusResult;
         }
 
-        string actionType = isActive ? "DrinkActivated" : "DrinkDeactivated";
+        LogActionType actionType = isActive ? LogActionType.DrinkActivated : LogActionType.DrinkDeactivated;
         string description = isActive
             ? string.Format(CoreResources.DrinkLogActivated, drinkId)
             : string.Format(CoreResources.DrinkLogDeactivated, drinkId);
@@ -342,12 +350,13 @@ public class DrinkService : IDrinkService
     // Checks that an employee session is active; logs an error if unauthenticated.
     private async Task<OperationResult> EnsureAuthenticatedAsync(
         string actionName,
+        LogActionType unauthorizedAction,
         CancellationToken cancellationToken)
     {
         if (!_authService.IsAuthenticated || _authService.CurrentEmployee is null)
         {
             await TryLogErrorAsync(
-                $"{actionName}Unauthorized",
+                unauthorizedAction,
                 string.Format(CoreResources.DrinkLogUnauthorized, actionName),
                 null,
                 cancellationToken);
@@ -364,9 +373,11 @@ public class DrinkService : IDrinkService
     private async Task<OperationResult> EnsureAuthenticatedAndRoleAsync(
         UserRole requiredRole,
         string actionName,
+        LogActionType unauthorizedAction,
+        LogActionType forbiddenAction,
         CancellationToken cancellationToken)
     {
-        OperationResult authResult = await EnsureAuthenticatedAsync(actionName, cancellationToken);
+        OperationResult authResult = await EnsureAuthenticatedAsync(actionName, unauthorizedAction, cancellationToken);
         if (authResult.IsFailure)
         {
             return authResult;
@@ -375,7 +386,7 @@ public class DrinkService : IDrinkService
         if (!_authService.HasPermission(requiredRole))
         {
             await TryLogErrorAsync(
-                $"{actionName}Forbidden",
+                forbiddenAction,
                 string.Format(CoreResources.DrinkLogForbidden, _authService.CurrentRole, actionName, requiredRole),
                 null,
                 cancellationToken);
@@ -390,7 +401,7 @@ public class DrinkService : IDrinkService
 
     // Writes an informational audit log entry; LogService records employee ID from session.
     private Task TryLogInfoAsync(
-        string actionType,
+        LogActionType actionType,
         string description,
         int? objectId,
         CancellationToken cancellationToken) =>
@@ -403,7 +414,7 @@ public class DrinkService : IDrinkService
 
     // Writes an error audit log entry; LogService records employee ID from session.
     private Task TryLogErrorAsync(
-        string actionType,
+        LogActionType actionType,
         string description,
         int? objectId,
         CancellationToken cancellationToken) =>

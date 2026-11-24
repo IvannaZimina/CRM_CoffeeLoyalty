@@ -768,13 +768,13 @@ public sealed class SeedDataFactory
             new(
                 ObjectId: null,
                 ObjectType: "System",
-                ActionType: "LogStartup",
+                ActionType: LogActionType.LogStartup.ToString(),
                 Description: "Database initialization and seed completed.",
                 TimeStamp: "2026-01-02T09:55:00Z"),
             new(
                 ObjectId: firstPurchaseId,
                 ObjectType: "PURCHASES",
-                ActionType: "LogPurchase",
+                ActionType: LogActionType.LogPurchase.ToString(),
                 Description: "Seeded sample purchase receipt.",
                 TimeStamp: "2026-01-02T10:00:00Z")
         ];

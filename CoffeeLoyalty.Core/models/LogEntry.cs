@@ -1,4 +1,5 @@
-﻿using CoffeeLoyalty.Core.resources;
+﻿using CoffeeLoyalty.Core.Enums;
+using CoffeeLoyalty.Core.resources;
 
 using CoffeeLoyalty.Core.Validation;
 
@@ -93,6 +94,19 @@ public class LogEntry : BaseEntity
 
             _actionType = value.Trim();
         }
+    }
+
+    // Recognizes known audit names without rejecting historical custom action strings.
+    public bool TryGetKnownActionType(out LogActionType actionType)
+    {
+        if (Enum.TryParse(ActionType, out actionType) && Enum.IsDefined(actionType) &&
+            string.Equals(ActionType, actionType.ToString(), StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        actionType = default;
+        return false;
     }
 
     // Stores a readable explanation of the event.
