@@ -1,4 +1,4 @@
-﻿using CoffeeLoyalty.Core.DTOs;
+using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Enums;
 using CoffeeLoyalty.Core.interfaces.services;
 using CoffeeLoyalty.Core.Interfaces.Repositories;
@@ -185,18 +185,18 @@ public class DrinkServiceTests
         public List<(string ObjectType, string ActionType, string Description, int? ObjectId)> ErrorEntries { get; } = [];
 
         public Task<OperationResult> LogInfoAsync(
-            string objectType, string actionType, string description,
+            string objectType, LogActionType actionType, string description,
             int? objectId = null, CancellationToken cancellationToken = default)
         {
-            InfoEntries.Add((objectType, actionType, description, objectId));
+            InfoEntries.Add((objectType, actionType.ToString(), description, objectId));
             return Task.FromResult(OperationResult.Success());
         }
 
         public Task<OperationResult> LogErrorAsync(
-            string objectType, string actionType, string description,
+            string objectType, LogActionType actionType, string description,
             int? objectId = null, CancellationToken cancellationToken = default)
         {
-            ErrorEntries.Add((objectType, actionType, description, objectId));
+            ErrorEntries.Add((objectType, actionType.ToString(), description, objectId));
             return Task.FromResult(OperationResult.Success());
         }
 
@@ -208,7 +208,7 @@ public class DrinkServiceTests
             Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
 
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(
-            string actionType, CancellationToken cancellationToken = default) =>
+            LogActionType actionType, CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
     }
 

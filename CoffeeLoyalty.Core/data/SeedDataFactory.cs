@@ -768,13 +768,13 @@ public sealed class SeedDataFactory
             new(
                 ObjectId: null,
                 ObjectType: "System",
-                ActionType: "LogStartup",
+                ActionType: LogActionType.LogStartup,
                 Description: "Database initialization and seed completed.",
                 TimeStamp: "2026-01-02T09:55:00Z"),
             new(
                 ObjectId: firstPurchaseId,
                 ObjectType: "PURCHASES",
-                ActionType: "LogPurchase",
+                ActionType: LogActionType.LogPurchase,
                 Description: "Seeded sample purchase receipt.",
                 TimeStamp: "2026-01-02T10:00:00Z")
         ];
@@ -842,7 +842,7 @@ public sealed class SeedDataFactory
         foreach (LogSeedItem log in logs)
         {
             existsObjectTypeParam.Value = log.ObjectType;
-            existsActionTypeParam.Value = log.ActionType;
+            existsActionTypeParam.Value = log.ActionType.ToString();
             existsTimeStampParam.Value = log.TimeStamp;
 
             long existingCount = Convert.ToInt64(
@@ -858,7 +858,7 @@ public sealed class SeedDataFactory
                 ? log.ObjectId.Value
                 : DBNull.Value;
             insertObjectTypeParam.Value = log.ObjectType;
-            insertActionTypeParam.Value = log.ActionType;
+            insertActionTypeParam.Value = log.ActionType.ToString();
             insertDescriptionParam.Value = log.Description;
             insertTimeStampParam.Value = log.TimeStamp;
 
@@ -1048,7 +1048,7 @@ public sealed class SeedDataFactory
     private sealed record LogSeedItem(
         long? ObjectId,
         string ObjectType,
-        string ActionType,
+        LogActionType ActionType,
         string Description,
         string TimeStamp);
 }

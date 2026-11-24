@@ -1,4 +1,4 @@
-﻿using CoffeeLoyalty.Core.Data;
+using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Enums;
 using CoffeeLoyalty.Core.interfaces.services;
@@ -72,7 +72,7 @@ public class PurchaseService : IPurchaseService
         {
             await _logService.LogErrorAsync(
                 AuditObjectType,
-                "ErrorPurchaseUnauthorized",
+                LogActionType.ErrorPurchaseUnauthorized,
                 CoreResources.DrinkServiceAuthRequired,
                 null,
                 cancellationToken);
@@ -100,7 +100,7 @@ public class PurchaseService : IPurchaseService
         {
             await _logService.LogErrorAsync(
                 AuditObjectType,
-                "ErrorPurchaseForbidden",
+                LogActionType.ErrorPurchaseForbidden,
                 CoreResources.DrinkServiceAccessDenied,
                 null,
                 cancellationToken);
@@ -341,7 +341,7 @@ public class PurchaseService : IPurchaseService
             // Write audit info after committing so LogService uses a separate connection without lock contention.
             await _logService.LogInfoAsync(
                 AuditObjectType,
-                "LogPurchase",
+                LogActionType.LogPurchase,
                 $"Purchase #{purchaseId} completed (Total: {finalAmount:0.00}, Spent: {bonusesSpent}, Earned: {bonusesEarned}).",
                 purchaseId,
                 cancellationToken);
@@ -369,7 +369,7 @@ public class PurchaseService : IPurchaseService
 
             await _logService.LogErrorAsync(
                 AuditObjectType,
-                "ErrorPurchaseFailed",
+                LogActionType.ErrorPurchaseFailed,
                 ex.Message,
                 null,
                 cancellationToken);

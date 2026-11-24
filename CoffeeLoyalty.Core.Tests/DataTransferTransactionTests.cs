@@ -226,12 +226,12 @@ public class DataTransferTransactionTests
     // Simulates an audit sink failure only on informational events after commit.
     private sealed class ThrowingInfoLog(ILogService inner) : ILogService
     {
-        public Task<OperationResult> LogInfoAsync(string objectType, string actionType, string description,
+        public Task<OperationResult> LogInfoAsync(string objectType, LogActionType actionType, string description,
             int? objectId = null, CancellationToken cancellationToken = default) => throw new IOException("Audit unavailable");
-        public Task<OperationResult> LogErrorAsync(string objectType, string actionType, string description,
+        public Task<OperationResult> LogErrorAsync(string objectType, LogActionType actionType, string description,
             int? objectId = null, CancellationToken cancellationToken = default) => inner.LogErrorAsync(objectType, actionType, description, objectId, cancellationToken);
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetAllAsync(CancellationToken cancellationToken = default) => inner.GetAllAsync(cancellationToken);
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default) => inner.GetByDateRangeAsync(startDate, endDate, cancellationToken);
-        public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(string actionType, CancellationToken cancellationToken = default) => inner.GetByActionTypeAsync(actionType, cancellationToken);
+        public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(LogActionType actionType, CancellationToken cancellationToken = default) => inner.GetByActionTypeAsync(actionType, cancellationToken);
     }
 }
