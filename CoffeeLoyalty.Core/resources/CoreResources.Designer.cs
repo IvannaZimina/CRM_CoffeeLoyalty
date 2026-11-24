@@ -1742,5 +1742,107 @@ namespace CoffeeLoyalty.Core.resources {
                 return ResourceManager.GetString("LogAuthSignedOut", resourceCulture);
             }
         }
+
+        public static string ErrorCustomerAccessDenied {
+            get {
+                return ResourceManager.GetString("ErrorCustomerAccessDenied", resourceCulture);
+            }
+        }
+
+        public static string ErrorCustomerInvalidInput {
+            get {
+                return ResourceManager.GetString("ErrorCustomerInvalidInput", resourceCulture);
+            }
+        }
+
+        public static string ErrorCustomerNotFound {
+            get {
+                return ResourceManager.GetString("ErrorCustomerNotFound", resourceCulture);
+            }
+        }
+
+        public static string ErrorCustomerCategoryMissing {
+            get {
+                return ResourceManager.GetString("ErrorCustomerCategoryMissing", resourceCulture);
+            }
+        }
+
+        public static string ErrorCustomerInactive {
+            get {
+                return ResourceManager.GetString("ErrorCustomerInactive", resourceCulture);
+            }
+        }
+
+        public static string ErrorCustomerOperationFailed {
+            get {
+                return ResourceManager.GetString("ErrorCustomerOperationFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorCustomerAuditFailed {
+            get {
+                return ResourceManager.GetString("ErrorCustomerAuditFailed", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerAccessDenied {
+            get {
+                return ResourceManager.GetString("LogCustomerAccessDenied", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerOperationFailed {
+            get {
+                return ResourceManager.GetString("LogCustomerOperationFailed", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerRegistered {
+            get {
+                return ResourceManager.GetString("LogCustomerRegistered", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerUpdated {
+            get {
+                return ResourceManager.GetString("LogCustomerUpdated", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerCategoryChanged {
+            get {
+                return ResourceManager.GetString("LogCustomerCategoryChanged", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerActivated {
+            get {
+                return ResourceManager.GetString("LogCustomerActivated", resourceCulture);
+            }
+        }
+
+        public static string LogCustomerDeactivated {
+            get {
+                return ResourceManager.GetString("LogCustomerDeactivated", resourceCulture);
+            }
+        }
+
+        public static string LogCardIssued {
+            get {
+                return ResourceManager.GetString("LogCardIssued", resourceCulture);
+            }
+        }
+
+        public static string LogCardActivated {
+            get {
+                return ResourceManager.GetString("LogCardActivated", resourceCulture);
+            }
+        }
+
+        public static string LogCardBlocked {
+            get {
+                return ResourceManager.GetString("LogCardBlocked", resourceCulture);
+            }
+        }
     }
 }

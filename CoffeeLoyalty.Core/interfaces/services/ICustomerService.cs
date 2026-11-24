@@ -35,6 +35,12 @@ public interface ICustomerService
         int customerId,
         CancellationToken cancellationToken = default);
 
+    // Registers a new customer using the initial loyalty category.
+    Task<OperationResult<LoyaltyCard>> RegisterCustomerAsync(
+        string customerName,
+        DateOnly? birthDate = null,
+        CancellationToken cancellationToken = default);
+
     // Registers a customer and creates their first card together.
     Task<OperationResult<LoyaltyCard>> RegisterCustomerAsync(
         Customer customer,
