@@ -1,13 +1,14 @@
 using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Enums;
+using CoffeeLoyalty.Core.interfaces.services;
 using CoffeeLoyalty.Core.Interfaces.Repositories;
 using CoffeeLoyalty.Core.Interfaces.Services;
-using CoffeeLoyalty.Core.interfaces.services;
 using CoffeeLoyalty.Core.Models;
 using CoffeeLoyalty.Core.resources;
 using Microsoft.Data.Sqlite;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace CoffeeLoyalty.Core.Services;
 
@@ -62,17 +63,75 @@ public sealed class CustomerService : ICustomerService
             return customer is null ? NotFound<Customer>() : OperationResult<Customer>.Success(customer);
         }, cancellationToken);
 
-    // Searches customer names using case-insensitive partial matching.
+    // Searches customer details, loyalty cards and categories using partial matching.
     public Task<OperationResult<IReadOnlyList<Customer>>> SearchCustomersAsync(
         string searchText, CancellationToken cancellationToken = default) =>
         ReadAsync<IReadOnlyList<Customer>>(nameof(SearchCustomersAsync), async () =>
         {
-            if (string.IsNullOrWhiteSpace(searchText)) return Invalid<IReadOnlyList<Customer>>();
+            if (string.IsNullOrWhiteSpace(searchText))
+                return Invalid<IReadOnlyList<Customer>>();
+
             string query = searchText.Trim();
-            IReadOnlyList<Customer> customers = await _customers.GetAllAsync(cancellationToken);
-            return OperationResult<IReadOnlyList<Customer>>.Success(customers
-                .Where(c => c.CustomerName.Contains(query, StringComparison.OrdinalIgnoreCase))
-                .ToList().AsReadOnly());
+
+            // Load related data once to avoid separate queries for each customer.
+            IReadOnlyList<Customer> customers =
+                await _customers.GetAllAsync(cancellationToken);
+
+            IReadOnlyList<LoyaltyCard> cards =
+                await _cards.GetAllAsync(cancellationToken);
+
+            IReadOnlyList<CustomerCategory> categories =
+                await _categories.GetAllAsync(cancellationToken);
+
+            // Group cards by customer and index categories by ID.
+            var cardsByCustomer = cards.ToLookup(card => card.CustomerId);
+            var categoriesById = categories.ToDictionary(
+                category => category.Id,
+                category => category.CategoryName);
+
+            bool Matches(string? value) =>
+                value?.Contains(query, StringComparison.OrdinalIgnoreCase) == true;
+
+            bool MatchesNumber(int value) =>
+                Matches(value.ToString(CultureInfo.InvariantCulture));
+
+            List<Customer> results = [];
+
+            foreach (Customer customer in customers)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                categoriesById.TryGetValue(
+                    customer.CategoryId, out string? categoryName);
+
+                string status = customer.IsActive ? "Active" : "Inactive";
+
+                // Match customer fields and related loyalty information.
+                bool matches =
+                    Matches(customer.CustomerName) ||
+                    MatchesNumber(customer.Id) ||
+                    MatchesNumber(customer.CategoryId) ||
+                    MatchesNumber(customer.BonusBalance) ||
+                    Matches(categoryName) ||
+                    status.StartsWith(query, StringComparison.OrdinalIgnoreCase) ||
+                    Matches(customer.BirthDate?.ToString(
+                        "dd.MM.yyyy", CultureInfo.InvariantCulture)) ||
+                    Matches(customer.BirthDate?.ToString(
+                        "yyyy-MM-dd", CultureInfo.InvariantCulture)) ||
+                    Matches(customer.TimeStamp.ToString(
+                        "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture)) ||
+                    Matches(customer.TimeStamp.ToString(
+                        "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)) ||
+                    cardsByCustomer[customer.Id].Any(
+                        card => MatchesNumber(card.Id));
+
+                // Add each matching customer only once.
+                if (matches)
+                    results.Add(customer);
+            }
+
+            return OperationResult<IReadOnlyList<Customer>>.Success(
+                results.AsReadOnly());
         }, cancellationToken);
 
     // Finds the owner even for blocked cards; checkout validates active status separately.
