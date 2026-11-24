@@ -693,4 +693,55 @@
   <data name="LogAuthSignedOut" xml:space="preserve">
     <value>Employee signed out.</value>
   </data>
+  <data name="ErrorCustomerAccessDenied" xml:space="preserve">
+    <value>Access denied for this customer operation.</value>
+  </data>
+  <data name="ErrorCustomerInvalidInput" xml:space="preserve">
+    <value>The customer or card information is invalid.</value>
+  </data>
+  <data name="ErrorCustomerNotFound" xml:space="preserve">
+    <value>The requested customer or loyalty card was not found.</value>
+  </data>
+  <data name="ErrorCustomerCategoryMissing" xml:space="preserve">
+    <value>The required loyalty category was not found.</value>
+  </data>
+  <data name="ErrorCustomerInactive" xml:space="preserve">
+    <value>The customer account is inactive.</value>
+  </data>
+  <data name="ErrorCustomerOperationFailed" xml:space="preserve">
+    <value>The customer operation could not be completed.</value>
+  </data>
+  <data name="ErrorCustomerAuditFailed" xml:space="preserve">
+    <value>A customer audit event could not be saved.</value>
+  </data>
+  <data name="LogCustomerAccessDenied" xml:space="preserve">
+    <value>Access denied for {0}.</value>
+  </data>
+  <data name="LogCustomerOperationFailed" xml:space="preserve">
+    <value>Customer operation failed: {0}.</value>
+  </data>
+  <data name="LogCustomerRegistered" xml:space="preserve">
+    <value>Customer registered.</value>
+  </data>
+  <data name="LogCustomerUpdated" xml:space="preserve">
+    <value>Customer profile updated.</value>
+  </data>
+  <data name="LogCustomerCategoryChanged" xml:space="preserve">
+    <value>Customer loyalty category changed.</value>
+  </data>
+  <data name="LogCustomerActivated" xml:space="preserve">
+    <value>Customer account activated.</value>
+  </data>
+  <data name="LogCustomerDeactivated" xml:space="preserve">
+    <value>Customer account deactivated.</value>
+  </data>
+  <data name="LogCardIssued" xml:space="preserve">
+    <value>Loyalty card issued.</value>
+  </data>
+  <data name="LogCardActivated" xml:space="preserve">
+    <value>Loyalty card activated.</value>
+  </data>
+  <data name="LogCardBlocked" xml:space="preserve">
+    <value>Loyalty card blocked.</value>
+  </data>
 </root>
