@@ -744,4 +744,31 @@
   <data name="LogCardBlocked" xml:space="preserve">
     <value>Loyalty card blocked.</value>
   </data>
+  <data name="DrinkNotFound" xml:space="preserve">
+    <value>Drink not found.</value>
+  </data>
+  <data name="DrinkInactive" xml:space="preserve">
+    <value>Drink '{0}' is inactive.</value>
+  </data>
+  <data name="CardNotFound" xml:space="preserve">
+    <value>Loyalty card not found.</value>
+  </data>
+  <data name="BonusCardRequiredForRedemption" xml:space="preserve">
+    <value>An active loyalty card is required to redeem bonuses.</value>
+  </data>
+  <data name="BonusRedemptionInvalid" xml:space="preserve">
+    <value>Bonus redemption amount is invalid.</value>
+  </data>
+  <data name="PurchaseSaveFailed" xml:space="preserve">
+    <value>Failed to save purchase record.</value>
+  </data>
+  <data name="PurchaseItemsSaveFailed" xml:space="preserve">
+    <value>Failed to save purchase items.</value>
+  </data>
+  <data name="UserDrinkUpdateFailed" xml:space="preserve">
+    <value>Failed to update drink counter for loyalty card.</value>
+  </data>
+  <data name="CustomerUpdateFailed" xml:space="preserve">
+    <value>Failed to update customer bonus balance.</value>
+  </data>
 </root>
