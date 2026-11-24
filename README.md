@@ -94,8 +94,6 @@ accrual rates and upgrade thresholds are intentionally not active in the current
 - Version Control: Git and GitHub
 - Development Environment: Visual Studio 2022 or newer (tested target: Visual Studio 2026)
 
-> *TODO: Update with additional libraries/packages (e.g., SQLite provider, JSON serialization) as they are added.*
-
 Implemented packages and project dependencies:
 - `Microsoft.Data.Sqlite` 10.0.11 — SQLite connection and transaction support.
 - `Lucide.NET.Wpf` 0.1.2 — available icon library for the WPF layer.
@@ -107,8 +105,6 @@ Implemented packages and project dependencies:
 2. Open the solution file (`CoffeeLoyalty.slnx`) in Visual Studio 2022 or newer.
 3. Set `CoffeeLoyalty.WPF` as the Startup Project.
 4. Press `F5` or click Start to run the application.
-
-> *TODO: Add notes on automatic database initialization/seeding and default test credentials (Manager / Cashier) once ready.*
 
 On application startup, `CoffeeLoyalty.WPF/App.xaml.cs` creates the SQLite connection factory,
 runs `DatabaseInitializer`, applies the embedded SQL schemas, and executes idempotent seed data.
@@ -129,16 +125,13 @@ the user if employees are not to be selected by name.
 ## Project Documentation
 Project tasks, architectural notes, and team guidelines are tracked using **GitHub Issues** and visualized on the **GitHub Projects Kanban Board**.
 
-> *TODO: Add links to key documentation issues (ER Diagram, Guidelines & Recommendations for Collaborators, UI Resources).*
-
-The Core implementation is documented below. Links to the corresponding GitHub Issues and
-project-board cards can be added when the final issue numbers and documentation URLs are agreed.
+The Core implementation is documented below. Project-specific ER diagrams, collaboration
+guidelines, and UI resource links can be added to the GitHub Issues and project-board cards when
+the final documentation URLs are agreed.
 
 ## Project Architecture
 
 ### 1. Core — `CoffeeLoyalty.Core`
-> *TODO: Describe domain models, SQLite database layer, repositories, business services, and validation logic.*
-
 The Core project contains the application domain and does not depend on WPF. Its main areas are:
 
 - `models` — `Customer`, `LoyaltyCard`, `Drink`, `Purchase`, `PurchaseItem`, `Employee`,
@@ -159,16 +152,12 @@ transactional checkout. Invalid checkout and authorization operations return str
 and are logged where the corresponding service operation reaches the logging layer.
 
 ### 2. ViewModel — `CoffeeLoyalty.WPF/ViewModels`
-> *TODO: Describe MVVM ViewModels, commands, state management, and interaction between UI and Core.*
-
 The ViewModel directory is reserved for the MVVM presentation layer. The Core services already
 expose the operations needed by the future ViewModels, but the WPF ViewModels and commands are
 not yet implemented. In particular, role selection, navigation state, customer selection,
 cart state, bonus input, and import/export commands still need to be connected to the services.
 
 ### 3. View — `CoffeeLoyalty.WPF/Views`
-> *TODO: Describe XAML views, role-based screens (Cashier / Manager), navigation, and localization resources.*
-
 The intended views are:
 
 - authentication and role selection;
@@ -182,8 +171,6 @@ are still placeholders. Therefore the WPF screens and navigation are documented 
 functionality rather than completed functionality.
 
 ## Database & Data Layer
-> *TODO: Add ER diagram overview, table descriptions (`Categories`, `Customers`, `Cards`, `Drinks`, `Purchases`, `Employees`, `User_Drink`, `Logs`), polymorphic audit logging, and JSON import/export details.*
-
 The SQLite schema is stored in `CoffeeLoyalty.Core/data/schemas` and embedded in the Core
 assembly. `DatabaseInitializer` applies the schemas in dependency order and then calls
 `SeedDataFactory` inside a transaction.
@@ -218,30 +205,22 @@ validation rules.
 ## Design Patterns and Factories
 
 ### SeedDataFactory / DatabaseInitializer
-> *TODO: Document automatic database creation and initial test data seeding logic.*
-
 `DatabaseInitializer` opens or creates the configured SQLite database, applies all embedded SQL
 schemas in dependency order, and runs the seed factory. `SeedDataFactory` inserts default
 categories, drinks, employees, customers, cards, purchases, purchase items, user-drink rows,
 and logs using duplicate-safe operations. Re-running initialization is intended to be idempotent.
-
-> *TODO: Add other patterns/factories used in the project (e.g., Repository pattern, ViewModel/Service factories).*
 
 The Core uses the Repository pattern, service-layer separation, DTOs, an operation-result pattern,
 and a connection factory. `BaseRepository` centralizes SQLite connection and transaction access.
 The WPF service composition and ViewModel factories have not yet been added.
 
 ## WPF UI Elements
-> *TODO: Document key UI components, custom styles, resource-based localization (`Resources/`), and role-specific views.*
-
 Branding and fallback drink image resources are present under `CoffeeLoyalty.WPF/assets/images`.
 The Core contains generated resource strings in `CoreResources.resx` for validation and service
 messages. The actual role-specific WPF controls, bindings, commands, navigation, and styles still
 need to be implemented and connected to the Core services.
 
 ## Verified Use Cases
-> *TODO: Document tested end-to-end scenarios (e.g., customer & card registration, drink order & bonus accrual/redemption, manager CRUD & audit logs, JSON export/import).*
-
 The `CoffeeLoyalty.Core.Tests` project contains unit and SQLite integration tests for:
 
 - authentication, logout, role permissions, and legacy password upgrade;
