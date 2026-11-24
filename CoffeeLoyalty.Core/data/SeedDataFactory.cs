@@ -8,19 +8,33 @@ namespace CoffeeLoyalty.Core.Data;
 // Inserts default reference and menu data into the SQLite database after schemas are created.
 public sealed class SeedDataFactory
 {
-    // Runs all table seeders inside the caller's transaction in dependency order.
+    // Populates reference and demonstration data during fresh database initialization only.
     public void Seed(
         SqliteConnection connection,
         SqliteTransaction transaction)
     {
-        // Ensure valid database connection and active transaction before inserting data.
+        SeedReferenceData(connection, transaction);
+        SeedDemonstrationData(connection, transaction);
+    }
+
+    // Adds missing reference data without updating existing reference records.
+    internal void SeedReferenceData(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
         ArgumentNullException.ThrowIfNull(connection);
         ArgumentNullException.ThrowIfNull(transaction);
 
-        // Seed tables in dependency order using duplicate-safe logic so repeated runs stay idempotent.
         SeedCategories(connection, transaction);
         SeedDrinks(connection, transaction);
         SeedEmployees(connection, transaction);
+    }
+
+    // Runs only for a fresh application schema, inside the same initialization transaction.
+    private static void SeedDemonstrationData(
+        SqliteConnection connection,
+        SqliteTransaction transaction)
+    {
         SeedCustomers(connection, transaction);
         SeedCards(connection, transaction);
         SeedPurchases(connection, transaction);
@@ -428,7 +442,7 @@ public sealed class SeedDataFactory
             return;
         }
 
-        long? activeCardId = TryGetActiveCardId(connection, transaction);
+        long? activeCardId = TryGetDemoCardId(connection, transaction);
 
         PurchaseSeedItem[] purchases =
         [
@@ -663,7 +677,7 @@ public sealed class SeedDataFactory
         SqliteConnection connection,
         SqliteTransaction transaction)
     {
-        long? activeCardId = TryGetActiveCardId(connection, transaction);
+        long? activeCardId = TryGetDemoCardId(connection, transaction);
         long? cappuccinoId = TryGetDrinkId(connection, transaction, "Cappuccino");
         long? latteId = TryGetDrinkId(connection, transaction, "Latte");
 
@@ -933,15 +947,22 @@ public sealed class SeedDataFactory
             : Convert.ToInt64(result, CultureInfo.InvariantCulture);
     }
 
-    // Resolves an active cardID inside the current transaction.
-    private static long? TryGetActiveCardId(
+    // Resolves the original demonstration customer card inside the current transaction.
+    private static long? TryGetDemoCardId(
         SqliteConnection connection,
         SqliteTransaction transaction)
     {
         using var command = connection.CreateCommand();
         command.Transaction = transaction;
-        command.CommandText =
-            "SELECT cardID FROM CARDS WHERE isActive = 1 ORDER BY cardID ASC LIMIT 1;";
+        // Never use another customer's active card for a demonstration receipt or counter.
+        command.CommandText = """
+            SELECT c.cardID FROM CARDS c
+            JOIN CUSTOMERS u ON u.customerID = c.customerID
+            WHERE u.customerName = 'Anna Tamm'
+              AND u.timeStamp = '2026-01-01T09:00:00Z'
+              AND c.isActive = 1
+            ORDER BY c.cardID ASC LIMIT 1;
+            """;
 
         object? result = command.ExecuteScalar();
         return result is null or DBNull
