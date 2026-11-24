@@ -25,6 +25,18 @@ public interface IAuthService
         string? password = null,
         CancellationToken cancellationToken = default);
 
+    // Authenticates by role without requiring a name. AuthService implements this overload.
+    // Older implementations remain source-compatible and fail closed if they do not support it.
+    Task<OperationResult> LoginAsync(
+        UserRole selectedRole,
+        string? password = null,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(OperationResult.Failure(
+            CoffeeLoyalty.Core.resources.CoreResources.ErrorAuthFailed, "AUTH_FAILED"));
+    }
+
     // Ends the current session and allows the logout event to be logged.
     Task<OperationResult> LogoutAsync(
         CancellationToken cancellationToken = default);
