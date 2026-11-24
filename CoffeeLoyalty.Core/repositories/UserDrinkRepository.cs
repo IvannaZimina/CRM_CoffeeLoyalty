@@ -10,8 +10,8 @@ using Microsoft.Data.Sqlite;
 
 namespace CoffeeLoyalty.Core.Repositories;
 
-// Executes SQLite data access operations for customer drink counters (USER_DRINK) and implements IUserDrinkRepository.
-// Maps customerId through CARDS.cardID and supports external SQLite transactions during checkout.
+// Executes SQLite data access operations for card drink counters (USER_DRINK) and implements IUserDrinkRepository.
+// Updates counters directly by cardID and supports external SQLite transactions during checkout.
 public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
 {
     // Passes SqliteConnectionFactory to BaseRepository so connections open with foreign keys enabled.
@@ -29,7 +29,7 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
         if (!ValidationHelper.IsPositive(customerId))
         {
             return OperationResult<IReadOnlyList<UserDrink>>.Failure(
-                string.Format(CoreResources.UserDrinkValCardIdPositive, nameof(customerId), customerId),
+                string.Format(CoreResources.PurchaseInvalidCustomerId, customerId),
                 "INVALID_CUSTOMER_ID");
         }
 
@@ -77,18 +77,18 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
 
     // Inserts a new (cardID, drinkID) row or increments quantity for an existing counter in USER_DRINK.
     public async Task<OperationResult<UserDrink>> UpsertQuantityAsync(
-        int customerId,
+        int cardId,
         int drinkId,
         int quantityDelta,
         object? transaction = null,
         CancellationToken cancellationToken = default)
     {
         // Validate input identifiers and positive delta using ValidationHelper before touching SQLite.
-        if (!ValidationHelper.IsPositive(customerId))
+        if (!ValidationHelper.IsPositive(cardId))
         {
             return OperationResult<UserDrink>.Failure(
-                string.Format(CoreResources.UserDrinkValCardIdPositive, nameof(customerId), customerId),
-                "INVALID_CUSTOMER_ID");
+                string.Format(CoreResources.UserDrinkValCardIdPositive, nameof(cardId), cardId),
+                "INVALID_CARD_ID");
         }
 
         if (!ValidationHelper.IsPositive(drinkId))
@@ -128,21 +128,8 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
 
         try
         {
-            // Resolve the customer's cardID from CARDS so USER_DRINK foreign key and UNIQUE(cardID, drinkID) are satisfied.
-            int? cardId = await ResolveCardIdForCustomerAsync(
-                connection,
-                externalTransaction,
-                customerId,
-                cancellationToken);
-
-            if (!cardId.HasValue)
-            {
-                return OperationResult<UserDrink>.Failure(
-                    string.Format(CoreResources.UserDrinkCardNotFoundForCustomer, customerId),
-                    "CARD_NOT_FOUND");
-            }
-
             // Upsert into USER_DRINK on conflict (cardID, drinkID), incrementing quantity by quantityDelta.
+            // Foreign key on cardID/drinkID enforces that referenced rows exist in CARDS and DRINKS.
             const string upsertSql = """
                 INSERT INTO USER_DRINK (
                     cardID,
@@ -166,7 +153,7 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
                     upsertCommand.Transaction = externalTransaction;
                 }
 
-                upsertCommand.Parameters.Add("@cardId", SqliteType.Integer).Value = cardId.Value;
+                upsertCommand.Parameters.Add("@cardId", SqliteType.Integer).Value = cardId;
                 upsertCommand.Parameters.Add("@drinkId", SqliteType.Integer).Value = drinkId;
                 upsertCommand.Parameters.Add("@quantityDelta", SqliteType.Integer).Value = quantityDelta;
 
@@ -192,7 +179,7 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
                 selectCommand.Transaction = externalTransaction;
             }
 
-            selectCommand.Parameters.Add("@cardId", SqliteType.Integer).Value = cardId.Value;
+            selectCommand.Parameters.Add("@cardId", SqliteType.Integer).Value = cardId;
             selectCommand.Parameters.Add("@drinkId", SqliteType.Integer).Value = drinkId;
 
             await using SqliteDataReader reader = await selectCommand.ExecuteReaderAsync(cancellationToken);
@@ -224,39 +211,6 @@ public class UserDrinkRepository : BaseRepository, IUserDrinkRepository
                 await connection.DisposeAsync();
             }
         }
-    }
-
-    // Finds the cardID linked to customerId in CARDS (preferring an active card), or null when none exists.
-    private static async Task<int?> ResolveCardIdForCustomerAsync(
-        SqliteConnection connection,
-        SqliteTransaction? activeTransaction,
-        int customerId,
-        CancellationToken cancellationToken)
-    {
-        const string selectCardSql = """
-            SELECT cardID
-            FROM CARDS
-            WHERE customerID = @customerId
-            ORDER BY isActive DESC, cardID ASC
-            LIMIT 1;
-            """;
-
-        await using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = selectCardSql;
-        if (activeTransaction is not null)
-        {
-            command.Transaction = activeTransaction;
-        }
-
-        command.Parameters.Add("@customerId", SqliteType.Integer).Value = customerId;
-
-        object? scalar = await command.ExecuteScalarAsync(cancellationToken);
-        if (scalar is null || scalar == DBNull.Value)
-        {
-            return null;
-        }
-
-        return Convert.ToInt32(scalar, CultureInfo.InvariantCulture);
     }
 
     // Maps a single SqliteDataReader row from USER_DRINK into a validated UserDrink model.

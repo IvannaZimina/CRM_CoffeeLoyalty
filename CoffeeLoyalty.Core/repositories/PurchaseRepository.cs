@@ -184,7 +184,7 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
         }
     }
 
-    // Retrieves all purchases for a customer (linked via LOYALTY_CARDS) ordered newest first.
+    // Retrieves all purchases for a customer (linked via CARDS) ordered newest first.
     public async Task<OperationResult<IReadOnlyList<Purchase>>> GetByCustomerAsync(
         int customerId,
         CancellationToken cancellationToken = default)
@@ -197,7 +197,7 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
                 "INVALID_ID");
         }
 
-        // Join PURCHASES and LOYALTY_CARDS to filter by customerID with a parameterized query.
+        // Join PURCHASES and CARDS to filter by customerID with a parameterized query.
         const string selectByCustomerSql = """
             SELECT
                 p.purchaseID,
@@ -208,8 +208,8 @@ public class PurchaseRepository : BaseRepository, IPurchaseRepository
                 p.bonusesEarned,
                 p.timeStamp
             FROM PURCHASES p
-            INNER JOIN LOYALTY_CARDS lc ON lc.cardID = p.cardID
-            WHERE lc.customerID = @customerId
+            INNER JOIN CARDS c ON c.cardID = p.cardID
+            WHERE c.customerID = @customerId
             ORDER BY p.timeStamp DESC, p.purchaseID DESC;
             """;
 
