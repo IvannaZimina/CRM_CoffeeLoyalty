@@ -1,4 +1,4 @@
-﻿using CoffeeLoyalty.Core.DTOs;
+using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.Enums;
 using CoffeeLoyalty.Core.interfaces.services;
@@ -635,23 +635,23 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
 
         public Task<OperationResult> LogInfoAsync(
             string objectType,
-            string actionType,
+            LogActionType actionType,
             string description,
             int? objectId = null,
             CancellationToken cancellationToken = default)
         {
-            InfoEntries.Add((objectType, actionType, description, objectId));
+            InfoEntries.Add((objectType, actionType.ToString(), description, objectId));
             return Task.FromResult(OperationResult.Success());
         }
 
         public Task<OperationResult> LogErrorAsync(
             string objectType,
-            string actionType,
+            LogActionType actionType,
             string description,
             int? objectId = null,
             CancellationToken cancellationToken = default)
         {
-            ErrorEntries.Add((objectType, actionType, description, objectId));
+            ErrorEntries.Add((objectType, actionType.ToString(), description, objectId));
             return Task.FromResult(OperationResult.Success());
         }
 
@@ -666,7 +666,7 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
 
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(
-            string actionType,
+            LogActionType actionType,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
     }

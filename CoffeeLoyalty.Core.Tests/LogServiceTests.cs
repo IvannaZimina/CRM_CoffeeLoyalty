@@ -11,6 +11,19 @@ namespace CoffeeLoyalty.Core.Tests;
 
 public class LogServiceTests
 {
+    [Theory]
+    [InlineData(0)]
+    [InlineData(int.MaxValue)]
+    public async Task UndefinedAction_IsRejectedWithoutWriting(int value)
+    {
+        EmployeeSession session = new();
+        FakeLogRepository repository = new();
+        LogService service = new(repository, session);
+        Assert.Equal("INVALID_LOG", (await service.LogInfoAsync("System", (LogActionType)value, "Invalid event.")).ErrorCode);
+        Assert.Equal("INVALID_LOG", (await service.LogErrorAsync("System", (LogActionType)value, "Invalid event.")).ErrorCode);
+        Assert.Empty(repository.Items);
+    }
+
     [Fact]
     public void EmployeeSession_UsesOneEmployeeStateAndClearsPermissions()
     {
@@ -57,13 +70,14 @@ public class LogServiceTests
         LogService service = new(repository, session);
 
         OperationResult result = await service.LogInfoAsync(
-            "DRINKS", "DrinkActivated", "Drink activated.", objectId: 15);
+            "DRINKS", LogActionType.DrinkActivated, "Drink activated.", objectId: 15);
 
         Assert.True(result.IsSuccess);
         LogEntry saved = Assert.Single(repository.Items);
         Assert.Equal(2, saved.EmployeeId);
         Assert.Equal(15, saved.ObjectId);
         Assert.Equal("DrinkActivated", saved.ActionType);
+        Assert.Equal<LogActionType?>(LogActionType.DrinkActivated, saved.KnownActionType);
         Assert.Equal("Drink activated.", saved.Description);
         Assert.Equal(DateTimeKind.Utc, saved.TimeStamp.Kind);
     }
@@ -76,7 +90,7 @@ public class LogServiceTests
         LogService service = new(repository, session);
 
         OperationResult result = await service.LogErrorAsync(
-            "System", "ErrorStartup", "Startup failed.");
+            "System", LogActionType.ErrorStartup, "Startup failed.");
 
         Assert.True(result.IsSuccess);
         LogEntry saved = Assert.Single(repository.Items);
@@ -91,9 +105,9 @@ public class LogServiceTests
         FakeLogRepository repository = new();
         LogService service = new(repository, session);
 
-        await service.LogInfoAsync("System", "LogLogin", "Signed in.");
+        await service.LogInfoAsync("System", LogActionType.LogLogin, "Signed in.");
         session.Clear();
-        await service.LogInfoAsync("System", "LogStartup", "System event.");
+        await service.LogInfoAsync("System", LogActionType.LogStartup, "System event.");
 
         Assert.Equal(2, repository.Items.Count);
         Assert.Equal(2, repository.Items[0].EmployeeId);
@@ -117,7 +131,7 @@ public class LogServiceTests
         OperationResult<IReadOnlyList<LogEntry>> byDate = await service.GetByDateRangeAsync(
             time.AddHours(-1), time.AddHours(1));
         OperationResult<IReadOnlyList<LogEntry>> byAction =
-            await service.GetByActionTypeAsync(" DrinkActivated ");
+            await service.GetByActionTypeAsync(LogActionType.DrinkActivated);
 
         Assert.True(all.IsSuccess);
         Assert.Equal(2, all.Value!.Count);
@@ -142,7 +156,7 @@ public class LogServiceTests
         OperationResult<IReadOnlyList<LogEntry>> byDate = await service.GetByDateRangeAsync(
             DateTime.UtcNow.AddDays(-1), DateTime.UtcNow);
         OperationResult<IReadOnlyList<LogEntry>> byAction =
-            await service.GetByActionTypeAsync("LogPurchase");
+            await service.GetByActionTypeAsync(LogActionType.LogPurchase);
 
         Assert.Equal("ACCESS_DENIED", all.ErrorCode);
         Assert.Equal("ACCESS_DENIED", byDate.ErrorCode);
@@ -169,9 +183,9 @@ public class LogServiceTests
         FakeLogRepository repository = new();
         LogService service = new(repository, new EmployeeSession());
 
-        Assert.True((await service.LogInfoAsync("System", "LogTest",
+        Assert.True((await service.LogInfoAsync("System", LogActionType.LogStartup,
             "password=private-secret-value")).IsSuccess);
-        Assert.True((await service.LogErrorAsync("System", "ErrorTest",
+        Assert.True((await service.LogErrorAsync("System", LogActionType.ErrorStartup,
             "InvalidOperationException: internal exception\n   at C:\\private\\code.cs")).IsSuccess);
 
         Assert.Equal(2, repository.Items.Count);
@@ -189,8 +203,8 @@ public class LogServiceTests
         FakeLogRepository repository = new();
         LogService service = new(repository, new EmployeeSession());
 
-        OperationResult blank = await service.LogInfoAsync(" ", "LogTest", "Description");
-        OperationResult badId = await service.LogErrorAsync("System", "ErrorTest", "Description", 0);
+        OperationResult blank = await service.LogInfoAsync(" ", LogActionType.LogStartup, "Description");
+        OperationResult badId = await service.LogErrorAsync("System", LogActionType.ErrorStartup, "Description", 0);
 
         Assert.Equal("INVALID_LOG", blank.ErrorCode);
         Assert.Equal("INVALID_LOG", badId.ErrorCode);
@@ -205,7 +219,7 @@ public class LogServiceTests
         LogService service = new(repository, session);
 
         OperationResult write = await service.LogErrorAsync(
-            "System", "ErrorTest", "Safe event description.");
+            "System", LogActionType.ErrorStartup, "Safe event description.");
         OperationResult<IReadOnlyList<LogEntry>> read = await service.GetAllAsync();
 
         Assert.Equal("LOG_WRITE_FAILED", write.ErrorCode);
@@ -223,7 +237,7 @@ public class LogServiceTests
         OperationResult<IReadOnlyList<LogEntry>> range =
             await service.GetByDateRangeAsync(time.AddDays(1), time);
         OperationResult<IReadOnlyList<LogEntry>> action =
-            await service.GetByActionTypeAsync(" ");
+            await service.GetByActionTypeAsync((LogActionType)0);
 
         Assert.Equal("INVALID_FILTER", range.ErrorCode);
         Assert.Equal("INVALID_FILTER", action.ErrorCode);
@@ -239,7 +253,7 @@ public class LogServiceTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => service.GetAllAsync(source.Token));
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            () => service.LogInfoAsync("System", "LogTest", "Test", cancellationToken: source.Token));
+            () => service.LogInfoAsync("System", LogActionType.LogStartup, "Test", cancellationToken: source.Token));
     }
 
     private static Employee NewEmployee(int id, UserRole role) =>

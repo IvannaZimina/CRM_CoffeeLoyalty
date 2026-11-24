@@ -156,8 +156,8 @@ public sealed class CustomerService : ICustomerService
         }
         customer.Id = customerId;
         customer.TimeStamp = pending.TimeStamp;
-        await AuditAsync(false, "CUSTOMERS", "LogCustomerRegistered", CoreResources.LogCustomerRegistered, customerId);
-        await AuditAsync(false, "CARDS", "LogCardIssued", CoreResources.LogCardIssued, card.Id);
+        await AuditAsync(false, "CUSTOMERS", LogActionType.LogCustomerRegistered, CoreResources.LogCustomerRegistered, customerId);
+        await AuditAsync(false, "CARDS", LogActionType.LogCardIssued, CoreResources.LogCardIssued, card.Id);
         return OperationResult<LoyaltyCard>.Success(card);
     }
 
@@ -182,7 +182,7 @@ public sealed class CustomerService : ICustomerService
                     cancellationToken.ThrowIfCancellationRequested();
                     await transaction.CommitAsync(cancellationToken);
                 }
-                await AuditAsync(false, "CARDS", "LogCardIssued", CoreResources.LogCardIssued, card.Id);
+                await AuditAsync(false, "CARDS", LogActionType.LogCardIssued, CoreResources.LogCardIssued, card.Id);
                 return OperationResult<LoyaltyCard>.Success(card);
             }, cancellationToken);
 
@@ -208,7 +208,7 @@ public sealed class CustomerService : ICustomerService
             {
                 saved.CustomerName = customer.CustomerName;
                 saved.BirthDate = customer.BirthDate;
-            }, "LogCustomerUpdated", CoreResources.LogCustomerUpdated, cancellationToken);
+            }, LogActionType.LogCustomerUpdated, CoreResources.LogCustomerUpdated, cancellationToken);
         }, cancellationToken);
 
     // Changes only the loyalty category of an existing customer.
@@ -220,12 +220,12 @@ public sealed class CustomerService : ICustomerService
             if (await _categories.GetByIdAsync(categoryId, cancellationToken) is null)
                 return OperationResult.Failure(CoreResources.ErrorCustomerCategoryMissing, "CATEGORY_NOT_FOUND");
             return await EditCustomerAsync(customerId, saved => saved.CategoryId = categoryId,
-                "LogCustomerCategoryChanged", CoreResources.LogCustomerCategoryChanged, cancellationToken);
+                LogActionType.LogCustomerCategoryChanged, CoreResources.LogCustomerCategoryChanged, cancellationToken);
         }, cancellationToken);
 
     // Acquires a write transaction before reading so another writer cannot change the balance meanwhile.
     private async Task<OperationResult> EditCustomerAsync(
-        int customerId, Action<Customer> edit, string action, string description, CancellationToken token)
+        int customerId, Action<Customer> edit, LogActionType action, string description, CancellationToken token)
     {
         await using (SqliteConnection connection = _connectionFactory.OpenConnection())
         await using (SqliteTransaction transaction = connection.BeginTransaction())
@@ -249,7 +249,7 @@ public sealed class CustomerService : ICustomerService
         {
             if (customerId <= 0) return Invalid();
             if (!await _customers.SetActiveStatusAsync(customerId, isActive, cancellationToken)) return NotFound();
-            await AuditAsync(false, "CUSTOMERS", isActive ? "LogCustomerActivated" : "LogCustomerDeactivated",
+            await AuditAsync(false, "CUSTOMERS", isActive ? LogActionType.LogCustomerActivated : LogActionType.LogCustomerDeactivated,
                 isActive ? CoreResources.LogCustomerActivated : CoreResources.LogCustomerDeactivated, customerId);
             return OperationResult.Success();
         }, cancellationToken);
@@ -261,7 +261,7 @@ public sealed class CustomerService : ICustomerService
         {
             if (cardId <= 0) return Invalid();
             if (!await _cards.SetActiveStatusAsync(cardId, isActive, cancellationToken)) return NotFound();
-            await AuditAsync(false, "CARDS", isActive ? "LogCardActivated" : "LogCardBlocked",
+            await AuditAsync(false, "CARDS", isActive ? LogActionType.LogCardActivated : LogActionType.LogCardBlocked,
                 isActive ? CoreResources.LogCardActivated : CoreResources.LogCardBlocked, cardId);
             return OperationResult.Success();
         }, cancellationToken);
@@ -303,13 +303,13 @@ public sealed class CustomerService : ICustomerService
         {
             bool denied = result.ErrorCode == "ACCESS_DENIED";
             string description = string.Format(denied ? CoreResources.LogCustomerAccessDenied : CoreResources.LogCustomerOperationFailed, operation);
-            await AuditAsync(true, objectType, denied ? "ErrorCustomerAccessDenied" : "ErrorCustomerOperation", description, objectId);
+            await AuditAsync(true, objectType, denied ? LogActionType.ErrorCustomerAccessDenied : LogActionType.ErrorCustomerOperation, description, objectId);
         }
         return result;
     }
 
     // Audit failures must not turn a committed database change into an apparent failed operation.
-    private async Task AuditAsync(bool error, string objectType, string action, string description, int? objectId)
+    private async Task AuditAsync(bool error, string objectType, LogActionType action, string description, int? objectId)
     {
         try
         {
