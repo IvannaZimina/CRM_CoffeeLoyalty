@@ -267,7 +267,7 @@ public class CardRepositoryTests
         }
         finally
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(databasePath);
 
             if (File.Exists(databasePath))
             {

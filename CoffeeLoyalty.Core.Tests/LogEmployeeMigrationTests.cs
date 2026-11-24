@@ -105,7 +105,7 @@ public class LogEmployeeMigrationTests
         }
         finally
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(path);
             if (File.Exists(path))
             {
                 File.Delete(path);

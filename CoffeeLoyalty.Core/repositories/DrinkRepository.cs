@@ -125,22 +125,41 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
     }
 
     // Inserts a new drink into DRINKS and returns the created record with its assigned drinkID.
+    public Task<OperationResult<Drink>> AddAsync(
+        Drink drink,
+        CancellationToken cancellationToken = default) =>
+        AddAsync(drink, null, cancellationToken);
+
+    // Reuses an external SQLite transaction without committing or disposing it.
     public async Task<OperationResult<Drink>> AddAsync(
         Drink drink,
+        object? transaction,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(drink);
+        cancellationToken.ThrowIfCancellationRequested();
 
+        if (transaction is not null &&
+            (transaction is not SqliteTransaction sqlite || sqlite.Connection is null))
+        {
+            return OperationResult<Drink>.Failure(
+                CoreResources.PurchaseExternalTransactionInvalid, "INVALID_TRANSACTION");
+        }
+
+        SqliteTransaction? activeTransaction = transaction as SqliteTransaction;
         const string sql = """
             INSERT INTO DRINKS (drinkName, drinkPrice, isActive, drinkType, drinkImageLink)
             VALUES (@drinkName, @drinkPrice, @isActive, @drinkType, @drinkImageLink);
             SELECT last_insert_rowid();
             """;
 
+        SqliteConnection? ownedConnection = null;
         try
         {
-            await using SqliteConnection connection = OpenConnection();
+            SqliteConnection connection = activeTransaction?.Connection
+                ?? (ownedConnection = OpenConnection());
             await using SqliteCommand command = connection.CreateCommand();
+            command.Transaction = activeTransaction;
             command.CommandText = sql;
 
             command.Parameters.Add("@drinkName", SqliteType.Text).Value = drink.DrinkName;
@@ -150,26 +169,25 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
             command.Parameters.Add("@drinkImageLink", SqliteType.Text).Value =
                 (object?)drink.DrinkImageLink ?? DBNull.Value;
 
-            object? scalar = await command.ExecuteScalarAsync(cancellationToken);
-            int newId = Convert.ToInt32(scalar);
-
-            Drink created = new(
-                drink.DrinkName,
-                drink.DrinkPrice,
-                drink.DrinkType,
-                drink.IsActive,
-                drink.DrinkImageLink)
-            {
-                Id = newId
-            };
-
+            int newId = Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken));
+            Drink created = new(drink.DrinkName, drink.DrinkPrice, drink.DrinkType,
+                drink.IsActive, drink.DrinkImageLink) { Id = newId };
             return OperationResult<Drink>.Success(created);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
             return OperationResult<Drink>.Failure(
                 string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
                 nameof(CoreResources.ErrorDatabaseConnection));
+        }
+        finally
+        {
+            if (ownedConnection is not null)
+                await ownedConnection.DisposeAsync();
         }
     }
 

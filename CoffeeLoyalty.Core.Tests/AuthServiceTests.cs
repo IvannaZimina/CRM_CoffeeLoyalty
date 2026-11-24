@@ -161,7 +161,7 @@ public class AuthServiceTests
         }
         finally
         {
-            SqliteConnection.ClearAllPools();
+            TestDatabasePool.Clear(file);
             if (File.Exists(file)) File.Delete(file);
         }
     }

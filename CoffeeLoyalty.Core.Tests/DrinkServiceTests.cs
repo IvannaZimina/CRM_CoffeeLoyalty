@@ -235,6 +235,9 @@ public class DrinkServiceTests
                 : OperationResult<Drink>.Failure("Not found", "NOT_FOUND"));
         }
 
+        public Task<OperationResult<Drink>> AddAsync(Drink drink, object? transaction,
+            CancellationToken cancellationToken = default) => AddAsync(drink, cancellationToken);
+
         public Task<OperationResult<Drink>> AddAsync(Drink drink, CancellationToken cancellationToken = default)
         {
             if (drink.Id <= 0)

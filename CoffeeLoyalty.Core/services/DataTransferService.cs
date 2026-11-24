@@ -1,4 +1,8 @@
 ﻿using System.Globalization;
+using System.Diagnostics;
+using CoffeeLoyalty.Core.Data;
+using CoffeeLoyalty.Core.resources;
+using Microsoft.Data.Sqlite;
 using System.Text.Json;
 using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Enums;
@@ -33,6 +37,7 @@ public class DataTransferService : IDataTransferService
     private readonly ILogRepository _logRepository;
     private readonly IAuthService _authService;
     private readonly ILogService _logService;
+    private readonly SqliteConnectionFactory _connectionFactory;
 
     public DataTransferService(
         IDrinkRepository drinkRepository,
@@ -41,7 +46,8 @@ public class DataTransferService : IDataTransferService
         IPurchaseRepository purchaseRepository,
         ILogRepository logRepository,
         IAuthService authService,
-        ILogService logService)
+        ILogService logService,
+        SqliteConnectionFactory connectionFactory)
     {
         _drinkRepository = drinkRepository ?? throw new ArgumentNullException(nameof(drinkRepository));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
@@ -50,6 +56,7 @@ public class DataTransferService : IDataTransferService
         _logRepository = logRepository ?? throw new ArgumentNullException(nameof(logRepository));
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         _logService = logService ?? throw new ArgumentNullException(nameof(logService));
+        _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
     }
 
     // Exports all domain datasets (Drinks, Customers, Cards, Purchases, Logs) to a JSON file at filePath.
@@ -166,13 +173,28 @@ public class DataTransferService : IDataTransferService
         string filePath,
         CancellationToken cancellationToken = default)
     {
+        OperationResult<ValidatedImport> result = await ReadValidatedImportAsync(filePath, cancellationToken);
+        return result.IsSuccess && result.Value is not null
+            ? OperationResult<IReadOnlyList<string>>.Success(result.Value.Warnings)
+            : OperationResult<IReadOnlyList<string>>.Failure(
+                result.ErrorMessage ?? CoreResources.ErrorJsonImportPersistence, result.ErrorCode);
+    }
+
+    // The exact parsed payload and pre-existing customer IDs used for validation.
+    private sealed record ValidatedImport(DataTransferPayloadDto Payload,
+        IReadOnlyList<string> Warnings, HashSet<int> ExistingCustomerIds);
+
+    private async Task<OperationResult<ValidatedImport>> ReadValidatedImportAsync(
+        string filePath,
+        CancellationToken cancellationToken)
+    {
         OperationResult accessCheck = await EnsureManagerAccessAsync(
             nameof(ValidateImportAsync),
             cancellationToken);
 
         if (!accessCheck.IsSuccess)
         {
-            return OperationResult<IReadOnlyList<string>>.Failure(
+            return OperationResult<ValidatedImport>.Failure(
                 accessCheck.ErrorMessage ?? "Access denied.",
                 accessCheck.ErrorCode);
         }
@@ -187,7 +209,7 @@ public class DataTransferService : IDataTransferService
                 objectId: null,
                 cancellationToken: cancellationToken);
 
-            return OperationResult<IReadOnlyList<string>>.Failure(
+            return OperationResult<ValidatedImport>.Failure(
                 pathCheck.ErrorMessage ?? "Invalid import file path.",
                 pathCheck.ErrorCode);
         }
@@ -206,7 +228,7 @@ public class DataTransferService : IDataTransferService
                     objectId: null,
                     cancellationToken: cancellationToken);
 
-                return OperationResult<IReadOnlyList<string>>.Failure(emptyError, "INVALID_JSON");
+                return OperationResult<ValidatedImport>.Failure(emptyError, "INVALID_JSON");
             }
 
             DataTransferPayloadDto? payload = JsonSerializer.Deserialize<DataTransferPayloadDto>(
@@ -224,7 +246,7 @@ public class DataTransferService : IDataTransferService
                     objectId: null,
                     cancellationToken: cancellationToken);
 
-                return OperationResult<IReadOnlyList<string>>.Failure(nullPayloadError, "INVALID_PAYLOAD");
+                return OperationResult<ValidatedImport>.Failure(nullPayloadError, "INVALID_PAYLOAD");
             }
 
             List<string> errors = [];
@@ -255,7 +277,7 @@ public class DataTransferService : IDataTransferService
                     objectId: null,
                     cancellationToken: cancellationToken);
 
-                return OperationResult<IReadOnlyList<string>>.Failure(joinedSchemaErrors, "SCHEMA_VALIDATION_FAILED");
+                return OperationResult<ValidatedImport>.Failure(joinedSchemaErrors, "SCHEMA_VALIDATION_FAILED");
             }
 
             OperationResult<IReadOnlyList<Drink>> existingDrinksResult =
@@ -272,7 +294,7 @@ public class DataTransferService : IDataTransferService
                     objectId: null,
                     cancellationToken: cancellationToken);
 
-                return OperationResult<IReadOnlyList<string>>.Failure(readErr, "REPOSITORY_READ_FAILED");
+                return OperationResult<ValidatedImport>.Failure(readErr, "REPOSITORY_READ_FAILED");
             }
 
             IReadOnlyList<Drink> existingDrinks = existingDrinksResult.Value ?? [];
@@ -298,6 +320,7 @@ public class DataTransferService : IDataTransferService
             for (int i = 0; i < drinksList!.Count; i++)
             {
                 DrinkTransferDto drink = drinksList[i];
+                if (drink is null) { errors.Add("Drinks[{i}]: Record cannot be null."); continue; }
 
                 if (!ValidationHelper.HasText(drink.DrinkName))
                 {
@@ -332,6 +355,7 @@ public class DataTransferService : IDataTransferService
             for (int i = 0; i < customersList!.Count; i++)
             {
                 CustomerTransferDto customer = customersList[i];
+                if (customer is null) { errors.Add("Customers[{i}]: Record cannot be null."); continue; }
 
                 if (!ValidationHelper.HasText(customer.CustomerName))
                 {
@@ -372,6 +396,7 @@ public class DataTransferService : IDataTransferService
             for (int i = 0; i < cardsList!.Count; i++)
             {
                 CardTransferDto card = cardsList[i];
+                if (card is null) { errors.Add("Cards[{i}]: Record cannot be null."); continue; }
                 bool hasValidCustomerRef = false;
 
                 if (card.CustomerId.HasValue && ValidationHelper.IsPositive(card.CustomerId.Value))
@@ -424,10 +449,10 @@ public class DataTransferService : IDataTransferService
                     objectId: null,
                     cancellationToken: cancellationToken);
 
-                return OperationResult<IReadOnlyList<string>>.Failure(combinedErrors, "VALIDATION_FAILED");
+                return OperationResult<ValidatedImport>.Failure(combinedErrors, "VALIDATION_FAILED");
             }
 
-            return OperationResult<IReadOnlyList<string>>.Success(warnings.AsReadOnly());
+            return OperationResult<ValidatedImport>.Success(new(payload, warnings.AsReadOnly(), existingCustomerIds));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
@@ -440,215 +465,114 @@ public class DataTransferService : IDataTransferService
                 objectId: null,
                 cancellationToken: cancellationToken);
 
-            return OperationResult<IReadOnlyList<string>>.Failure(message, "IMPORT_READ_ERROR");
+            return OperationResult<ValidatedImport>.Failure(message, "IMPORT_READ_ERROR");
         }
     }
 
-    // Validates and imports drinks, customers, and loyalty cards from a JSON file, rolling back created records on failure.
+    // Imports the same validated payload using one mandatory SQLite transaction.
     public async Task<OperationResult<int>> ImportFromJsonAsync(
         string filePath,
         CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         OperationResult accessCheck = await EnsureManagerAccessAsync(
-            nameof(ImportFromJsonAsync),
-            cancellationToken);
+            nameof(ImportFromJsonAsync), cancellationToken);
+        if (accessCheck.IsFailure)
+            return OperationResult<int>.Failure(accessCheck.ErrorMessage!, accessCheck.ErrorCode);
 
-        if (!accessCheck.IsSuccess)
-        {
-            return OperationResult<int>.Failure(
-                accessCheck.ErrorMessage ?? "Access denied.",
-                accessCheck.ErrorCode);
-        }
-
-        OperationResult<IReadOnlyList<string>> validationResult = await ValidateImportAsync(
-            filePath,
-            cancellationToken);
-
-        if (!validationResult.IsSuccess)
-        {
-            return OperationResult<int>.Failure(
-                validationResult.ErrorMessage ?? "Import validation failed.",
-                validationResult.ErrorCode);
-        }
-
-        List<int> createdDrinkIds = [];
-        List<int> createdCustomerIds = [];
-        List<int> createdCardIds = [];
-
+        int importedCount = 0;
+        DataTransferPayloadDto payload;
         try
         {
-            string content = await File.ReadAllTextAsync(filePath, cancellationToken);
-            DataTransferPayloadDto? payload = JsonSerializer.Deserialize<DataTransferPayloadDto>(
-                content,
-                SerializerOptions);
+            OperationResult<ValidatedImport> validation = await ReadValidatedImportAsync(filePath, cancellationToken);
+            if (validation.IsFailure || validation.Value is null)
+                return OperationResult<int>.Failure(
+                    validation.ErrorMessage ?? CoreResources.ErrorJsonImportPersistence, validation.ErrorCode);
 
-            if (payload is null || payload.Drinks is null || payload.Customers is null || payload.Cards is null)
-            {
-                return OperationResult<int>.Failure("Invalid JSON payload.", "INVALID_PAYLOAD");
-            }
-
-            int importedCount = 0;
+            payload = validation.Value.Payload;
+            HashSet<int> existingCustomerIds = validation.Value.ExistingCustomerIds;
             Dictionary<int, int> customerIdMap = [];
 
-            foreach (DrinkTransferDto dto in payload.Drinks)
+            // Disposing an uncommitted transaction rolls back all inserts, including cancellation.
+            await using (SqliteConnection connection = _connectionFactory.OpenConnection())
+            await using (SqliteTransaction transaction = connection.BeginTransaction())
             {
-                Drink drink = new(
-                    drinkName: dto.DrinkName!.Trim(),
-                    drinkPrice: dto.DrinkPrice!.Value,
-                    drinkType: dto.DrinkType!.Trim(),
-                    isActive: dto.IsActive ?? true,
-                    drinkImageLink: dto.DrinkImageLink);
-
-                OperationResult<Drink> addDrinkResult = await _drinkRepository.AddAsync(drink, cancellationToken);
-                if (!addDrinkResult.IsSuccess || addDrinkResult.Value is null)
+                foreach (DrinkTransferDto dto in payload.Drinks)
                 {
-                    await RollbackImportedRecordsAsync(createdDrinkIds, createdCustomerIds, createdCardIds);
-                    return await FailImportPersistenceAsync(
-                        addDrinkResult.ErrorMessage ?? "Failed to import drink.",
-                        cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    Drink drink = new(dto.DrinkName!.Trim(), dto.DrinkPrice!.Value,
+                        dto.DrinkType!.Trim(), dto.IsActive ?? true, dto.DrinkImageLink);
+                    OperationResult<Drink> added = await _drinkRepository.AddAsync(drink, transaction, cancellationToken);
+                    if (added.IsFailure || added.Value is null || added.Value.Id <= 0)
+                        throw new InvalidOperationException(added.ErrorMessage);
+                    importedCount++;
                 }
 
-                if (addDrinkResult.Value.Id > 0)
+                foreach (CustomerTransferDto dto in payload.Customers)
                 {
-                    createdDrinkIds.Add(addDrinkResult.Value.Id);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    Customer customer = new(categoryId: dto.CategoryId!.Value,
+                        customerName: dto.CustomerName!.Trim(), bonusBalance: dto.BonusBalance ?? 0,
+                        birthDate: dto.BirthDate, isActive: dto.IsActive ?? true,
+                        timeStamp: dto.TimeStamp ?? DateTime.UtcNow);
+                    int id = await _customerRepository.AddAsync(customer, transaction, cancellationToken);
+                    if (id <= 0) throw new InvalidOperationException();
+                    if (dto.Id.HasValue) customerIdMap.Add(dto.Id.Value, id);
+                    importedCount++;
                 }
 
-                importedCount++;
+                // Only resolve references to customers that existed before import or were mapped in this batch.
+                // Do not query a separate connection for uncommitted customer rows.
+                foreach (CardTransferDto dto in payload.Cards)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    int sourceId = dto.CustomerId!.Value;
+                    if (!customerIdMap.TryGetValue(sourceId, out int customerId))
+                    {
+                        if (!existingCustomerIds.Contains(sourceId)) throw new InvalidOperationException();
+                        customerId = sourceId;
+                    }
+                    LoyaltyCard card = new(customerId, dto.IsActive ?? true);
+                    int id = await _cardRepository.AddAsync(card, transaction, cancellationToken);
+                    if (id <= 0) throw new InvalidOperationException();
+                    importedCount++;
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                await transaction.CommitAsync(cancellationToken);
             }
-
-            foreach (CustomerTransferDto dto in payload.Customers)
-            {
-                Customer customer = new(
-                    categoryId: dto.CategoryId!.Value,
-                    customerName: dto.CustomerName!.Trim(),
-                    bonusBalance: dto.BonusBalance ?? 0,
-                    birthDate: dto.BirthDate,
-                    isActive: dto.IsActive ?? true,
-                    timeStamp: dto.TimeStamp ?? DateTime.UtcNow);
-
-                int createdCustomerId = await _customerRepository.AddAsync(customer, cancellationToken);
-                if (createdCustomerId <= 0)
-                {
-                    await RollbackImportedRecordsAsync(createdDrinkIds, createdCustomerIds, createdCardIds);
-                    return await FailImportPersistenceAsync(
-                        $"Failed to import customer '{customer.CustomerName}'.",
-                        cancellationToken);
-                }
-
-                createdCustomerIds.Add(createdCustomerId);
-
-                if (dto.Id.HasValue)
-                {
-                    customerIdMap[dto.Id.Value] = createdCustomerId;
-                }
-
-                importedCount++;
-            }
-
-            IReadOnlyList<Customer> allCustomers = await _customerRepository.GetAllAsync(cancellationToken);
-            HashSet<int> validCustomerIds = allCustomers.Select(c => c.Id).ToHashSet();
-
-            foreach (CardTransferDto dto in payload.Cards)
-            {
-                int rawCustomerId = dto.CustomerId!.Value;
-
-                int resolvedCustomerId = customerIdMap.TryGetValue(rawCustomerId, out int mappedId)
-                    ? mappedId
-                    : rawCustomerId;
-
-                if (!validCustomerIds.Contains(resolvedCustomerId))
-                {
-                    await RollbackImportedRecordsAsync(createdDrinkIds, createdCustomerIds, createdCardIds);
-
-                    string refError = $"Cannot import card because referenced CustomerId {rawCustomerId} does not exist.";
-
-                    await _logService.LogErrorAsync(
-                        objectType: LogObjectType,
-                        actionType: "ErrorImportJson",
-                        description: refError,
-                        objectId: null,
-                        cancellationToken: cancellationToken);
-
-                    return OperationResult<int>.Failure(refError, "INVALID_CUSTOMER_REFERENCE");
-                }
-
-                LoyaltyCard card = new(
-                    customerId: resolvedCustomerId,
-                    isActive: dto.IsActive ?? true);
-
-                int createdCardId = await _cardRepository.AddAsync(card, cancellationToken);
-                if (createdCardId <= 0)
-                {
-                    await RollbackImportedRecordsAsync(createdDrinkIds, createdCustomerIds, createdCardIds);
-                    return await FailImportPersistenceAsync(
-                        $"Failed to import loyalty card for CustomerId {resolvedCustomerId}.",
-                        cancellationToken);
-                }
-
-                createdCardIds.Add(createdCardId);
-                importedCount++;
-            }
-
-            await _logService.LogInfoAsync(
-                objectType: LogObjectType,
-                actionType: "LogImportJson",
-                description: $"Imported {importedCount} records from '{Path.GetFileName(filePath)}' " +
-                             $"(Drinks: {payload.Drinks.Count}, Customers: {payload.Customers.Count}, Cards: {payload.Cards.Count}).",
-                objectId: null,
-                cancellationToken: cancellationToken);
-
-            return OperationResult<int>.Success(importedCount);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            await AuditImportAsync(true, "ErrorImportCancelled", CoreResources.LogJsonImportCancelled);
+            throw;
         }
         catch (Exception ex)
         {
-            await RollbackImportedRecordsAsync(createdDrinkIds, createdCustomerIds, createdCardIds);
-
-            return await FailImportPersistenceAsync(
-                $"Import failed during persistence: {ex.Message}",
-                cancellationToken);
+            Trace.TraceWarning(ex.GetType().Name);
+            await AuditImportAsync(true, "ErrorImportJson", CoreResources.ErrorJsonImportPersistence);
+            return OperationResult<int>.Failure(CoreResources.ErrorJsonImportPersistence, "IMPORT_PERSISTENCE_ERROR");
         }
+
+        // Log after the transaction closes. Audit failure cannot undo or misreport a committed import.
+        await AuditImportAsync(false, "LogImportJson", string.Format(CultureInfo.InvariantCulture,
+            CoreResources.LogJsonImportCompleted, importedCount, Path.GetFileName(filePath),
+            payload.Drinks.Count, payload.Customers.Count, payload.Cards.Count));
+        return OperationResult<int>.Success(importedCount);
     }
 
-    // Best-effort compensation: deactivates records added during a failed import so they do not remain active.
-    private async Task RollbackImportedRecordsAsync(
-        IReadOnlyList<int> drinkIds,
-        IReadOnlyList<int> customerIds,
-        IReadOnlyList<int> cardIds)
+    private async Task AuditImportAsync(bool error, string action, string message)
     {
-        foreach (int cardId in cardIds)
+        try
         {
-            try
-            {
-                await _cardRepository.SetActiveStatusAsync(cardId, false, CancellationToken.None);
-            }
-            catch
-            {
-                // Ignore secondary rollback failures so the primary error is preserved.
-            }
+            OperationResult result = error
+                ? await _logService.LogErrorAsync(LogObjectType, action, message, null, CancellationToken.None)
+                : await _logService.LogInfoAsync(LogObjectType, action, message, null, CancellationToken.None);
+            if (result.IsFailure) Trace.TraceWarning(CoreResources.ErrorJsonImportAuditFailed);
         }
-
-        foreach (int customerId in customerIds)
+        catch (Exception)
         {
-            try
-            {
-                await _customerRepository.SetActiveStatusAsync(customerId, false, CancellationToken.None);
-            }
-            catch
-            {
-                // Ignore secondary rollback failures so the primary error is preserved.
-            }
-        }
-
-        foreach (int drinkId in drinkIds)
-        {
-            try
-            {
-                await _drinkRepository.SetActiveStatusAsync(drinkId, false, CancellationToken.None);
-            }
-            catch
-            {
-                // Ignore secondary rollback failures so the primary error is preserved.
-            }
+            Trace.TraceWarning(CoreResources.ErrorJsonImportAuditFailed);
         }
     }
 
@@ -669,19 +593,7 @@ public class DataTransferService : IDataTransferService
         return OperationResult<int>.Failure(message, "EXPORT_REPOSITORY_ERROR");
     }
 
-    private async Task<OperationResult<int>> FailImportPersistenceAsync(
-        string message,
-        CancellationToken cancellationToken)
-    {
-        await _logService.LogErrorAsync(
-            objectType: LogObjectType,
-            actionType: "ErrorImportJson",
-            description: message,
-            objectId: null,
-            cancellationToken: cancellationToken);
 
-        return OperationResult<int>.Failure(message, "IMPORT_PERSISTENCE_ERROR");
-    }
 
     private async Task<OperationResult> EnsureManagerAccessAsync(
         string operationName,

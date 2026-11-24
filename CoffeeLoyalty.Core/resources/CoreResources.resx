@@ -771,4 +771,16 @@
   <data name="CustomerUpdateFailed" xml:space="preserve">
     <value>Failed to update customer bonus balance.</value>
   </data>
+  <data name="ErrorJsonImportPersistence" xml:space="preserve">
+    <value>The JSON import could not be completed.</value>
+  </data>
+  <data name="LogJsonImportCancelled" xml:space="preserve">
+    <value>JSON import was cancelled before commit.</value>
+  </data>
+  <data name="LogJsonImportCompleted" xml:space="preserve">
+    <value>Imported {0} records from &apos;{1}&apos; (Drinks: {2}, Customers: {3}, Cards: {4}).</value>
+  </data>
+  <data name="ErrorJsonImportAuditFailed" xml:space="preserve">
+    <value>The JSON import audit event could not be saved.</value>
+  </data>
 </root>

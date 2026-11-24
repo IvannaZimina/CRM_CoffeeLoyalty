@@ -1,4 +1,5 @@
 ﻿using CoffeeLoyalty.Core.DTOs;
+using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.Enums;
 using CoffeeLoyalty.Core.interfaces.services;
 using CoffeeLoyalty.Core.Interfaces.Repositories;
@@ -69,7 +70,8 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             purchaseRepo,
             logRepo,
             authService,
-            logService);
+            logService,
+            new SqliteConnectionFactory(":memory:"));
 
         string tempFile = Path.Combine(Path.GetTempPath(), $"denied_{Guid.NewGuid():N}.json");
 
@@ -147,7 +149,8 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             purchaseRepo,
             logRepo,
             authService,
-            logService);
+            logService,
+            new SqliteConnectionFactory(":memory:"));
 
         string dummyPath = Path.Combine(Path.GetTempPath(), $"cashier_{Guid.NewGuid():N}.json");
 
@@ -248,7 +251,8 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             purchaseRepo,
             logRepo,
             authService,
-            logService);
+            logService,
+            new SqliteConnectionFactory(":memory:"));
 
         string tempFile = Path.Combine(Path.GetTempPath(), $"export_step4_{Guid.NewGuid():N}.json");
 
@@ -335,7 +339,8 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             purchaseRepo,
             logRepo,
             authService,
-            logService);
+            logService,
+            new SqliteConnectionFactory(":memory:"));
 
         DataTransferPayloadDto payload = new()
         {
@@ -441,7 +446,8 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             purchaseRepo,
             logRepo,
             authService,
-            logService);
+            logService,
+            new SqliteConnectionFactory(":memory:"));
 
         DataTransferPayloadDto invalidPayload = new()
         {
@@ -525,7 +531,8 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
             purchaseRepo,
             logRepo,
             authService,
-            logService);
+            logService,
+            new SqliteConnectionFactory(":memory:"));
 
         DataTransferPayloadDto payload = new()
         {
@@ -683,6 +690,9 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
         public Task<OperationResult<Drink>> GetByIdAsync(int drinkId, CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult<Drink>.Failure("Not found."));
 
+        public Task<OperationResult<Drink>> AddAsync(Drink drink, object? transaction,
+            CancellationToken cancellationToken = default) => AddAsync(drink, cancellationToken);
+
         public Task<OperationResult<Drink>> AddAsync(Drink drink, CancellationToken cancellationToken = default)
         {
             // Assign a synthetic ID if none was set so callers see a persisted drink.
@@ -737,15 +747,7 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
         public Task<int> AddAsync(
             Customer customer,
             object? transaction,
-            CancellationToken cancellationToken = default)
-        {
-            if (transaction is not null)
-            {
-                throw new NotSupportedException();
-            }
-
-            return AddAsync(customer, cancellationToken);
-        }
+            CancellationToken cancellationToken = default) => AddAsync(customer, cancellationToken);
 
         public Task<bool> UpdateAsync(Customer customer, CancellationToken cancellationToken = default) =>
             Task.FromResult(true);
@@ -800,15 +802,7 @@ public class DataTransferServiceAccessTests(ITestOutputHelper output)
         public Task<int> AddAsync(
             LoyaltyCard card,
             object? transaction,
-            CancellationToken cancellationToken = default)
-        {
-            if (transaction is not null)
-            {
-                throw new NotSupportedException();
-            }
-
-            return AddAsync(card, cancellationToken);
-        }
+            CancellationToken cancellationToken = default) => AddAsync(card, cancellationToken);
 
         public Task<bool> SetActiveStatusAsync(int cardId, bool isActive, CancellationToken cancellationToken = default) =>
             Task.FromResult(true);
