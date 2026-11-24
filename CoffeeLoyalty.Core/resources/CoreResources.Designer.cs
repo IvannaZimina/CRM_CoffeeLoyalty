@@ -2045,5 +2045,53 @@ namespace CoffeeLoyalty.Core.resources {
             }
         }
 
+        public static string ErrorPurchaseProcessingFailed {
+            get {
+                return ResourceManager.GetString("ErrorPurchaseProcessingFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorPurchaseReadFailed {
+            get {
+                return ResourceManager.GetString("ErrorPurchaseReadFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorPurchaseItemsReadFailed {
+            get {
+                return ResourceManager.GetString("ErrorPurchaseItemsReadFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorUserDrinkReadFailed {
+            get {
+                return ResourceManager.GetString("ErrorUserDrinkReadFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorJsonExportFailed {
+            get {
+                return ResourceManager.GetString("ErrorJsonExportFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorJsonImportReadFailed {
+            get {
+                return ResourceManager.GetString("ErrorJsonImportReadFailed", resourceCulture);
+            }
+        }
+
+        public static string ErrorJsonFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorJsonFileNotFound", resourceCulture);
+            }
+        }
+
+        public static string ErrorJsonExportRepository {
+            get {
+                return ResourceManager.GetString("ErrorJsonExportRepository", resourceCulture);
+            }
+        }
+
     }
 }

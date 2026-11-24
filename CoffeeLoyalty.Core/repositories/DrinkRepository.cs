@@ -44,10 +44,15 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
 
             return OperationResult<IReadOnlyList<Drink>>.Success(drinks.AsReadOnly());
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("DrinkRepository: {0}", ex.GetType().Name);
             return OperationResult<IReadOnlyList<Drink>>.Failure(
-                string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
+                CoreResources.ErrorDatabaseConnection,
                 nameof(CoreResources.ErrorDatabaseConnection));
         }
     }
@@ -79,10 +84,15 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
 
             return OperationResult<IReadOnlyList<Drink>>.Success(drinks.AsReadOnly());
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("DrinkRepository: {0}", ex.GetType().Name);
             return OperationResult<IReadOnlyList<Drink>>.Failure(
-                string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
+                CoreResources.ErrorDatabaseConnection,
                 nameof(CoreResources.ErrorDatabaseConnection));
         }
     }
@@ -116,10 +126,15 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
             Drink drink = MapDrink(reader);
             return OperationResult<Drink>.Success(drink);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("DrinkRepository: {0}", ex.GetType().Name);
             return OperationResult<Drink>.Failure(
-                string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
+                CoreResources.ErrorDatabaseConnection,
                 nameof(CoreResources.ErrorDatabaseConnection));
         }
     }
@@ -180,8 +195,9 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("DrinkRepository: {0}", ex.GetType().Name);
             return OperationResult<Drink>.Failure(
-                string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
+                CoreResources.ErrorDatabaseConnection,
                 nameof(CoreResources.ErrorDatabaseConnection));
         }
         finally
@@ -232,10 +248,15 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
 
             return OperationResult.Success();
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("DrinkRepository: {0}", ex.GetType().Name);
             return OperationResult.Failure(
-                string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
+                CoreResources.ErrorDatabaseConnection,
                 nameof(CoreResources.ErrorDatabaseConnection));
         }
     }
@@ -271,10 +292,15 @@ public class DrinkRepository : BaseRepository, IDrinkRepository
 
             return OperationResult.Success();
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Trace.TraceWarning("DrinkRepository: {0}", ex.GetType().Name);
             return OperationResult.Failure(
-                string.Format("{0} {1}", CoreResources.ErrorDatabaseConnection, ex.Message),
+                CoreResources.ErrorDatabaseConnection,
                 nameof(CoreResources.ErrorDatabaseConnection));
         }
     }

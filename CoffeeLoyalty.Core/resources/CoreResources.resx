@@ -783,4 +783,28 @@
   <data name="ErrorJsonImportAuditFailed" xml:space="preserve">
     <value>The JSON import audit event could not be saved.</value>
   </data>
+  <data name="ErrorPurchaseProcessingFailed" xml:space="preserve">
+    <value>The purchase could not be completed.</value>
+  </data>
+  <data name="ErrorPurchaseReadFailed" xml:space="preserve">
+    <value>Purchase history could not be retrieved.</value>
+  </data>
+  <data name="ErrorPurchaseItemsReadFailed" xml:space="preserve">
+    <value>Purchase items could not be retrieved.</value>
+  </data>
+  <data name="ErrorUserDrinkReadFailed" xml:space="preserve">
+    <value>Loyalty drink counters could not be retrieved.</value>
+  </data>
+  <data name="ErrorJsonExportFailed" xml:space="preserve">
+    <value>The JSON export could not be completed. Check the destination and permissions.</value>
+  </data>
+  <data name="ErrorJsonImportReadFailed" xml:space="preserve">
+    <value>The import data could not be read or validated. Check the JSON file.</value>
+  </data>
+  <data name="ErrorJsonFileNotFound" xml:space="preserve">
+    <value>The selected JSON file does not exist.</value>
+  </data>
+  <data name="ErrorJsonExportRepository" xml:space="preserve">
+    <value>Failed to load {0} for export.</value>
+  </data>
 </root>
