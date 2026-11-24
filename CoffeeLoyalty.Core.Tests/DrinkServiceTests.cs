@@ -6,18 +6,17 @@ using CoffeeLoyalty.Core.Interfaces.Services;
 using CoffeeLoyalty.Core.Models;
 using CoffeeLoyalty.Core.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CoffeeLoyalty.Core.Tests;
 
-// Unit tests covering the Drinks (Menu) section:
-// role-based menu visibility (Cashier vs. Manager), drink creation, validation, activation status, and audit logging.
-public class DrinkServiceTests
+public class DrinkServiceTests(ITestOutputHelper output)
 {
-    // Tests that Cashiers querying available drinks receive only active menu items.
+    private readonly ITestOutputHelper _output = output;
+
     [Fact]
     public async Task GetAvailableDrinksAsync_Cashier_ReturnsOnlyActiveDrinks()
     {
-        // Arrange: seed repository with one active drink and one inactive seasonal drink.
         FakeDrinkRepository repo = new(
         [
             new Drink("Espresso", 2.50m, "Coffee", true, null) { Id = 1 },
@@ -26,21 +25,36 @@ public class DrinkServiceTests
 
         DrinkService service = new(repo, FakeAuth(UserRole.Cashier), new FakeLogService());
 
-        // Act: request available menu drinks as a Cashier.
-        OperationResult<IReadOnlyList<Drink>> result = await service.GetAvailableDrinksAsync();
+        OperationResult<IReadOnlyList<Drink>> result =
+            await service.GetAvailableDrinksAsync();
 
-        // Assert: verify only the active drink ("Espresso") is returned.
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
         Assert.Single(result.Value!);
         Assert.Equal("Espresso", result.Value![0].DrinkName);
+        Assert.All(result.Value!, drink => Assert.True(drink.IsActive));
+
+        int activeInSource = 1;
+        int inactiveInSource = 1;
+        int returnedCount = result.Value!.Count;
+        bool allReturnedDrinksActive = result.Value.All(drink => drink.IsActive);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Available Menu Check (Cashier)",
+            [
+                ("User role", UserRole.Cashier.ToString(), "CASHIER"),
+                ("Service result", result.IsSuccess.ToString(), "SUCCESS"),
+                ("Active drinks in source", activeInSource.ToString(), "INPUT"),
+                ("Inactive drinks in source", inactiveInSource.ToString(), "INPUT"),
+                ("Returned drinks", returnedCount.ToString(), "EXPECTED: 1"),
+                ("All returned drinks active", allReturnedDrinksActive.ToString(), "CHECKED"),
+                ("Returned drink name", result.Value[0].DrinkName, "EXPECTED: Espresso")
+            ]));
     }
 
-    // Tests that Cashiers are forbidden from viewing inactive/archived drinks via GetAllDrinksAsync.
     [Fact]
     public async Task GetAllDrinksAsync_Cashier_DeniedAccess()
     {
-        // Arrange: seed repository with active and inactive drinks under a Cashier session.
         FakeDrinkRepository repo = new(
         [
             new Drink("Espresso", 2.50m, "Coffee", true, null) { Id = 1 },
@@ -50,19 +64,28 @@ public class DrinkServiceTests
         FakeLogService logs = new();
         DrinkService service = new(repo, FakeAuth(UserRole.Cashier), logs);
 
-        // Act: attempt to retrieve all drinks including inactive items as a Cashier.
-        OperationResult<IReadOnlyList<Drink>> result = await service.GetAllDrinksAsync();
+        OperationResult<IReadOnlyList<Drink>> result =
+            await service.GetAllDrinksAsync();
 
-        // Assert: verify access is denied with FORBIDDEN error code.
         Assert.False(result.IsSuccess);
         Assert.Equal("FORBIDDEN", result.ErrorCode);
+        Assert.NotEmpty(logs.ErrorEntries);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Full Menu Access Check (Cashier)",
+            [
+                ("User role", UserRole.Cashier.ToString(), "NOT MANAGER"),
+                ("Service result", result.IsSuccess.ToString(), "DENIED"),
+                ("Error code", result.ErrorCode ?? "none", "FORBIDDEN"),
+                ("Repository drinks", repo.GetAllAsync().Result.Value!.Count.ToString(), "UNCHANGED"),
+                ("Error log count", logs.ErrorEntries.Count.ToString(), "LOGGED"),
+                ("Logged action", logs.ErrorEntries[0].ActionType, "RECORDED")
+            ]));
     }
 
-    // Tests that Managers can retrieve all drinks, including inactive/archived items.
     [Fact]
     public async Task GetAllDrinksAsync_Manager_ReturnsAllDrinksIncludingInactive()
     {
-        // Arrange: seed repository with active and inactive drinks under a Manager session.
         FakeDrinkRepository repo = new(
         [
             new Drink("Espresso", 2.50m, "Coffee", true, null) { Id = 1 },
@@ -71,208 +94,348 @@ public class DrinkServiceTests
 
         DrinkService service = new(repo, FakeAuth(UserRole.Manager), new FakeLogService());
 
-        // Act: request the complete menu list as a Manager.
-        OperationResult<IReadOnlyList<Drink>> result = await service.GetAllDrinksAsync();
+        OperationResult<IReadOnlyList<Drink>> result =
+            await service.GetAllDrinksAsync();
 
-        // Assert: verify both active and inactive drinks are returned.
         Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
         Assert.Equal(2, result.Value!.Count);
+
+        int totalCount = result.Value.Count;
+        int activeCount = result.Value.Count(drink => drink.IsActive);
+        int inactiveCount = result.Value.Count(drink => !drink.IsActive);
+
+        Assert.Equal(1, activeCount);
+        Assert.Equal(1, inactiveCount);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Full Menu Access Check (Manager)",
+            [
+                ("User role", UserRole.Manager.ToString(), "AUTHORIZED"),
+                ("Service result", result.IsSuccess.ToString(), "SUCCESS"),
+                ("Total drinks", totalCount.ToString(), "EXPECTED: 2"),
+                ("Active drinks", activeCount.ToString(), "INCLUDED"),
+                ("Inactive drinks", inactiveCount.ToString(), "INCLUDED"),
+                ("All menu items returned", (totalCount == 2).ToString(), "CHECKED")
+            ]));
     }
 
-    // Tests that Cashiers cannot add new drinks to the menu and nothing is written to the repository.
     [Fact]
     public async Task AddDrinkAsync_Cashier_DeniedWithoutWritingToRepository()
     {
-        // Arrange: initialize empty drink repository and Cashier session.
         FakeDrinkRepository repo = new();
-        DrinkService service = new(repo, FakeAuth(UserRole.Cashier), new FakeLogService());
+        FakeLogService logs = new();
 
-        // Act: attempt to add a new drink as a Cashier.
+        DrinkService service = new(repo, FakeAuth(UserRole.Cashier), logs);
+
         OperationResult<Drink> result = await service.AddDrinkAsync(
             new Drink("Cappuccino", 3.80m, "Coffee", true, null));
 
-        // Assert: verify request is rejected with FORBIDDEN and repository remains untouched.
         Assert.False(result.IsSuccess);
         Assert.Equal("FORBIDDEN", result.ErrorCode);
         Assert.Empty(repo.AddedDrinks);
+        Assert.NotEmpty(logs.ErrorEntries);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Add Drink Access Check (Cashier)",
+            [
+                ("User role", UserRole.Cashier.ToString(), "NOT MANAGER"),
+                ("Attempted drink", "Cappuccino", "INPUT"),
+                ("Attempted price", "3.80", "INPUT"),
+                ("Service result", result.IsSuccess.ToString(), "DENIED"),
+                ("Error code", result.ErrorCode ?? "none", "FORBIDDEN"),
+                ("Added drinks count", repo.AddedDrinks.Count.ToString(), "EXPECTED: 0"),
+                ("Error log count", logs.ErrorEntries.Count.ToString(), "LOGGED"),
+                ("Logged action", logs.ErrorEntries[0].ActionType, "RECORDED")
+            ]));
     }
 
-    // Tests that Managers can add a valid drink, persist it via repository, and emit an informational audit log.
     [Fact]
     public async Task AddDrinkAsync_ManagerWithValidDrink_AddsAndLogsInfo()
     {
-        // Arrange: initialize empty repository, log spy, and Manager session.
         FakeDrinkRepository repo = new();
         FakeLogService logs = new();
+
         DrinkService service = new(repo, FakeAuth(UserRole.Manager), logs);
 
-        // Act: add a valid Cappuccino menu item as a Manager.
         OperationResult<Drink> result = await service.AddDrinkAsync(
             new Drink("Cappuccino", 3.80m, "Coffee", true, null));
 
-        // Assert: verify drink creation succeeded, was stored once, and recorded an audit log entry.
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
         Assert.Equal("Cappuccino", result.Value!.DrinkName);
+        Assert.Equal(3.80m, result.Value.DrinkPrice);
         Assert.Single(repo.AddedDrinks);
         Assert.NotEmpty(logs.InfoEntries);
+
+        Drink addedDrink = result.Value;
+        bool drinkHasGeneratedId = addedDrink.Id > 0;
+
+        Assert.True(drinkHasGeneratedId);
+        Assert.Equal(addedDrink.Id, repo.AddedDrinks[0].Id);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Add Drink Check (Manager)",
+            [
+                ("User role", UserRole.Manager.ToString(), "AUTHORIZED"),
+                ("Service result", result.IsSuccess.ToString(), "SUCCESS"),
+                ("Drink name", addedDrink.DrinkName, "EXPECTED: Cappuccino"),
+                ("Drink price", addedDrink.DrinkPrice.ToString("0.00"), "EXPECTED: 3.80"),
+                ("Drink category", addedDrink.DrinkType, "EXPECTED: Coffee"),
+                ("Generated ID", addedDrink.Id.ToString(), "CHECKED"),
+                ("ID is valid", drinkHasGeneratedId.ToString(), "CHECKED"),
+                ("Repository count", repo.AddedDrinks.Count.ToString(), "EXPECTED: 1"),
+                ("Info log count", logs.InfoEntries.Count.ToString(), "LOGGED"),
+                ("Logged action", logs.InfoEntries[0].ActionType, "RECORDED")
+            ]));
     }
 
-    // Tests Drink domain model constructor guards against blank names/types and non-positive prices.
     [Theory]
     [InlineData("", 3.50, "Coffee")]
     [InlineData("Latte", 0, "Coffee")]
     [InlineData("Latte", -2.00, "Coffee")]
     [InlineData("Latte", 3.50, "")]
     public void Drink_WithInvalidFields_ThrowsValidationException(
-        string name, decimal price, string type)
+        string name,
+        decimal price,
+        string type)
     {
-        // Act & Assert: constructing a Drink with invalid fields throws ArgumentException / ArgumentOutOfRangeException.
-        Assert.ThrowsAny<ArgumentException>(() =>
+        ArgumentException exception = Assert.ThrowsAny<ArgumentException>(() =>
             new Drink(name, price, type, true, null));
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Drink Model Validation Check",
+            [
+                ("Input name", string.IsNullOrEmpty(name) ? "<empty>" : name, "CHECKED"),
+                ("Input price", price.ToString("0.00"), "CHECKED"),
+                ("Input type", string.IsNullOrEmpty(type) ? "<empty>" : type, "CHECKED"),
+                ("Exception type", exception.GetType().Name, "THROWN"),
+                ("Validation result", "Invalid drink rejected", "EXPECTED")
+            ]));
     }
 
-    // Tests that Managers can softly deactivate an existing drink and record an audit log entry.
     [Fact]
     public async Task SetActiveStatusAsync_Manager_UpdatesStatusAndLogsInfo()
     {
-        // Arrange: seed an active drink with ID 5 under a Manager session.
         FakeDrinkRepository repo = new(
         [
             new Drink("Mocha", 4.20m, "Coffee", true, null) { Id = 5 }
         ]);
+
         FakeLogService logs = new();
         DrinkService service = new(repo, FakeAuth(UserRole.Manager), logs);
 
-        // Act: deactivate drink ID 5.
+        Drink? drinkBeforeUpdate = repo.GetItem(5);
+        Assert.NotNull(drinkBeforeUpdate);
+
+        bool previousStatus = drinkBeforeUpdate.IsActive;
+
         OperationResult result = await service.SetActiveStatusAsync(5, false);
 
-        // Assert: verify IsActive flag was updated to false and an info audit entry was logged.
+        Drink? drinkAfterUpdate = repo.GetItem(5);
+
         Assert.True(result.IsSuccess);
-        Assert.False(repo.GetItem(5)!.IsActive);
+        Assert.NotNull(drinkAfterUpdate);
+        Assert.False(drinkAfterUpdate.IsActive);
         Assert.NotEmpty(logs.InfoEntries);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Drink Activation Status Check",
+            [
+                ("User role", UserRole.Manager.ToString(), "AUTHORIZED"),
+                ("Drink ID", "5", "TARGET"),
+                ("Drink name", drinkAfterUpdate.DrinkName, "Mocha"),
+                ("Previous status", previousStatus.ToString(), "ACTIVE"),
+                ("Requested status", "False", "DEACTIVATE"),
+                ("Service result", result.IsSuccess.ToString(), "SUCCESS"),
+                ("Actual status", drinkAfterUpdate.IsActive.ToString(), "UPDATED"),
+                ("Info log count", logs.InfoEntries.Count.ToString(), "LOGGED"),
+                ("Logged action", logs.InfoEntries[0].ActionType, "RECORDED")
+            ]));
     }
 
-    // Helper creating a stub authentication service for the specified role (or logged out when null).
-    private static IAuthService FakeAuth(UserRole? role) => new StubAuthService(role);
+    private static IAuthService FakeAuth(UserRole? role) =>
+        new StubAuthService(role);
 
-    // In-memory IAuthService test double simulating authenticated Cashier/Manager sessions.
     private sealed class StubAuthService(UserRole? role) : IAuthService
     {
         public bool IsAuthenticated => role.HasValue;
+
         public UserRole? CurrentRole => role;
+
         public Employee? CurrentEmployee => role.HasValue
-            ? new Employee("TestUser", role.Value) { Id = role.Value == UserRole.Manager ? 2 : 3 }
+            ? new Employee("TestUser", role.Value)
+            {
+                Id = role.Value == UserRole.Manager ? 2 : 3
+            }
             : null;
-        public string? CurrentSessionId => role.HasValue ? "test-session" : null;
+
+        public string? CurrentSessionId => role.HasValue
+            ? "test-session"
+            : null;
 
         public Task<OperationResult> LoginAsync(
-            string employeeName, UserRole loginRole, string? password = null,
+            string employeeName,
+            UserRole loginRole,
+            string? password = null,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult.Success());
 
-        public Task<OperationResult> LogoutAsync(CancellationToken cancellationToken = default) =>
+        public Task<OperationResult> LogoutAsync(
+            CancellationToken cancellationToken = default) =>
             Task.FromResult(OperationResult.Success());
 
         public bool HasPermission(UserRole requiredRole) =>
-            role == UserRole.Manager || (role.HasValue && role.Value == requiredRole);
+            role == UserRole.Manager ||
+            (role.HasValue && role.Value == requiredRole);
     }
 
-    // In-memory ILogService spy capturing info and error audit entries for assertions.
     private sealed class FakeLogService : ILogService
     {
-        public List<(string ObjectType, string ActionType, string Description, int? ObjectId)> InfoEntries { get; } = [];
-        public List<(string ObjectType, string ActionType, string Description, int? ObjectId)> ErrorEntries { get; } = [];
+        public List<(string ObjectType, string ActionType, string Description, int? ObjectId)>
+            InfoEntries
+        { get; } = [];
+
+        public List<(string ObjectType, string ActionType, string Description, int? ObjectId)>
+            ErrorEntries
+        { get; } = [];
 
         public Task<OperationResult> LogInfoAsync(
-            string objectType, string actionType, string description,
-            int? objectId = null, CancellationToken cancellationToken = default)
+            string objectType,
+            string actionType,
+            string description,
+            int? objectId = null,
+            CancellationToken cancellationToken = default)
         {
             InfoEntries.Add((objectType, actionType, description, objectId));
+
             return Task.FromResult(OperationResult.Success());
         }
 
         public Task<OperationResult> LogErrorAsync(
-            string objectType, string actionType, string description,
-            int? objectId = null, CancellationToken cancellationToken = default)
+            string objectType,
+            string actionType,
+            string description,
+            int? objectId = null,
+            CancellationToken cancellationToken = default)
         {
             ErrorEntries.Add((objectType, actionType, description, objectId));
+
             return Task.FromResult(OperationResult.Success());
         }
 
-        public Task<OperationResult<IReadOnlyList<LogEntry>>> GetAllAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
+        public Task<OperationResult<IReadOnlyList<LogEntry>>> GetAllAsync(
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(
+                OperationResult<IReadOnlyList<LogEntry>>.Success([]));
 
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByDateRangeAsync(
-            DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default) =>
-            Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
+            DateTime startDate,
+            DateTime endDate,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(
+                OperationResult<IReadOnlyList<LogEntry>>.Success([]));
 
         public Task<OperationResult<IReadOnlyList<LogEntry>>> GetByActionTypeAsync(
-            string actionType, CancellationToken cancellationToken = default) =>
-            Task.FromResult(OperationResult<IReadOnlyList<LogEntry>>.Success([]));
+            string actionType,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(
+                OperationResult<IReadOnlyList<LogEntry>>.Success([]));
     }
 
-    // In-memory IDrinkRepository test double simulating menu storage and active-status updates.
-    private sealed class FakeDrinkRepository(IEnumerable<Drink>? seed = null) : IDrinkRepository
+    private sealed class FakeDrinkRepository(IEnumerable<Drink>? seed = null)
+        : IDrinkRepository
     {
         private readonly List<Drink> _items = seed?.ToList() ?? [];
+
         public List<Drink> AddedDrinks { get; } = [];
 
-        public Drink? GetItem(int id) => _items.FirstOrDefault(d => d.Id == id);
+        public Drink? GetItem(int id) =>
+            _items.FirstOrDefault(drink => drink.Id == id);
 
-        public Task<OperationResult<IReadOnlyList<Drink>>> GetAllAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult(OperationResult<IReadOnlyList<Drink>>.Success(_items.AsReadOnly()));
+        public Task<OperationResult<IReadOnlyList<Drink>>> GetAllAsync(
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(
+                OperationResult<IReadOnlyList<Drink>>.Success(
+                    _items.AsReadOnly()));
 
-        public Task<OperationResult<IReadOnlyList<Drink>>> GetAvailableAsync(CancellationToken cancellationToken = default) =>
-            Task.FromResult(OperationResult<IReadOnlyList<Drink>>.Success(
-                _items.Where(d => d.IsActive).ToList().AsReadOnly()));
+        public Task<OperationResult<IReadOnlyList<Drink>>> GetAvailableAsync(
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(
+                OperationResult<IReadOnlyList<Drink>>.Success(
+                    _items
+                        .Where(drink => drink.IsActive)
+                        .ToList()
+                        .AsReadOnly()));
 
-        public Task<OperationResult<Drink>> GetByIdAsync(int drinkId, CancellationToken cancellationToken = default)
+        public Task<OperationResult<Drink>> GetByIdAsync(
+            int drinkId,
+            CancellationToken cancellationToken = default)
         {
             Drink? item = GetItem(drinkId);
+
             return Task.FromResult(item is not null
                 ? OperationResult<Drink>.Success(item)
                 : OperationResult<Drink>.Failure("Not found", "NOT_FOUND"));
         }
 
-        public Task<OperationResult<Drink>> AddAsync(Drink drink, object? transaction,
-            CancellationToken cancellationToken = default) => AddAsync(drink, cancellationToken);
+        public Task<OperationResult<Drink>> AddAsync(
+            Drink drink,
+            CancellationToken cancellationToken = default) =>
+            AddAsync(drink, null, cancellationToken);
 
-        public Task<OperationResult<Drink>> AddAsync(Drink drink, CancellationToken cancellationToken = default)
+        public Task<OperationResult<Drink>> AddAsync(
+            Drink drink,
+            object? transaction,
+            CancellationToken cancellationToken = default)
         {
             if (drink.Id <= 0)
             {
-                drink.Id = (_items.Count == 0 ? 0 : _items.Max(d => d.Id)) + 1;
+                drink.Id = (_items.Count == 0 ? 0 : _items.Max(item => item.Id)) + 1;
             }
 
             _items.Add(drink);
             AddedDrinks.Add(drink);
+
             return Task.FromResult(OperationResult<Drink>.Success(drink));
         }
 
-        public Task<OperationResult> UpdateAsync(Drink drink, CancellationToken cancellationToken = default)
+        public Task<OperationResult> UpdateAsync(
+            Drink drink,
+            CancellationToken cancellationToken = default)
         {
-            int idx = _items.FindIndex(d => d.Id == drink.Id);
-            if (idx < 0)
+            int index = _items.FindIndex(item => item.Id == drink.Id);
+
+            if (index < 0)
             {
-                return Task.FromResult(OperationResult.Failure("Not found", "NOT_FOUND"));
+                return Task.FromResult(
+                    OperationResult.Failure("Not found", "NOT_FOUND"));
             }
 
-            _items[idx] = drink;
+            _items[index] = drink;
+
             return Task.FromResult(OperationResult.Success());
         }
 
         public Task<OperationResult> SetActiveStatusAsync(
-            int drinkId, bool isActive, CancellationToken cancellationToken = default)
+            int drinkId,
+            bool isActive,
+            CancellationToken cancellationToken = default)
         {
             Drink? item = GetItem(drinkId);
+
             if (item is null)
             {
-                return Task.FromResult(OperationResult.Failure("Not found", "NOT_FOUND"));
+                return Task.FromResult(
+                    OperationResult.Failure("Not found", "NOT_FOUND"));
             }
 
             item.IsActive = isActive;
+
             return Task.FromResult(OperationResult.Success());
         }
     }
 }
+
+// Run this test file from the solution directory:
+// dotnet test --filter "FullyQualifiedName~CoffeeLoyalty.Core.Tests.DrinkServiceTests"

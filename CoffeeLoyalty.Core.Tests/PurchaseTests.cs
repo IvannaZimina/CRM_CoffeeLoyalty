@@ -1,4 +1,7 @@
-﻿using CoffeeLoyalty.Core.Data;
+﻿
+using System.IO;
+
+using CoffeeLoyalty.Core.Data;
 using CoffeeLoyalty.Core.DTOs;
 using CoffeeLoyalty.Core.Enums;
 using CoffeeLoyalty.Core.Interfaces.Repositories;
@@ -8,6 +11,7 @@ using CoffeeLoyalty.Core.Repositories;
 using CoffeeLoyalty.Core.Services;
 using Microsoft.Data.Sqlite;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CoffeeLoyalty.Core.Tests;
 
@@ -17,6 +21,13 @@ namespace CoffeeLoyalty.Core.Tests;
 // 3) PurchaseService end-to-end checkout, bonus updates, drink counters, and atomic rollback.
 public class PurchaseTests
 {
+    private readonly ITestOutputHelper _output;
+
+    public PurchaseTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
+
     // Tests Purchase domain model constructors and property guards for both walk-in and loyalty-card orders.
     [Fact]
     public void PurchaseModel_ValidatesFields_AndSupportsWalkInAndCard()
@@ -58,6 +69,18 @@ public class PurchaseTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new Purchase(2, 5.00m, -5, 0));
         Assert.Throws<ArgumentOutOfRangeException>(() => new Purchase(2, 5.00m, 0, -5));
         Assert.Throws<ArgumentOutOfRangeException>(() => new Purchase(2, 5.00m, 0, 0, cardId: 0));
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Purchase model validation",
+            [
+                ("Walk-in CardId", walkIn.CardId?.ToString() ?? "null", "PASS"),
+                ("Walk-in EmployeeId", walkIn.EmployeeId.ToString(), "PASS"),
+                ("Walk-in TotalAmount", walkIn.TotalAmount.ToString("F2"), "PASS"),
+                ("Card-linked CardId", withCard.CardId?.ToString() ?? "null", "PASS"),
+                ("BonusesSpent", withCard.BonusesSpent.ToString(), "PASS"),
+                ("BonusesEarned", withCard.BonusesEarned.ToString(), "PASS"),
+                ("Invalid inputs rejected", "5 / 5", "PASS")
+            ]));
     }
 
     // Tests PurchaseRepository SQLite persistence, primary key assignment, ID lookup, and NOT_FOUND handling.
@@ -83,8 +106,10 @@ public class PurchaseTests
         Assert.True(addResult.IsSuccess);
         Assert.True(addResult.Value!.Id > 0);
 
+        int purchaseId = addResult.Value.Id;
+
         // Act: retrieve the newly saved purchase header by its generated primary key.
-        OperationResult<Purchase> fetched = await repo.GetByIdAsync(addResult.Value.Id);
+        OperationResult<Purchase> fetched = await repo.GetByIdAsync(purchaseId);
 
         // Assert: verify all persisted columns round-trip accurately from SQLite.
         Assert.True(fetched.IsSuccess);
@@ -96,6 +121,18 @@ public class PurchaseTests
         OperationResult<Purchase> missing = await repo.GetByIdAsync(99999);
         Assert.False(missing.IsSuccess);
         Assert.Equal("NOT_FOUND", missing.ErrorCode);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Purchase repository persistence",
+            [
+                ("Insert successful", addResult.IsSuccess.ToString(), "PASS"),
+                ("Generated purchase ID", purchaseId.ToString(), "PASS"),
+                ("GetById successful", fetched.IsSuccess.ToString(), "PASS"),
+                ("Persisted TotalAmount", fetched.Value.TotalAmount.ToString("F2"), "PASS"),
+                ("Persisted BonusesSpent", fetched.Value.BonusesSpent.ToString(), "PASS"),
+                ("Persisted BonusesEarned", fetched.Value.BonusesEarned.ToString(), "PASS"),
+                ("Missing ID error", missing.ErrorCode ?? "null", "PASS")
+            ]));
     }
 
     // Tests end-to-end walk-in checkout through PurchaseService without a loyalty card.
@@ -128,6 +165,21 @@ public class PurchaseTests
         Assert.Equal(db.Espresso.Id, line.DrinkId);
         Assert.Equal(2, line.Quantity);
         Assert.Equal(2.50m, line.UnitPrice);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Purchase service walk-in checkout",
+            [
+                ("Checkout successful", result.IsSuccess.ToString(), "PASS"),
+                ("Purchase ID", result.PurchaseId.ToString(), "PASS"),
+                ("Receipt TotalAmount", result.TotalAmount.ToString("F2"), "PASS"),
+                ("BonusesSpent", result.BonusesSpent.ToString(), "PASS"),
+                ("BonusesEarned", result.BonusesEarned.ToString(), "PASS"),
+                ("CustomerName", result.CustomerName ?? "null", "PASS"),
+                ("Receipt items found", items.Value.Count.ToString(), "PASS"),
+                ("Item DrinkId", line.DrinkId.ToString(), "PASS"),
+                ("Item Quantity", line.Quantity.ToString(), "PASS"),
+                ("Item UnitPrice", line.UnitPrice.ToString("F2"), "PASS")
+            ]));
     }
 
     // Tests end-to-end loyalty-card checkout: awards bonus points, updates customer balance, and increments USER_DRINK.
@@ -165,6 +217,20 @@ public class PurchaseTests
         UserDrink counter = Assert.Single(counters.Value!);
         Assert.Equal(db.Latte.Id, counter.DrinkId);
         Assert.Equal(2, counter.Quantity);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Purchase service card checkout",
+            [
+                ("Checkout successful", result.IsSuccess.ToString(), "PASS"),
+                ("CustomerName", result.CustomerName ?? "null", "PASS"),
+                ("Receipt TotalAmount", result.TotalAmount.ToString("F2"), "PASS"),
+                ("BonusesEarned", result.BonusesEarned.ToString(), "PASS"),
+                ("UpdatedBonusBalance", result.UpdatedBonusBalance.ToString(), "PASS"),
+                ("Persisted customer balance", customer.BonusBalance.ToString(), "PASS"),
+                ("USER_DRINK records found", counters.Value.Count.ToString(), "PASS"),
+                ("Counter DrinkId", counter.DrinkId.ToString(), "PASS"),
+                ("Counter Quantity", counter.Quantity.ToString(), "PASS")
+            ]));
     }
 
     // Tests transaction atomicity: if saving line items fails mid-checkout, the purchase header and bonus balance roll back.
@@ -195,6 +261,17 @@ public class PurchaseTests
         Customer? customer = await db.Customers.GetByIdAsync(db.CustomerId);
         Assert.NotNull(customer);
         Assert.Equal(db.InitialBonus, customer!.BonusBalance);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Purchase transaction rollback",
+            [
+                ("Checkout successful", result.IsSuccess.ToString(), "PASS"),
+                ("Purchase records query", purchases.IsSuccess.ToString(), "PASS"),
+                ("Persisted purchase count", purchases.Value.Count.ToString(), "PASS"),
+                ("Initial bonus balance", db.InitialBonus.ToString(), "PASS"),
+                ("Balance after failed checkout", customer.BonusBalance.ToString(), "PASS"),
+                ("Bonus balance unchanged", (customer.BonusBalance == db.InitialBonus).ToString(), "PASS")
+            ]));
     }
 
     // Tests access control in PurchaseService when no employee session is signed in.
@@ -214,6 +291,13 @@ public class PurchaseTests
         // Assert: verify checkout is rejected with UNAUTHENTICATED error code.
         Assert.False(result.IsSuccess);
         Assert.Equal("UNAUTHENTICATED", result.ErrorCode);
+
+        _output.WriteLine(TestReportTableBuilder.Build(
+            "Purchase service authentication",
+            [
+                ("Checkout successful", result.IsSuccess.ToString(), "PASS"),
+                ("ErrorCode", result.ErrorCode ?? "null", "PASS")
+            ]));
     }
 
     // Temporary file-backed SQLite fixture wiring all repositories, session state, and PurchaseService.
@@ -268,15 +352,15 @@ public class PurchaseTests
 
             await using (SqliteConnection connection = factory.OpenConnection())
             {
-                // Execute all embedded SQL table schemas in foreign-key dependency order.
+                // Execute all embedded SQL table schemas in the same order as DatabaseInitializer.
                 string[] schemas =
                 [
                     "CategoriesSchema.sql",
                     "CustomersSchema.sql",
                     "CardsSchema.sql",
                     "EmployeesSchema.sql",
-                    "DrinksSchema.sql",
                     "PurchasesSchema.sql",
+                    "DrinksSchema.sql",
                     "PurchaseItemSchema.sql",
                     "UserDrinkSchema.sql",
                     "LogsSchema.sql"
@@ -379,3 +463,6 @@ public class PurchaseTests
         }
     }
 }
+
+// Run this test file from the solution directory:
+// dotnet test --filter "FullyQualifiedName~CoffeeLoyalty.Core.Tests.PurchaseTests" --logger "console;verbosity=detailed"
